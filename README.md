@@ -1,4 +1,4 @@
 # Equilibrium-Adventure
-# Projeto
+Projeto
 
 ![Imagem da logo para o GitHub](assets/logoGitHub.png)
