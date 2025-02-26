@@ -3,7 +3,7 @@
 Equilibrium-Adventure é uma plataforma de agendamento de trilhas que conecta aventureiros a experiências incríveis na natureza. O sistema permite que usuários escolham trilhas, reservem horários e tenham acesso a informações detalhadas sobre cada percurso.
 
 # 🛠 Tecnologias Utilizadas
-Back-end: (Java e Spring Boot)
+Back-end: (Kotlin e Spring Boot)
 
 
 Front-end: (HTML, CSS e JavaScript)
