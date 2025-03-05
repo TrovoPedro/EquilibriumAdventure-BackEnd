@@ -1,16 +1,16 @@
+package SpringBoot.Cadastro
+
 import com.fasterxml.jackson.annotation.JsonIgnore
 
-data class Usuario (
-    var nomeUsuario: String = "",
-    var dtNascUsuario: String = "",
-    var telContatoUsuario: String = "",
-    var cpf: String = "",
-    var rg: String = "",
-    var endereco: String = "",
+open class Usuario (
+    var nome: String = "",
     var email: String = "",
     @JsonIgnore
-    private var senha: String = ""
-) {
+    private var senha: String = "",
+    var tipoUsuario: Int = 0
+)
+    {
+
     fun setSenha(novaSenha: String) {
         senha = novaSenha
     }
@@ -18,4 +18,5 @@ data class Usuario (
     fun getSenha(): String {
         return senha
     }
+
 }
