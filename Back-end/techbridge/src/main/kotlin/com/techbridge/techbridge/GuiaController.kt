@@ -5,33 +5,31 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/guia")
-class GuiaController {
-
-    val eventos = mutableListOf<Evento>()
+class GuiaController() {
 
     @PostMapping("/cadastrar-evento")
     fun cadastrarEvento(@RequestBody novoEvento: Evento): ResponseEntity<Evento>{
-        eventos.add(novoEvento)
+        EventoRepository.eventos.add(novoEvento);
         return ResponseEntity.status(201).body(novoEvento);
     }
 
     @GetMapping("buscar-eventos")
     fun buscarEventos(): MutableList<Evento>{
-        return eventos
+        return EventoRepository.eventos;
     }
 
     @GetMapping("buscar-evento-especifico/{id}")
     fun buscarEventoPorId(@PathVariable id: Int): ResponseEntity<Evento> {
-        if (id < eventos.size) {
-            return ResponseEntity.status(201).body(eventos[id])
+        if (id < EventoRepository.eventos.size) {
+            return ResponseEntity.status(201).body(EventoRepository.eventos[id])
         }
         return ResponseEntity.status(204).build()
     }
 
     @PutMapping("editar-evento/{id}")
     fun editarEvento(@PathVariable id: Int, @RequestBody eventoEditado: Evento): ResponseEntity<Evento>{
-        if(id < eventos.size){
-            eventos[id] = eventoEditado
+        if(id < EventoRepository.eventos.size){
+            EventoRepository.eventos[id] = eventoEditado
             return ResponseEntity.status(200).body(eventoEditado)
         }
         return ResponseEntity.status(204).build()
