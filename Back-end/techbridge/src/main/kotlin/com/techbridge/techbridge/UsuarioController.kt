@@ -4,6 +4,7 @@ import com.techbridge.techbridge.Usuario
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@RestController
 class UsuarioController {
 
     val usuario = mutableListOf<Usuario>()
