@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
+@RequestMapping("/usuarios")
 class UsuarioController {
 
     val usuario = mutableListOf<Usuario>()
