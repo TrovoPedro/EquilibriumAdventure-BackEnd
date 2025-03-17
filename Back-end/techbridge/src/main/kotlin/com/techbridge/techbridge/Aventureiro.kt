@@ -1,3 +1,4 @@
+import com.techbridge.techbridge.Guia
 import com.techbridge.techbridge.Usuario
 
 data class Aventureiro (
@@ -11,4 +12,8 @@ data class Aventureiro (
     var enderecoEmergenciaAventureiro: String?,
 ) : Usuario()
     {
+        fun setTipoUsuario(novoTipo: String) {
+            val aventureiro = Usuario()
+            aventureiro.tipoUsuario = 1
+        }
 }

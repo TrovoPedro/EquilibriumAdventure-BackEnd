@@ -7,7 +7,7 @@ open class Usuario (
     var email: String = "",
     @JsonIgnore
     private var senha: String = "",
-    var tipoUsuario: Int = 0
+    var tipoUsuario: Int = 1
 )
     {
 

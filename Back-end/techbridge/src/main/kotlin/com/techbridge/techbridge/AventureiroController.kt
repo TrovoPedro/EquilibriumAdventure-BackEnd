@@ -17,19 +17,6 @@ class AventureiroController {
 
     val aventureiro = mutableListOf<Aventureiro>()
 
-    @GetMapping("/exibir")
-    fun exibir(): MutableList<Aventureiro> {
-        return aventureiro
-    }
-
-    @GetMapping("/exibir/{id}")
-    fun exibirPorPosicao(@PathVariable id: Int): Any {
-        if (id < aventureiro.size) {
-            return ResponseEntity.status(201).body(aventureiro[id])
-        }
-        return ResponseEntity.status(204)
-    }
-
     @PostMapping("/cadastrar")
     fun cadastrar(@RequestBody novoAventureiro: Aventureiro):ResponseEntity<Aventureiro> {
         aventureiro.add(novoAventureiro)

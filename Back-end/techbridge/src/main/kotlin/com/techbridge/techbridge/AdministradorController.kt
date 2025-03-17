@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("administrador")
+@RequestMapping("/administrador")
 class AdministradorController : GuiaController(){
     val guias = mutableListOf<Guia>();
 
