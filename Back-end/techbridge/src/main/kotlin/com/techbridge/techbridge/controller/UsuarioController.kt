@@ -1,6 +1,6 @@
-package com.techbridge.techbridge
+package com.techbridge.techbridge.controller
 
-import com.techbridge.techbridge.Usuario
+import com.techbridge.techbridge.entity.Usuario
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 

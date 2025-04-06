@@ -1,5 +1,4 @@
-import com.techbridge.techbridge.Guia
-import com.techbridge.techbridge.Usuario
+package com.techbridge.techbridge.entity
 
 data class Aventureiro (
     var dtNascAventureiro: String?,

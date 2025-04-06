@@ -1,5 +1,7 @@
 package com.techbridge.techbridge
 
+import com.techbridge.techbridge.entity.Guia
+
 class Administrador : Guia() {
 }
 
