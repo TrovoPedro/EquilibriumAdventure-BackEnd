@@ -6,24 +6,29 @@ import jakarta.persistence.*
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-open class Usuario(
+open class Usuario {
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var idUsuario: Int? = null,
-    var nome: String = "",
-    var email: String = "",
-    @JsonIgnore
-    private var senha: String = "",
-    var fkTipo_usuario: Int = 1,
-    var fkNivel: Int = 0
-) {
+    open var idUsuario: Int? = null
 
-    fun setSenha(novaSenha: String) {
-        senha = novaSenha
+    open var nome: String = ""
+
+    open var email: String = ""
+
+    @JsonIgnore
+    private var _senha: String = ""
+
+    open var fkTipo_usuario: Int = 1
+
+    open var fkNivel: Int = 0
+
+    open fun getSenha(): String {
+        return _senha
     }
 
-    fun getSenha(): String {
-        return senha
+    open fun setSenha(novaSenha: String) {
+        _senha = novaSenha
     }
 }

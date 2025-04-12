@@ -12,7 +12,6 @@ data class Aventureiro (
 ) : Usuario()
     {
         fun setTipoUsuario(novoTipo: String) {
-            val aventureiro = Usuario()
-            aventureiro.tipoUsuario = 1
+            this.fkTipo_usuario = 1
         }
 }
