@@ -1,8 +1,6 @@
 package com.techbridge.techbridge.controller
 
-import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Guia
-import com.techbridge.techbridge.Object.EventoRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -45,24 +43,5 @@ class AdministradorController : GuiaController(){
         return ResponseEntity.status(400).build();
     }
 
-    @PostMapping("/cadastrar-evento")
-    override fun cadastrarEvento(novoEvento: Evento): ResponseEntity<Evento> {
-        return super.cadastrarEvento(novoEvento)
-    }
-
-    @GetMapping("/buscar-eventos")
-    override fun buscarEventos(): MutableList<Evento> {
-        return EventoRepository.eventos;
-    }
-
-    @GetMapping("/buscar-evento-especifico/{id}")
-    override fun buscarEventoPorId(id: Int): ResponseEntity<Evento> {
-        return super.buscarEventoPorId(id)
-    }
-
-    @PutMapping("/editar-evento/{id}")
-    override fun editarEvento(id: Int, eventoEditado: Evento): ResponseEntity<Evento> {
-        return super.editarEvento(id, eventoEditado)
-    }
 
 }
