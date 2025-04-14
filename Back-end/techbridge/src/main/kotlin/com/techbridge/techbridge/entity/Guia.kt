@@ -6,7 +6,7 @@ import jakarta.persistence.Entity
 class Guia : Usuario() {
 
     fun setTipoUsuario(novoTipo: String) {
-        this.fkTipo_usuario = 1
+        this.fk_tipo_usuario = 1
     }
 
 }

@@ -36,13 +36,12 @@ class GuiaControllerJpa(val repositorio: GuiaRepository) {
         }
     }
 
-
     @PutMapping("/editar-evento/{id}")
     fun putEvento(@PathVariable id: Int, @RequestBody eventoAtualizado: Evento): ResponseEntity<Evento> {
         if (!repositorio.existsById(id)) {
             return ResponseEntity.status(404).build()
         }
-        eventoAtualizado.idEvento = id
+        eventoAtualizado.id_evento = id
         val evento = repositorio.save(eventoAtualizado)
         return ResponseEntity.status(200).body(evento)
     }
