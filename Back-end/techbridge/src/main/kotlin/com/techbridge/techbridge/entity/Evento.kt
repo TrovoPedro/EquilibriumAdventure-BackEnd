@@ -7,8 +7,7 @@ import jakarta.persistence.*
 class Evento(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idEvento") // <- mapeia o nome correto da coluna
-    var idEvento: Int? = null,
+    var id_evento: Int? = null,
     var nome: String = "",
     var descricao: String = "",
     var nivel_dificuldade: String = "",
