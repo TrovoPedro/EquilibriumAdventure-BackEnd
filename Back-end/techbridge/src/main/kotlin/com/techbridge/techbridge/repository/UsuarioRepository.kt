@@ -1,8 +1,12 @@
 package com.techbridge.techbridge.repository
 
+import com.techbridge.techbridge.entity.Credenciais
 import com.techbridge.techbridge.entity.Usuario
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
 
 interface UsuarioRepository : JpaRepository<Usuario, Int> {
 
+
+    fun findByEmail(email: String): Credenciais
 }

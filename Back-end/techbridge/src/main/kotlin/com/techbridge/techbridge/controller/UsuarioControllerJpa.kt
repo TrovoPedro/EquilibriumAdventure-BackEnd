@@ -1,9 +1,12 @@
 package com.techbridge.techbridge.controller
 
+import com.techbridge.techbridge.entity.Credenciais
 import com.techbridge.techbridge.entity.Usuario
+import com.techbridge.techbridge.entity.UsuarioLogado
 import com.techbridge.techbridge.repository.UsuarioRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+
 
 @RestController
 @RequestMapping("usuarios")
@@ -52,4 +55,52 @@ class UsuarioControllerJpa(val repositorioUsuario: UsuarioRepository) {
 
         return ResponseEntity.ok().build()
     }
+
+    @GetMapping("/login")
+    fun getUsuarioLogin(@RequestBody credenciais:Credenciais): ResponseEntity<UsuarioLogado> {
+        var usuarioExistente = repositorioUsuario.findByEmail(credenciais.email)
+
+        var usuarioLogado:UsuarioLogado = UsuarioLogado(
+            email = credenciais.email,
+            senha = credenciais.senha,
+            autenticado = false
+        )
+
+        if (usuarioLogado.autenticado == false) {
+
+        if (usuarioLogado.senha == usuarioExistente.senha || usuarioLogado.email == usuarioExistente.email) {
+             usuarioLogado.autenticado = true
+            return ResponseEntity.status(200).body(usuarioLogado)
+        }
+        }
+
+
+
+
+            return ResponseEntity.status(401).build() // Retorna erro 401 se as credenciais estiverem incorretas
+
+
+    }
+
+    @GetMapping("/logoff")
+    fun getUsuarioLogoff(@RequestBody credenciais:Credenciais): ResponseEntity<UsuarioLogado> {
+        var usuarioLogado: UsuarioLogado = UsuarioLogado(
+            email = credenciais.email,
+            senha = credenciais.senha,
+            autenticado = true
+        )
+
+        if (usuarioLogado.autenticado == true) {
+            usuarioLogado.autenticado = false
+
+            return ResponseEntity.status(200).body(usuarioLogado)
+
+
+        }
+            return ResponseEntity.noContent().build() // Retorna erro 401 se as credenciais estiverem incorretas
+
+
+    }
+
 }
+
