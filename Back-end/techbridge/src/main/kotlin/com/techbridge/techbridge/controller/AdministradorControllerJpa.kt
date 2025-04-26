@@ -68,20 +68,20 @@ class AdministradorControllerJpa(
     }
 
     @PostMapping("/cadastrar-guia")
-    fun postGuia(@RequestBody novoGuia: Guia): ResponseEntity<Usuario> {
+    fun postGuia(@RequestBody novoGuia: Usuario): ResponseEntity<Usuario> {
+        novoGuia.fk_tipo_usuario = 2
         val guiaSalvo = repositorioGuia.save(novoGuia)
         return ResponseEntity.status(201).body(guiaSalvo)
     }
 
     @GetMapping("/buscar-guias")
     fun getAllGuias(): ResponseEntity<List<Usuario>> {
-        val guias = repositorioGuia.findByFkTipoUsuario(tipoGuia)
+        val guias = repositorioGuia.findByTipoUsuario(tipoGuia)
 
         return if (guias.isEmpty()) {
             ResponseEntity.status(204).build()
         } else {
             ResponseEntity.status(200).body(guias)
-
         }
     }
 
@@ -90,7 +90,12 @@ class AdministradorControllerJpa(
         val guiaOptional = repositorioGuia.findById(id)
 
         return if (guiaOptional.isPresent) {
-            ResponseEntity.ok(guiaOptional.get())
+            val guia = guiaOptional.get()
+            if (guia.fk_tipo_usuario == 2) {
+                ResponseEntity.ok(guia)
+            } else {
+                ResponseEntity.status(403).build()
+            }
         } else {
             ResponseEntity.notFound().build()
         }
@@ -98,29 +103,40 @@ class AdministradorControllerJpa(
 
     @PutMapping("/editar-guia/{id}")
     fun putGuia(@PathVariable id: Int, @RequestBody guiaAtualizado: Usuario): ResponseEntity<Usuario> {
-        if (!repositorioGuia.existsById(id)) {
-            return ResponseEntity.status(404).build()
-        }
-        guiaAtualizado.id_usuario = id
-        if (guiaAtualizado.fk_tipo_usuario == tipoGuia) {
-            val guia = repositorioGuia.save(guiaAtualizado)
-            return ResponseEntity.status(200).body(guia)
+        val guiaOptional = repositorioGuia.findById(id)
+
+        return if (guiaOptional.isPresent) {
+            val guiaExistente = guiaOptional.get()
+            if (guiaExistente.fk_tipo_usuario == 2) {
+                guiaAtualizado.id_usuario = id
+                guiaAtualizado.fk_tipo_usuario = 2
+                val guiaSalvo = repositorioGuia.save(guiaAtualizado)
+                ResponseEntity.ok(guiaSalvo)
+            } else {
+                ResponseEntity.status(403).build()
+            }
         } else {
-            return ResponseEntity.status(403).build()
+            ResponseEntity.notFound().build()
         }
     }
 
+
     @DeleteMapping("/deletar-guia/{id}")
-    fun deleteGuia(@PathVariable id: Int, @RequestBody guiaDeletado: Usuario): ResponseEntity<Void> {
-        if (repositorioGuia.existsById(id)) {
-            if (guiaDeletado.fk_tipo_usuario == tipoGuia) {
+    fun deleteGuia(@PathVariable id: Int): ResponseEntity<Void> {
+        val guiaOptional = repositorioGuia.findById(id)
+
+        return if (guiaOptional.isPresent) {
+            val guiaExistente = guiaOptional.get()
+            if (guiaExistente.fk_tipo_usuario == 2) {
                 repositorioGuia.deleteById(id)
-                return ResponseEntity.status(204).build()
+                ResponseEntity.noContent().build()
             } else {
-                return ResponseEntity.status(403).build()
+                ResponseEntity.status(403).build()
             }
+        } else {
+            ResponseEntity.notFound().build()
         }
-        return ResponseEntity.status(404).build()
     }
+
 
 }

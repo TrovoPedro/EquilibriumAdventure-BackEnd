@@ -11,6 +11,7 @@ class UsuarioControllerJpa(val repositorioUsuario: UsuarioRepository) {
 
     @PostMapping("/cadastrar")
     fun postUsuario(@RequestBody novoUsuario: Usuario): ResponseEntity<Usuario> {
+        novoUsuario.fk_tipo_usuario = 3
         repositorioUsuario.save(novoUsuario)
         return ResponseEntity.status(201).body(novoUsuario)
     }

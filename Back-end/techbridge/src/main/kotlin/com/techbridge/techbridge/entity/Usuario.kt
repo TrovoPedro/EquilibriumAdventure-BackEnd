@@ -33,8 +33,7 @@ open class Usuario(
     @field:Size(min = 11, max = 15)
     open var telefone_contato: String? = null,
 
-    open var fk_tipo_usuario: Int? = null,
-    open var fk_nivel: Int? = null
+    open var fk_tipo_usuario: Int? = null
 
 ) {
     constructor() : this(null, null, "", null, null, null)
