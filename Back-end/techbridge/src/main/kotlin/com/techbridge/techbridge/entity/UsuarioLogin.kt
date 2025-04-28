@@ -1,6 +1,6 @@
 package com.techbridge.techbridge.entity
 
-data class UsuarioLogado(
+data class UsuarioLogin(
 
     open var email: String,
     open var senha: String,
