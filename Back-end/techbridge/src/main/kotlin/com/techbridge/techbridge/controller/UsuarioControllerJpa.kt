@@ -64,18 +64,12 @@ class UsuarioControllerJpa(val repositorioUsuario: UsuarioRepository) {
 
         if (usuarioLogado.autenticado == false) {
 
-        if (usuarioLogado.senha == consultaUsuarioExistente.senha || usuarioLogado.email == consultaUsuarioExistente.email) {
+        if (usuarioLogado.senha == consultaUsuarioExistente.senha && usuarioLogado.email == consultaUsuarioExistente.email) {
              usuarioLogado.autenticado = true
             return ResponseEntity.status(200).body(usuarioLogado)
         }
         }
-
-
-
-
             return ResponseEntity.status(401).build() // Retorna erro 401 se as credenciais estiverem incorretas
-
-
     }
 
     @GetMapping("/logoff")
