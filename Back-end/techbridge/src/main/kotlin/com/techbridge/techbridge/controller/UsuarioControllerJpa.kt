@@ -84,12 +84,8 @@ class UsuarioControllerJpa(val repositorioUsuario: UsuarioRepository) {
             usuarioLogado.autenticado = false
 
             return ResponseEntity.status(200).body(usuarioLogado)
-
-
         }
             return ResponseEntity.noContent().build() // Retorna erro 401 se as credenciais estiverem incorretas
-
-
     }
 
 }
