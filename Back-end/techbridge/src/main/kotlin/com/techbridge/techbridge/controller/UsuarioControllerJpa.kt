@@ -2,7 +2,7 @@ package com.techbridge.techbridge.controller
 
 import com.techbridge.techbridge.entity.Credenciais
 import com.techbridge.techbridge.entity.Usuario
-import com.techbridge.techbridge.entity.UsuarioLogado
+import com.techbridge.techbridge.entity.UsuarioLogin
 import com.techbridge.techbridge.repository.UsuarioRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -58,34 +58,24 @@ class UsuarioControllerJpa(val repositorioUsuario: UsuarioRepository) {
     }
 
     @GetMapping("/login")
-    fun getUsuarioLogin(@RequestBody credenciais:Credenciais): ResponseEntity<UsuarioLogado> {
-        var usuarioExistente = repositorioUsuario.findByEmail(credenciais.email)
+    fun getUsuarioLogin(@RequestBody credenciais:UsuarioLogin): ResponseEntity<UsuarioLogin> {
+        var consultaUsuarioExistente = repositorioUsuario.findByEmail(credenciais.email)
 
-        var usuarioLogado:UsuarioLogado = UsuarioLogado(
-            email = credenciais.email,
-            senha = credenciais.senha,
-            autenticado = false
-        )
+        var usuarioLogado = credenciais
 
         if (usuarioLogado.autenticado == false) {
 
-        if (usuarioLogado.senha == usuarioExistente.senha || usuarioLogado.email == usuarioExistente.email) {
+        if (usuarioLogado.senha == consultaUsuarioExistente.senha && usuarioLogado.email == consultaUsuarioExistente.email) {
              usuarioLogado.autenticado = true
             return ResponseEntity.status(200).body(usuarioLogado)
         }
         }
-
-
-
-
             return ResponseEntity.status(401).build() // Retorna erro 401 se as credenciais estiverem incorretas
-
-
     }
 
     @GetMapping("/logoff")
-    fun getUsuarioLogoff(@RequestBody credenciais:Credenciais): ResponseEntity<UsuarioLogado> {
-        var usuarioLogado: UsuarioLogado = UsuarioLogado(
+    fun getUsuarioLogoff(@RequestBody credenciais:UsuarioLogin): ResponseEntity<UsuarioLogin> {
+        var usuarioLogado: UsuarioLogin = UsuarioLogin(
             email = credenciais.email,
             senha = credenciais.senha,
             autenticado = true
@@ -95,12 +85,8 @@ class UsuarioControllerJpa(val repositorioUsuario: UsuarioRepository) {
             usuarioLogado.autenticado = false
 
             return ResponseEntity.status(200).body(usuarioLogado)
-
-
         }
             return ResponseEntity.noContent().build() // Retorna erro 401 se as credenciais estiverem incorretas
-
-
     }
 
 }
