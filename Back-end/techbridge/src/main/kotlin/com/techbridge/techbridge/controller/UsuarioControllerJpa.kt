@@ -29,7 +29,7 @@ class UsuarioControllerJpa(val repositorioUsuario: UsuarioRepository) {
         usuarioExistente.telefone_contato = usuarioEditado.telefone_contato
 
         if (usuarioExistente.nome.isNullOrBlank() || usuarioExistente.email.isNullOrBlank()) {
-            return ResponseEntity.badRequest().build() // Retorna erro 400 se algum campo obrigatório for inválido
+            return ResponseEntity.badRequest().build()
         }
 
         val usuarioAtualizado = repositorioUsuario.save(usuarioExistente)
@@ -48,14 +48,16 @@ class UsuarioControllerJpa(val repositorioUsuario: UsuarioRepository) {
     }
 
     @PatchMapping("/editar-senha/{id}")
-    fun editarSenha(@PathVariable id:Int, @RequestBody novaSenha: String): ResponseEntity<Void> {
+    fun editarSenha(@PathVariable id: Int, @RequestBody novaSenha: String): ResponseEntity<Void> {
         val usuarioExistente = repositorioUsuario.findById(id).orElse(null)
             ?: return ResponseEntity.notFound().build()
 
-        usuarioExistente.senha = usuarioExistente.senha
+        usuarioExistente.senha = novaSenha
+        repositorioUsuario.save(usuarioExistente)
 
         return ResponseEntity.ok().build()
     }
+
 
     @GetMapping("/login")
     fun getUsuarioLogin(@RequestBody credenciais:UsuarioLogin): ResponseEntity<UsuarioLogin> {
@@ -90,4 +92,3 @@ class UsuarioControllerJpa(val repositorioUsuario: UsuarioRepository) {
     }
 
 }
-
