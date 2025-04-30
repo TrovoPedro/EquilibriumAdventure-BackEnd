@@ -25,6 +25,7 @@ open class Usuario(
     @field:Size(min = 11, max = 100)
     open var email: String = "",
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @field:NotBlank
     @field:Size(min = 8, max = 100)
     open var senha: String? = null,
