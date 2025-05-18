@@ -1,4 +1,4 @@
-package com.techbridge.techbridge.entity
+/*package com.techbridge.techbridge.entity
 
 data class Aventureiro (
     var dtNascAventureiro: String?,
@@ -14,4 +14,4 @@ data class Aventureiro (
         fun setTipoUsuario(novoTipo: String) {
             this.fk_tipo_usuario = 1
         }
-}
+}*/
