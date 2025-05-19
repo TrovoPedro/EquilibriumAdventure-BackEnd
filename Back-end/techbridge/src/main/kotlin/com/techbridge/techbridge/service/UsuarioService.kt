@@ -6,7 +6,6 @@ import com.techbridge.techbridge.enums.TipoUsuario
 import com.techbridge.techbridge.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class UsuarioService {
