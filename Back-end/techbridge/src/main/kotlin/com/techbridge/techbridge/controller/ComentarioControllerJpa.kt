@@ -1,24 +1,23 @@
 package com.techbridge.techbridge.controller
 
 import com.techbridge.techbridge.entity.Comentario
-import com.techbridge.techbridge.repository.ComentarioRepository
+import com.techbridge.techbridge.service.ComentarioService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/comentarios")
-class ComentarioControllerJpa(val repositorioComentario: ComentarioRepository) {
+class ComentarioControllerJpa(private val comentarioService: ComentarioService) {
 
     @PostMapping("/adicionar")
     fun adicionarComentario(@RequestBody novoComentario: Comentario): ResponseEntity<Comentario> {
-        val comentarioCriado = repositorioComentario.save(novoComentario)
+        val comentarioCriado = comentarioService.adicionarComentario(novoComentario)
         return ResponseEntity.status(201).body(comentarioCriado)
     }
 
     @DeleteMapping("/excluir/{id}")
     fun excluirComentario(@PathVariable id: Int): ResponseEntity<Void> {
-        return if (repositorioComentario.existsById(id)) {
-            repositorioComentario.deleteById(id)
+        return if (comentarioService.excluirComentario(id)) {
             ResponseEntity.status(204).build()
         } else {
             ResponseEntity.status(404).build()
@@ -30,17 +29,14 @@ class ComentarioControllerJpa(val repositorioComentario: ComentarioRepository) {
         @PathVariable id: Int,
         @RequestBody resposta: Comentario
     ): ResponseEntity<Comentario> {
-        val comentarioOriginal = repositorioComentario.findById(id).orElse(null)
+        val comentarioRespondido = comentarioService.responderComentario(id, resposta)
             ?: return ResponseEntity.status(404).build()
-
-        val novaResposta = resposta.copy(fkAtivacaoEvento = comentarioOriginal.fkAtivacaoEvento)
-        val comentarioRespondido = repositorioComentario.save(novaResposta)
         return ResponseEntity.status(201).body(comentarioRespondido)
     }
 
     @GetMapping("/listar")
     fun listarComentarios(): ResponseEntity<List<Comentario>> {
-        val comentarios = repositorioComentario.findAll()
+        val comentarios = comentarioService.listarComentarios()
         return ResponseEntity.status(200).body(comentarios)
     }
 }
