@@ -1,4 +1,4 @@
-package com.techbridge.techbridge.controller
+/*package com.techbridge.techbridge.controller
 
 import org.springframework.web.bind.annotation.*
 
@@ -7,4 +7,4 @@ import org.springframework.web.bind.annotation.*
 class GuiaController() {
 
 
-}
+}*/

@@ -1,10 +1,11 @@
-package com.techbridge.techbridge.controller
+/*package com.techbridge.techbridge.controller
 
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Guia
 import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.repository.AdministradorEventoRepository
 import com.techbridge.techbridge.repository.AdministradorGuiaRepository
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -45,12 +46,20 @@ class AdministradorControllerJpa(
     @PutMapping("/editar-evento/{id}")
     fun putEvento(@PathVariable id: Int, @RequestBody eventoAtualizado: Evento): ResponseEntity<Evento> {
         if (!repositorio.existsById(id)) {
-            return ResponseEntity.status(404).build()
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
+
+        if (eventoAtualizado.nome.isNullOrEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
+        }
+
         eventoAtualizado.id_evento = id
+
         val evento = repositorio.save(eventoAtualizado)
-        return ResponseEntity.status(200).body(evento)
+
+        return ResponseEntity.status(HttpStatus.OK).body(evento)
     }
+
 
     @DeleteMapping("/deletar-evento/{id}")
     fun deleteEvento(@PathVariable id: Int): ResponseEntity<Void> {
@@ -139,4 +148,4 @@ class AdministradorControllerJpa(
     }
 
 
-}
+}*/

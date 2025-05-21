@@ -1,4 +1,4 @@
-package com.techbridge.techbridge.controller
+/*package com.techbridge.techbridge.controller
 
 import com.techbridge.techbridge.entity.Aventureiro
 import org.springframework.http.ResponseEntity
@@ -34,4 +34,4 @@ class AventureiroController {
         return ResponseEntity.status(204).build();
     }
 
-}
+}*/
