@@ -5,46 +5,39 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import com.techbridge.techbridge.enums.Nivel
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
-import lombok.AllArgsConstructor
-import lombok.Getter
-import lombok.NoArgsConstructor
-import lombok.Setter
-import java.util.Date
+import java.util.*
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-class InformacoesPessoais(
+class InformacoesPessoais() {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @JsonIgnore
-    private var id: Long? = null,
+    var id: Long? = null
 
-    private var data_nascimento: Date?,
+    var data_nascimento: Date? = null
 
     @field:Size(min = 11, max = 14)
-    private var cpf: String?,
+    var cpf: String? = null
 
     @field:Size(min = 10, max = 12)
-    private var rg: String?,
+    var rg: String? = null
 
     @field:Size(min = 8, max = 13)
-    private var contato_emergencia: String?,
+    var contato_emergencia: String? = null
 
     @Column(name = "endereco_id", nullable = false)
-    private var endereco: Long? = null,
+    var endereco: Long? = null
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private var nivel: Nivel,
+    lateinit var nivel: Nivel
 
     @Column(name = "usuario_id", nullable = false)
-    var usuario: Long,
+    var usuario: Long = 0
 
-    private var relatorioAnamnese: String?,
-    private var idioma: String?,
-    private var questionario_respondido: Boolean?,
-)
+    var relatorioAnamnese: String? = null
+    var idioma: String? = null
+    var questionario_respondido: Boolean? = null
+}

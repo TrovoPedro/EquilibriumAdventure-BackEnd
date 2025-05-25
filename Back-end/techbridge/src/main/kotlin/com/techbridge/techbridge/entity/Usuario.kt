@@ -24,7 +24,7 @@ open class Usuario(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
-    open var id_usuario: Int? = null,
+    open var id_usuario: Long? = null,
 
     @field:NotBlank
     @field:Size(min = 2, max = 100)
