@@ -1,6 +1,9 @@
 package com.techbridge.techbridge.service
 
+import com.techbridge.techbridge.dto.EventoGuiaEnderecoDTO
 import com.techbridge.techbridge.dto.EventoRequestDTO
+import com.techbridge.techbridge.dto.EventoResponseDTO
+import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.repository.EventoRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -24,13 +27,19 @@ class GuiaService {
             descricao = novoEvento.descricao,
             nivel_dificuldade = novoEvento.nivel_dificuldade,
             distancia_km = novoEvento.distancia_km,
-            resposavel = novoEvento.resposavel,
+            responsavel = novoEvento.responsavel,
             endereco = novoEvento.endereco
         )
     }
 
-    fun getEvento(){
+    fun getEventos(): List<Map<String, Any>> {
+        val eventosEncontrados = eventoRepository.buscarTodosEventosComUsuarioEndereco()
 
+        if (eventosEncontrados.isEmpty()) {
+            throw RuntimeException("Nenhum evento encontrado")
+        }
+
+        return eventosEncontrados
     }
 
 }
