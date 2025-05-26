@@ -1,8 +1,14 @@
-/*package com.techbridge.techbridge.controller
+package com.techbridge.techbridge.controller
+
+import com.techbridge.techbridge.enums.TipoUsuario
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
+
 
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Guia
 import com.techbridge.techbridge.entity.Usuario
+import com.techbridge.techbridge.repository.AdministradorEventoAtivoRepository
 import com.techbridge.techbridge.repository.AdministradorEventoRepository
 import com.techbridge.techbridge.repository.AdministradorGuiaRepository
 import org.springframework.http.HttpStatus
@@ -13,7 +19,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/administrador")
 class AdministradorControllerJpa(
     val repositorio: AdministradorEventoRepository,
-    val repositorioGuia: AdministradorGuiaRepository
+    val repositorioGuia: AdministradorGuiaRepository,
+    val repositorioEventoAtivo: AdministradorEventoAtivoRepository
 ) {
 
     @PostMapping("/cadastrar-evento")
@@ -22,7 +29,13 @@ class AdministradorControllerJpa(
         return ResponseEntity.status(201).body(eventoSalvo)
     }
 
-    @GetMapping("/buscar-todos-eventos")
+    @PostMapping("/cadastrar-evento-ativo")
+    fun postEventoAtivo(@RequestBody novoEvento: Evento): ResponseEntity<Evento> {
+        val eventoSalvo = repositorioEventoAtivo.save(novoEvento)
+        return ResponseEntity.status(201).body(eventoSalvo)
+    }
+
+    @GetMapping("/buscar-todos-eventos-base")
     fun getAllEventos(): ResponseEntity<MutableList<Evento>> {
         val eventos = repositorio.findAll()
         return if (eventos.isEmpty()) {
@@ -32,7 +45,7 @@ class AdministradorControllerJpa(
         }
     }
 
-    @GetMapping("/buscar-evento-especifico/{id}")
+    @GetMapping("/buscar-evento-base-especifico/{id}")
     fun getEventoEspecifico(@PathVariable id: Int): ResponseEntity<Evento> {
         val eventoOptional = repositorio.findById(id)
 
@@ -42,6 +55,28 @@ class AdministradorControllerJpa(
             ResponseEntity.notFound().build()
         }
     }
+
+    @GetMapping("/buscar-todos-eventos-ativo")
+    fun getAllEventosAtivo(): ResponseEntity<MutableList<Evento>> {
+        val eventos = repositorioEventoAtivo.findAll()
+        return if (eventos.isEmpty()) {
+            ResponseEntity.status(204).build()
+        } else {
+            ResponseEntity.status(200).body(eventos)
+        }
+    }
+
+    @GetMapping("/buscar-evento-ativo-especifico/{id}")
+    fun getEventoEspecificoAtivo(@PathVariable id: Int): ResponseEntity<Evento> {
+        val eventoOptional = repositorioEventoAtivo.findById(id)
+
+        return if (eventoOptional.isPresent) {
+            ResponseEntity.ok(eventoOptional.get())
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
 
     @PutMapping("/editar-evento/{id}")
     fun putEvento(@PathVariable id: Int, @RequestBody eventoAtualizado: Evento): ResponseEntity<Evento> {
@@ -61,6 +96,7 @@ class AdministradorControllerJpa(
     }
 
 
+
     @DeleteMapping("/deletar-evento/{id}")
     fun deleteEvento(@PathVariable id: Int): ResponseEntity<Void> {
         if (repositorio.existsById(id)) {
@@ -78,7 +114,7 @@ class AdministradorControllerJpa(
 
     @PostMapping("/cadastrar-guia")
     fun postGuia(@RequestBody novoGuia: Usuario): ResponseEntity<Usuario> {
-        novoGuia.fk_tipo_usuario = 2
+        novoGuia.fk_tipo_usuario = TipoUsuario.GUIA
         val guiaSalvo = repositorioGuia.save(novoGuia)
         return ResponseEntity.status(201).body(guiaSalvo)
     }
@@ -100,7 +136,7 @@ class AdministradorControllerJpa(
 
         return if (guiaOptional.isPresent) {
             val guia = guiaOptional.get()
-            if (guia.fk_tipo_usuario == 2) {
+            if (guia.fk_tipo_usuario == TipoUsuario.GUIA) {
                 ResponseEntity.ok(guia)
             } else {
                 ResponseEntity.status(403).build()
@@ -116,9 +152,9 @@ class AdministradorControllerJpa(
 
         return if (guiaOptional.isPresent) {
             val guiaExistente = guiaOptional.get()
-            if (guiaExistente.fk_tipo_usuario == 2) {
+            if (guiaExistente.fk_tipo_usuario == TipoUsuario.GUIA) {
                 guiaAtualizado.id_usuario = id
-                guiaAtualizado.fk_tipo_usuario = 2
+                guiaAtualizado.fk_tipo_usuario = TipoUsuario.GUIA
                 val guiaSalvo = repositorioGuia.save(guiaAtualizado)
                 ResponseEntity.ok(guiaSalvo)
             } else {
@@ -136,7 +172,7 @@ class AdministradorControllerJpa(
 
         return if (guiaOptional.isPresent) {
             val guiaExistente = guiaOptional.get()
-            if (guiaExistente.fk_tipo_usuario == 2) {
+            if (guiaExistente.fk_tipo_usuario == TipoUsuario.GUIA) {
                 repositorioGuia.deleteById(id)
                 ResponseEntity.noContent().build()
             } else {
@@ -148,4 +184,6 @@ class AdministradorControllerJpa(
     }
 
 
-}*/
+}
+
+

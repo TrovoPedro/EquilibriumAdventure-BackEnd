@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface InformacoesPessoasRepository : JpaRepository<InformacoesPessoais, Long> {
+
+    fun findByFkAventureiro(fkAventureiro: Int): List<InformacoesPessoais>
+
 }
