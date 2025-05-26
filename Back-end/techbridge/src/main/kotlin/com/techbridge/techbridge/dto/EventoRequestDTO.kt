@@ -8,7 +8,7 @@ data class EventoRequestDTO(
     var descricao: String?,
     var nivel_dificuldade: String?,
     var distancia_km: Double?,
-    var resposavel: Long?,
+    var responsavel: Long,
     var endereco: Long?
 ){
     fun toEntity(): Evento {
@@ -17,7 +17,7 @@ data class EventoRequestDTO(
         entidade.descricao = descricao
         entidade.nivel_dificuldade = nivel_dificuldade
         entidade.distancia_km = distancia_km
-        entidade.resposavel = resposavel
+        entidade.responsavel = responsavel
         entidade.endereco = endereco
         return entidade
     }
