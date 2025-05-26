@@ -31,7 +31,7 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
     }
 
     @GetMapping("/buscar/{id}")
-    fun getUsuario(@PathVariable id: Int): ResponseEntity<UsuarioResponseDTO> {
+    fun getUsuario(@PathVariable id: Long): ResponseEntity<UsuarioResponseDTO> {
         return try {
             val usuarioDTO = usuarioService.getUsuario(id)
             ResponseEntity.ok(usuarioDTO)
@@ -41,7 +41,7 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
     }
 
     @PutMapping("/editar/{id}")
-    fun editarInformacoes(@PathVariable id: Int, @RequestBody informacoesNova: EditarInformacoesDTO): ResponseEntity<Usuario> {
+    fun editarInformacoes(@PathVariable id: Long, @RequestBody informacoesNova: EditarInformacoesDTO): ResponseEntity<Usuario> {
         return try {
             val usuarioAtualizado = usuarioService.putUsuario(id, informacoesNova)
             ResponseEntity.ok(usuarioAtualizado)
@@ -51,7 +51,7 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
     }
 
     @DeleteMapping("/deletar/{id}")
-    fun deleteUsuario(@PathVariable id: Int): ResponseEntity<Void> {
+    fun deleteUsuario(@PathVariable id: Long): ResponseEntity<Void> {
         return try {
             usuarioService.deleteUsuario(id);
             ResponseEntity.ok().build();
@@ -61,7 +61,7 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
     }
 
     @PatchMapping("/editar-senha/{id}")
-    fun editarSenha(@PathVariable id: Int, @RequestBody novaSenha: AlterarSenhaDTO): ResponseEntity<Void> {
+    fun editarSenha(@PathVariable id: Long, @RequestBody novaSenha: AlterarSenhaDTO): ResponseEntity<Void> {
         return try {
             usuarioService.patchSenha(novaSenha, id)
             ResponseEntity.ok().build()

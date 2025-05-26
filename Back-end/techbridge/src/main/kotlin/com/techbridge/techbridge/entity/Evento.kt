@@ -1,18 +1,33 @@
 package com.techbridge.techbridge.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
+import lombok.AllArgsConstructor
+import lombok.Getter
+import lombok.NoArgsConstructor
+import lombok.Setter
 
 @Entity
 @Table(name = "evento")
-class Evento(
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+class Evento() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id_evento: Int? = null,
-    var nome: String = "",
-    var descricao: String = "",
-    var nivel_dificuldade: String = "",
-    var distancia_km: Double = 0.0,
-    var contador_trilha: Int = 0,
-    var fk_responsavel: Int? = null,
-    var fk_endereco: Int? = null
-)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonIgnore
+    var id_evento: Long? = null
+    var nome: String? = null
+    var descricao: String? = null
+    var nivel_dificuldade: String? = null
+    var distancia_km: Double? = null
+
+    @Column(name = "responsavel_id", nullable = false)
+    var responsavel: Long = 1
+
+    @Column(name = "endereco_id", nullable = false)
+    var endereco: Long? = null
+}

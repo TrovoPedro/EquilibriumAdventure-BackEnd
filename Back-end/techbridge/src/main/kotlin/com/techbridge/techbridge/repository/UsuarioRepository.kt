@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UsuarioRepository : JpaRepository<Usuario, Int> {
+interface UsuarioRepository : JpaRepository<Usuario, Long> {
     fun findByEmail(email: String)
 }

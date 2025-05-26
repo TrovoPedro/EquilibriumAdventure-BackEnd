@@ -13,7 +13,7 @@ class UsuarioService {
     @Autowired
     lateinit var usuarioRepository: UsuarioRepository;
 
-    fun getUsuario(id: Int): UsuarioResponseDTO {
+    fun getUsuario(id: Long): UsuarioResponseDTO {
         val usuario: Usuario = usuarioRepository.findById(id)
             .orElseThrow { RuntimeException("Usuário não encontrado") }
 
@@ -54,7 +54,7 @@ class UsuarioService {
         )
     }
 
-    fun putUsuario(id: Int, informacoesNova: EditarInformacoesDTO): Usuario{
+    fun putUsuario(id: Long, informacoesNova: EditarInformacoesDTO): Usuario{
         val usuarioEncontrado = usuarioRepository.findById(id)
             .orElseThrow(){RuntimeException("Usuário não encontrado")}
 
@@ -65,7 +65,7 @@ class UsuarioService {
         return usuarioRepository.save(usuarioEncontrado);
     }
 
-    fun deleteUsuario(id: Int){
+    fun deleteUsuario(id: Long){
         val usuarioEncontrado = usuarioRepository.findById(id);
 
         if(usuarioEncontrado == null){
@@ -75,7 +75,7 @@ class UsuarioService {
         return usuarioRepository.deleteById(id);
     }
 
-    fun patchSenha(novaSenha: AlterarSenhaDTO, id: Int): Usuario {
+    fun patchSenha(novaSenha: AlterarSenhaDTO, id: Long): Usuario {
         val usuarioEncontrado = usuarioRepository.findById(id)
             .orElseThrow { RuntimeException("Usuário não encontrado") }
 

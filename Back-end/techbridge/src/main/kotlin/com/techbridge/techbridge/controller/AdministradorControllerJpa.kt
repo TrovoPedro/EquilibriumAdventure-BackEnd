@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Guia
 import com.techbridge.techbridge.entity.Usuario
+import com.techbridge.techbridge.repository.AdministradorRepository
+import com.techbridge.techbridge.repository.GuiaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -15,9 +17,9 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/administrador")
 class AdministradorControllerJpa(
-    val repositorio: AdministradorEventoRepository,
-    val repositorioGuia: AdministradorGuiaRepository,
-    val repositorioEventoAtivo: AdministradorEventoAtivoRepository
+    val repositorio: AdministradorRepository,
+    val repositorioGuia: GuiaRepository,
+    val repositorioEventoAtivo: EventoAtivoRepository
 ) {
 
     @PostMapping("/cadastrar-evento")

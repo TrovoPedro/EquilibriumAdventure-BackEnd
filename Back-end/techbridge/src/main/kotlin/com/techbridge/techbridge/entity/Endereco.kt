@@ -17,7 +17,7 @@ import lombok.Setter
 class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val idEndereco: Long? = null
+    val id_endereco: Long? = null
 
     private val rua: String? = null
     private val numero: String? = null
