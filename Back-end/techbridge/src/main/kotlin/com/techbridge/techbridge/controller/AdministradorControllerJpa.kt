@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.RestController
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Guia
 import com.techbridge.techbridge.entity.Usuario
-import com.techbridge.techbridge.repository.AdministradorEventoAtivoRepository
-import com.techbridge.techbridge.repository.AdministradorEventoRepository
-import com.techbridge.techbridge.repository.AdministradorGuiaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

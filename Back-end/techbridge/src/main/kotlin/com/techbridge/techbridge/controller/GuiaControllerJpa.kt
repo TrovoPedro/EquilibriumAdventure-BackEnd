@@ -2,12 +2,7 @@ package com.techbridge.techbridge.controller
 import com.techbridge.techbridge.entity.Agenda
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.InformacoesPessoais
-import com.techbridge.techbridge.repository.GuiaAgendaRepository
-import com.techbridge.techbridge.repository.GuiaEventoAtivoRepository
-import com.techbridge.techbridge.repository.GuiaEventoRepository
-import com.techbridge.techbridge.repository.GuiaInscricaoRepository
 import com.techbridge.techbridge.repository.GuiaRepository
-import com.techbridge.techbridge.repository.InformacoesPessoasRepository
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -18,7 +13,7 @@ class GuiaControllerJpa(
     val repositorioEvento: GuiaEventoRepository,
     val repositorioEventoAtivo: GuiaEventoAtivoRepository,
     val repositorioInscricao: GuiaInscricaoRepository,
-    val repositorioGuiaAgenda: GuiaAgendaRepository,
+    val repositorioGuiaAgenda: AgendaResponsavelRepository,
     val repositorioInformacoesPessoas: InformacoesPessoasRepository
 ){
 
@@ -69,22 +64,23 @@ class GuiaControllerJpa(
     }
 
     @GetMapping("buscar-eventos-ativos")
-    fun getEventosAtivos(): ResponseEntity<MutableList<Evento>> {
+    fun getEventosAtivos(): ResponseEntity<List<ativacaoEvento>> {
         val eventosAtivos = repositorioEventoAtivo.findAll()
-        return if (eventosAtivos.isNullOrEmpty()) {
-            ResponseEntity.status(204).build()
-        } else {
-            ResponseEntity.status(200).body(eventosAtivos)
+        if (eventosAtivos.isEmpty()) {
+            return ResponseEntity.status(204).build()
+        }else {
+            return ResponseEntity.status(200).body(eventosAtivos)
         }
+
     }
 
     @GetMapping("buscar-eventos-base")
-    fun getEventosBase(): ResponseEntity<MutableList<Evento>> {
+    fun getEventosBase(): ResponseEntity<List<Evento>> {
         val eventosAtivos = repositorioEventoAtivo.findAll()
-        return if (eventosAtivos.isEmpty()) {
-            ResponseEntity.status(204).build()
+        if (eventosAtivos.isEmpty()) {
+           return ResponseEntity.status(204).build()
         } else {
-            ResponseEntity.status(200).body(eventosAtivos)
+             return ResponseEntity.status(200).body(eventosAtivos)
         }
     }
 
@@ -125,7 +121,7 @@ class GuiaControllerJpa(
     }
 
     @GetMapping("/buscar-eventos-inscritos/{usuarioSelecionado}")
-    fun getHistoricoEventoAtivos(@PathVariable usuarioSelecionado: Int): ResponseEntity<List<Evento>?> {
+    fun getHistoricoEventoAtivos(@PathVariable usuarioSelecionado: Int): ResponseEntity<List<Evento?>?> {
         val eventos = repositorioEventoAtivo.findByFkUsuario(usuarioSelecionado)
         if (eventos.isEmpty()) {
             return ResponseEntity.status(204).build()
