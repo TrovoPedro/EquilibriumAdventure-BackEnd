@@ -26,7 +26,7 @@ class Evento() {
     var distancia_km: Double? = null
 
     @Column(name = "responsavel_id", nullable = false)
-    var resposavel: Long? = null
+    var responsavel: Long = 1
 
     @Column(name = "endereco_id", nullable = false)
     var endereco: Long? = null
