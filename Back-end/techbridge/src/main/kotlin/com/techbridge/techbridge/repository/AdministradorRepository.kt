@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param
 
 interface AdministradorRepository: JpaRepository<Administrador, Int> {
 
-    @Query("SELECT u FROM Usuario u WHERE u.fk_tipo_usuario = :tipo")
+    @Query("SELECT u FROM Usuario u WHERE u.tipo_usuario = :tipo")
     fun findByTipoUsuario(@Param("tipo") tipo: Int): List<Usuario>
 
     fun save(administrador: Administrador): Administrador
