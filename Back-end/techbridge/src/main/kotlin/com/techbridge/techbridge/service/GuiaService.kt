@@ -42,4 +42,15 @@ class GuiaService {
         return eventosEncontrados
     }
 
+    fun getEventoPorGuia(nome:String): List<Map<String, Any>>{
+        val eventosEncotrados = eventoRepository.buscarEventoPorGuia(nome)
+
+        if(eventosEncotrados.isEmpty()){
+            throw RuntimeException("Nenhum evento encontrado")
+        }
+
+        return eventosEncotrados
+    }
+
+
 }

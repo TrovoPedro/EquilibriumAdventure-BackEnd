@@ -7,6 +7,7 @@ import com.techbridge.techbridge.service.GuiaService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -36,6 +37,16 @@ class GuiaController {
             return ResponseEntity.status(200).body(eventosEncontrados)
         }catch (e: RuntimeException){
            return ResponseEntity.status(404).body(e.message)
+        }
+    }
+
+    @GetMapping("/buscar-eventos/{nome}")
+    fun getEventoPorGuia(@PathVariable nome:String): ResponseEntity<Any>{
+        return try {
+            val eventosEncontrados: List<Map<String, Any>> = eventoService.getEventoPorGuia(nome);
+            return ResponseEntity.status(200).body(eventosEncontrados)
+        }catch (e: RuntimeException){
+            return ResponseEntity.status(404).body(e.message)
         }
     }
 }
