@@ -1,18 +1,9 @@
 package com.techbridge.techbridge.dto
 
-import com.techbridge.techbridge.entity.Endereco
 import com.techbridge.techbridge.entity.InformacoesPessoais
 import com.techbridge.techbridge.enums.Nivel
-import lombok.AllArgsConstructor
-import lombok.Getter
-import lombok.NoArgsConstructor
-import lombok.Setter
 import java.util.*
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 data class InformacoesPessoaisRequestDTO(
     var data_nascimento: Date?,
     var cpf: String?,
@@ -25,16 +16,18 @@ data class InformacoesPessoaisRequestDTO(
     var idioma: String?,
     var questionario_respondido: Boolean?
 ) {
-    fun toEntity() = InformacoesPessoais(
-        data_nascimento = data_nascimento,
-        cpf = cpf,
-        rg = rg,
-        contato_emergencia = contato_emergencia,
-        endereco = endereco,
-        nivel = nivel,
-        usuario = usuario,
-        relatorioAnamnese = relatorioAnamnese,
-        idioma = idioma,
-        questionario_respondido = questionario_respondido
-    )
+    fun toEntity(): InformacoesPessoais {
+        val entidade = InformacoesPessoais()
+        entidade.data_nascimento = data_nascimento
+        entidade.cpf = cpf
+        entidade.rg = rg
+        entidade.contato_emergencia = contato_emergencia
+        entidade.endereco = endereco
+        entidade.nivel = nivel
+        entidade.usuario = usuario
+        entidade.relatorioAnamnese = relatorioAnamnese
+        entidade.idioma = idioma
+        entidade.questionario_respondido = questionario_respondido
+        return entidade
+    }
 }
