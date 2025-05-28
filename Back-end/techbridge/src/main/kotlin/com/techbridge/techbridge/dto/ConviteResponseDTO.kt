@@ -4,10 +4,12 @@ data class ConviteResponseDTO(
     var dataConvite: String? = null,
     var fkUsuario: Int? = null,
     var nomeAventureiro: String = "",
+    var conviteAceito: Boolean? = null
 ) {
     fun toEntity() = ConviteResponseDTO(
         dataConvite = dataConvite,
         fkUsuario = fkUsuario,
-        nomeAventureiro = nomeAventureiro
+        nomeAventureiro = nomeAventureiro,
+        conviteAceito = conviteAceito
     )
 }

@@ -22,7 +22,7 @@ class AgendaResponsavelController(
 
     @PostMapping
     fun adicionarDisponibilidade(@RequestBody dto: AgendaRequestDTO): AgendaResponseDTO {
-        val guia = usuarioRepository.findById(dto.fkGuia!!)
+        val guia = usuarioRepository.findById(dto.fkGuia?.toLong()!!)
             .orElseThrow { RuntimeException("Guia não encontrado") }
 
         val novaAgenda = agendaRepository.save(dto.toEntity(guia))

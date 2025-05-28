@@ -1,23 +1,23 @@
 package com.techbridge.techbridge.dto
 
-import java.time.LocalDateTime
 import com.techbridge.techbridge.entity.Convite
 import com.techbridge.techbridge.entity.Usuario
+import java.time.LocalDateTime
 
 data class ConviteRequestDTO(
     var dataConvite: String? = null,
-    var emailConvidado: String? = null,
+    var emailConvidado: String,
     var conviteAceito: Boolean? = null,
-    var fkUsuario: Long? = null,
-    var fkConvidado: Long? = null
+    var aventureiro: Long,
+    var convidado: Long
 ) {
-    fun toEntity(aventureiro: Unit, convidado: Usuario?): Convite {
+    fun toEntity(aventureiroUsuario: Usuario, convidadoUsuario: Long): Convite {
         return Convite(
             dataConvite = LocalDateTime.parse(dataConvite ?: LocalDateTime.now().toString()),
-            emailConvidado = emailConvidado ?: "",
+            emailConvidado = emailConvidado,
             conviteAceito = conviteAceito,
-            aventureiro = Usuario(), // Assuming aventureiro is set elsewhere
-            fkConvidado = convidado
+            aventureiro = aventureiroUsuario,
+            convidado = convidadoUsuario.let { Usuario(it.toInt()) }
         )
     }
 }

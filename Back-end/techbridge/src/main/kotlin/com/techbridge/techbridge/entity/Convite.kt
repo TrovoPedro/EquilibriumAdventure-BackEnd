@@ -10,12 +10,12 @@ data class Convite(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_convite")
-    val id: Int = 0,
+    val idConvite: Int = 0,
 
     @Column(name = "data_convite", nullable = false)
     val dataConvite: LocalDateTime = LocalDateTime.now(),
 
-    @Column(name = "email_convidade", nullable = false)
+    @Column(name = "email_convidado", nullable = false)
     val emailConvidado: String = "",
 
     @Column(name = "convite_aceito", nullable = true)
@@ -23,11 +23,11 @@ data class Convite(
 
     @ManyToOne
     @JoinColumn(name = "fk_aventureiro")
-    val aventureiro: Usuario,
+    val aventureiro: Usuario? = null,
 
     @ManyToOne
     @JoinColumn(name = "fk_convidado")
-    val fkConvidado: Usuario? = null,
+    val convidado: Usuario? = null,
 ) {
-    constructor() : this(0, LocalDateTime.now(), "", null, Usuario(), null)
+    constructor() : this(0, LocalDateTime.now(), "", null, null, null)
 }

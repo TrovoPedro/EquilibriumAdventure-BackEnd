@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 
 data class AgendaRequestDTO(
     val dataDisponivel: String,
-    val fkGuia: Int?
+    val fkGuia: Long?
 ) {
     fun toEntity(guia: Usuario) = AgendaResponsavel(
         dataDisponivel = LocalDateTime.parse(dataDisponivel),

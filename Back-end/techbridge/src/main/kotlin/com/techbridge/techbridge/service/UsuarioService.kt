@@ -38,7 +38,7 @@ class UsuarioService {
 
         val usuarioSalvo = usuarioRepository.save(novoUsuario.toEntity())
 
-        if(usuarioSalvo.fk_tipo_usuario == TipoUsuario.AVENTUREIRO){
+        if(usuarioSalvo.tipo_usuario == TipoUsuario.AVENTUREIRO){
             return AventureiroResponseDTO(
                 nome = usuarioSalvo.nome,
                 telefone_contato = usuarioSalvo.telefone_contato,
