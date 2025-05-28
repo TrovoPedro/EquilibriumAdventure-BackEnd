@@ -17,7 +17,7 @@ class AgendaResponsavelController(
     fun listarDatasDisponiveis(): List<AgendaResponseDTO> {
         val agendas = agendaRepository.findAllDisponiveis()
 
-        return agendas.map { AgendaResponseDTO(it.idAgenda, it.dataDisponivel, it.fkresponsavel.nome.toString()) }
+        return agendas.map { AgendaResponseDTO( it.dataDisponivel, it.fkresponsavel?.nome.toString()) }
     }
 
     @PostMapping
@@ -27,16 +27,15 @@ class AgendaResponsavelController(
 
         val novaAgenda = agendaRepository.save(dto.toEntity(guia))
 
-        return AgendaResponseDTO(novaAgenda.idAgenda, novaAgenda.dataDisponivel, novaAgenda.fkresponsavel.nome.toString())
+        return AgendaResponseDTO( novaAgenda.dataDisponivel, novaAgenda.fkresponsavel?.idUsuario.toString())
     }
 
     @GetMapping
     fun listarAgenda(): List<AgendaResponseDTO> {
         return agendaRepository.findAll().map {
             AgendaResponseDTO(
-                it.idAgenda,
                 it.dataDisponivel,
-                it.fkresponsavel.nome.toString()
+                it.fkresponsavel?.nome.toString()
             )
         }
     }

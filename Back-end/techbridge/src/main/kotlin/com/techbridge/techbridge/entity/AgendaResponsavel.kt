@@ -9,12 +9,12 @@ data class AgendaResponsavel(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_agenda")
-    val idAgenda: Int = 0,
+    var idAgenda: Int = 0,
 
     @Column(name = "data_disponivel", nullable = false)
-    val dataDisponivel: LocalDateTime,
+    var dataDisponivel: LocalDateTime = LocalDateTime.now(),
 
     @JoinColumn(name = "fk_responsavel")
     @ManyToOne
-    val fkresponsavel: Usuario,
+    var fkresponsavel: Usuario? = null
 )
