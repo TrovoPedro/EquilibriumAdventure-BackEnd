@@ -18,9 +18,8 @@ class AgendaResponsavelService(
 
         return agendas.map {
             AgendaResponseDTO(
-                id = it.idAgenda,
                 dataDisponivel = it.dataDisponivel,
-                nomeGuia = it.fkresponsavel.nome.toString()
+                nomeGuia = it.fkresponsavel?.nome.toString()
             )
         }
     }
@@ -32,18 +31,16 @@ class AgendaResponsavelService(
         val novaAgenda = agendaRepository.save(dto.toEntity(guia))
 
         return AgendaResponseDTO(
-            id = novaAgenda.idAgenda,
             dataDisponivel = novaAgenda.dataDisponivel,
-            nomeGuia = novaAgenda.fkresponsavel.nome.toString()
+            nomeGuia = novaAgenda.fkresponsavel?.idUsuario.toString()
         )
     }
 
     fun listarAgenda(): List<AgendaResponseDTO> {
         return agendaRepository.findAll().map {
             AgendaResponseDTO(
-                id = it.idAgenda,
                 dataDisponivel = it.dataDisponivel,
-                nomeGuia = it.fkresponsavel.nome.toString()
+                nomeGuia = it.fkresponsavel?.nome.toString()
             )
         }
     }
