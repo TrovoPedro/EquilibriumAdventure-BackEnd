@@ -24,7 +24,7 @@ open class Usuario(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
-    open var id_usuario: Long? = null,
+    open var idUsuario: Int? = null,
 
     @field:NotBlank
     @field:Size(min = 2, max = 100)
@@ -48,5 +48,5 @@ open class Usuario(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    open var fk_tipo_usuario: TipoUsuario? = null
+    open var tipo_usuario: TipoUsuario? = null
 )

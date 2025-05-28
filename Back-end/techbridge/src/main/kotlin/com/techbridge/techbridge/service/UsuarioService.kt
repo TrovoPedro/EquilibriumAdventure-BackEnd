@@ -31,14 +31,14 @@ class UsuarioService {
             novoUsuario.telefone_contato.isNullOrBlank() ||
             novoUsuario.email.isNullOrBlank() ||
             novoUsuario.senha.isNullOrBlank() ||
-            novoUsuario.fk_tipo_usuario == null
+            novoUsuario.tipo_usuario == null
         ) {
             throw RuntimeException("Valores obrigatórios estão nulos ou vazios")
         }
 
         val usuarioSalvo = usuarioRepository.save(novoUsuario.toEntity())
 
-        if(usuarioSalvo.fk_tipo_usuario == TipoUsuario.AVENTUREIRO){
+        if(usuarioSalvo.tipo_usuario == TipoUsuario.AVENTUREIRO){
             return AventureiroResponseDTO(
                 nome = usuarioSalvo.nome,
                 telefone_contato = usuarioSalvo.telefone_contato,

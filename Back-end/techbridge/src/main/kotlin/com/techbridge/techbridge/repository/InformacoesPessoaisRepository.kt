@@ -19,9 +19,9 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
         e.rua
     )
     FROM Usuario u, com.techbridge.techbridge.entity.InformacoesPessoais ip, Endereco e
-    WHERE u.id_usuario = ip.usuario
+    WHERE u.idUsuario = ip.usuario
       AND e.id_endereco = ip.endereco
-      AND u.id_usuario = :idUsuario
+      AND u.idUsuario = :idUsuario
 """)
     fun buscarInformacoes(@Param("idUsuario") idUsuario: Long): InformacoesPessoaisGetPerfilDTO?
 
