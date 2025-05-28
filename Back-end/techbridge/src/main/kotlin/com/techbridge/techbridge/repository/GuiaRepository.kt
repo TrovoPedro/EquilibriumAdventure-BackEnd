@@ -2,6 +2,7 @@ package com.techbridge.techbridge.repository
 
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Guia
+import com.techbridge.techbridge.entity.Usuario
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 
@@ -15,4 +16,10 @@ interface GuiaRepository: JpaRepository<Guia, Int> {
         ORDER BY data_ativacao
     """, nativeQuery = true)
     fun findEventoByFkAventureiro(fkAventureiro: Int): List<Evento>
+
+    fun findByFk_tipo_usuario(fkTipoUsuario: Int): List<Guia>
+
+    fun findById(id: Long): Guia?
+
+    fun save(guia: Usuario): Usuario
 }

@@ -1,6 +1,6 @@
 package com.techbridge.techbridge.controller
 
-import com.techbridge.techbridge.entity.Aventureiro
+import com.techbridge.techbridge.entity.Usuario
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -11,26 +11,26 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/aventureiros")
-class AventureiroController {
+@RequestMapping("/Usuarios")
+class UsuarioController {
 
-    val aventureiro = mutableListOf<Aventureiro>()
+    val usuario = mutableListOf<Usuario>()
 
     @PostMapping("/cadastrar")
-    fun cadastrar(@RequestBody novoAventureiro: Aventureiro):ResponseEntity<Aventureiro> {
-        aventureiro.add(novoAventureiro)
-        return ResponseEntity.status(201).body(novoAventureiro)
+    fun cadastrar(@RequestBody novoUsuario: Usuario):ResponseEntity<Usuario> {
+        usuario.add(novoUsuario)
+        return ResponseEntity.status(201).body(novoUsuario)
     }
 
     @PutMapping("/editar-informacoes/{id}")
-    fun editarUsuario(@PathVariable id:Int, @RequestBody aventureiroEditado: Aventureiro):ResponseEntity<Aventureiro>{
-        aventureiro[id] = aventureiroEditado;
-        return ResponseEntity.status(201).body(aventureiroEditado);
+    fun editarUsuario(@PathVariable id:Int, @RequestBody UsuarioEditado: Usuario):ResponseEntity<Usuario>{
+        usuario[id] = UsuarioEditado;
+        return ResponseEntity.status(201).body(UsuarioEditado);
     }
 
     @DeleteMapping("/deletar/{id}")
     fun deletarUsuario(@PathVariable id: Int): ResponseEntity<Unit>{
-        aventureiro.removeAt(id)
+        usuario.removeAt(id)
         return ResponseEntity.status(204).build();
     }
 
