@@ -8,7 +8,7 @@ class InscricaoEvento(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null,
 
     @ManyToOne
     @JoinColumn(name = "evento_id", nullable = false)
