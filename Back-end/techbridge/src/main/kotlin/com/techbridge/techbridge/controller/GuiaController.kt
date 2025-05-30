@@ -3,6 +3,7 @@ package com.techbridge.techbridge.controller
 import com.techbridge.techbridge.dto.EventoGuiaEnderecoDTO
 import com.techbridge.techbridge.dto.EventoRequestDTO
 import com.techbridge.techbridge.dto.EventoResponseDTO
+import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.service.GuiaService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity

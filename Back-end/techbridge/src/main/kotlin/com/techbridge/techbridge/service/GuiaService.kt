@@ -33,7 +33,7 @@ class GuiaService {
     }
 
     fun getEventos(): List<Map<String, Any>> {
-        val eventosEncontrados = eventoRepository.buscarTodosEventosComUsuarioEndereco()
+        val eventosEncontrados = eventoRepository.listarEventosComResponsavelERua()
 
         if (eventosEncontrados.isEmpty()) {
             throw RuntimeException("Nenhum evento encontrado")
@@ -51,6 +51,5 @@ class GuiaService {
 
         return eventosEncotrados
     }
-
 
 }
