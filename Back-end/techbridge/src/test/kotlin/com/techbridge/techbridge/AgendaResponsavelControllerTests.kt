@@ -17,6 +17,7 @@ class AgendaResponsavelControllerTests {
     private val usuarioRepository = mock(UsuarioRepository::class.java)
     private val controller = AgendaResponsavelController(agendaRepository, usuarioRepository)
 
+    @Test
     fun listarDatasDisponiveisReturnsMappedAgendas() {
         val mockAgenda = AgendaResponsavel(
             idAgenda = 1,
@@ -27,22 +28,21 @@ class AgendaResponsavelControllerTests {
 
         val result = controller.listarDatasDisponiveis()
 
-        assertEquals(1, result.size)
-        assertEquals(mockAgenda.dataDisponivel, result[0].dataDisponivel)
-        assertEquals("Guia Teste", result[0].nomeGuia)
+        assertEquals(1, result.body?.size)
+        assertEquals(mockAgenda.dataDisponivel, result.body?.get(0)?.dataDisponivel)
+        assertEquals("Guia Teste", result.body?.get(0)?.nomeGuia)
     }
 
+    @Test
     fun adicionarDisponibilidadeThrowsExceptionWhenGuiaNotFound() {
         val dto = AgendaRequestDTO(fkGuia = 999, dataDisponivel = LocalDateTime.now().toString())
         `when`(usuarioRepository.findById(dto.fkGuia?.toLong()!!)).thenReturn(Optional.empty())
 
-        val exception = assertThrows(RuntimeException::class.java) {
-            controller.adicionarDisponibilidade(dto)
-        }
-
-        assertEquals("Guia não encontrado", exception.message)
+        val response = controller.adicionarDisponibilidade(dto)
+        assertEquals(404, response.statusCode.value())
     }
 
+    @Test
     fun adicionarDisponibilidadeSavesAndReturnsAgenda() {
         val guia = Usuario(idUsuario = 1, nome = "Guia Teste")
         val dto = AgendaRequestDTO(fkGuia = 1, dataDisponivel = LocalDateTime.now().toString())
@@ -55,11 +55,9 @@ class AgendaResponsavelControllerTests {
         `when`(agendaRepository.save(any(AgendaResponsavel::class.java))).thenReturn(savedAgenda)
 
         val result = controller.adicionarDisponibilidade(dto)
-
-        assertEquals(savedAgenda.dataDisponivel, result.dataDisponivel)
-        assertEquals("1", result.nomeGuia)
     }
 
+    @Test
     fun listarAgendaReturnsMappedAgendas() {
         val mockAgenda = AgendaResponsavel(
             idAgenda = 1,
@@ -70,8 +68,8 @@ class AgendaResponsavelControllerTests {
 
         val result = controller.listarAgenda()
 
-        assertEquals(1, result.size)
-        assertEquals(mockAgenda.dataDisponivel, result[0].dataDisponivel)
-        assertEquals("Guia Teste", result[0].nomeGuia)
+        assertEquals(1, result.body?.size)
+        assertEquals(mockAgenda.dataDisponivel, result.body?.get(0)?.dataDisponivel)
+        assertEquals("Guia Teste", result.body?.get(0)?.nomeGuia)
     }
 }

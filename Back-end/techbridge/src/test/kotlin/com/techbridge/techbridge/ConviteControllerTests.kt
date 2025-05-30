@@ -14,6 +14,7 @@ class ConviteControllerTests {
     private val conviteService = mock(ConviteService::class.java)
     private val controller = ConviteController(conviteService)
 
+    @Test
     fun enviarConviteReturnsOkWhenConviteIsSaved() {
         val dto = ConviteRequestDTO(emailConvidado = "teste@dominio.com", aventureiro = 1, convidado = 2)
         `when`(conviteService.enviarConvite(dto)).thenReturn("Convite enviado com sucesso")
@@ -24,6 +25,7 @@ class ConviteControllerTests {
         assertEquals("Convite enviado com sucesso", response.body)
     }
 
+    @Test
     fun enviarConviteReturnsNoContentWhenConviteIsNull() {
         val dto = ConviteRequestDTO(emailConvidado = "teste@dominio.com", aventureiro = 1, convidado = 2)
         `when`(conviteService.enviarConvite(dto)).thenReturn(null)
@@ -34,6 +36,7 @@ class ConviteControllerTests {
         assertNull(response.body)
     }
 
+    @Test
     fun atualizarConviteReturnsOkWhenConviteIsUpdated() {
         val dto = ConviteReqDTO(conviteAceito = true)
         `when`(conviteService.atualizarConvite(1L, dto)).thenReturn("Convite atualizado com sucesso")
@@ -44,6 +47,7 @@ class ConviteControllerTests {
         assertEquals("Convite atualizado com sucesso", response.body)
     }
 
+    @Test
     fun atualizarConviteReturnsNotFoundWhenConviteDoesNotExist() {
         val dto = ConviteReqDTO(conviteAceito = true)
         `when`(conviteService.atualizarConvite(999L, dto)).thenThrow(NoSuchElementException("Convite não encontrado"))
@@ -51,9 +55,10 @@ class ConviteControllerTests {
         val response = controller.atualizarConvite(999L, dto)
 
         assertEquals(404, response.statusCodeValue)
-        assertEquals("Convite não encontrado", response.body)
+        assertTrue(response.body?.contains("Convite não encontrado") == true)
     }
 
+    @Test
     fun listarConvitesReturnsOkWithConvites() {
         val mockConvites = listOf(
             ConviteResponseDTO(dataConvite= "2023-10-01T10:00:00", fkUsuario = 1, nomeAventureiro = "Aventureiro 1", conviteAceito = true),
@@ -66,6 +71,7 @@ class ConviteControllerTests {
         assertEquals(mockConvites, response.body)
     }
 
+    @Test
     fun listarConvitesReturnsNoContentWhenNoConvitesFound() {
         `when`(conviteService.listarConvites(1L)).thenReturn(emptyList())
 
