@@ -11,7 +11,7 @@ data class UsuarioRequestDTO(
     var descricao_guia: String?,
     var tipo_usuario: TipoUsuario?
 ){
-    fun toEntity() = Usuario(nome = nome, telefone_contato = telefone_contato, email = email, senha = senha, descricao_guia = descricao_guia,
+    fun toEntity() = Usuario(nome = nome, telefoneContato = telefone_contato, email = email, senha = senha, descricao_guia = descricao_guia,
         tipo_usuario = tipo_usuario
     )
 }

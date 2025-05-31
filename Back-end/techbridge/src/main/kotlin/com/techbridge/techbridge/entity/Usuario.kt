@@ -32,7 +32,7 @@ open class Usuario(
 
     @field:NotBlank
     @field:Size(min = 11, max = 15)
-    open var telefone_contato: String? = null,
+    open var telefoneContato: String? = null,
 
     @field:NotBlank
     @field:Size(min = 11, max = 100)
