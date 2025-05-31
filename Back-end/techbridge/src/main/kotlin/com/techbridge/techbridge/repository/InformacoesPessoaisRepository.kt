@@ -12,17 +12,16 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
 
     @Query("""
     SELECT new com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO(
-        u.telefone_contato,
+        u.telefoneContato,
         u.nome,
-        ip.data_nascimento,
+        ip.dataNascimento,
         ip.nivel,
         e.rua
     )
-    FROM Usuario u, com.techbridge.techbridge.entity.InformacoesPessoais ip, Endereco e
+    FROM Usuario u, InformacoesPessoais ip, Endereco e
     WHERE u.idUsuario = ip.usuario
       AND e.id_endereco = ip.endereco
       AND u.idUsuario = :idUsuario
 """)
     fun buscarInformacoes(@Param("idUsuario") idUsuario: Long): InformacoesPessoaisGetPerfilDTO?
-
 }

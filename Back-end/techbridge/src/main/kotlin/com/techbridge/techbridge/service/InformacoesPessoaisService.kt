@@ -3,6 +3,7 @@ package com.techbridge.techbridge.service;
 import com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO
 import com.techbridge.techbridge.dto.InformacoesPessoaisRequestDTO
 import com.techbridge.techbridge.dto.InformacoesPessoaisResponseDTO
+import com.techbridge.techbridge.repository.EnderecoRepository
 import com.techbridge.techbridge.repository.InformacoesPessoaisRepository;
 import com.techbridge.techbridge.repository.UsuarioRepository
 import jakarta.transaction.Transactional
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping
 
 @Service
+@Transactional
 class InformacoesPessoaisService {
 
     @Autowired
@@ -19,27 +21,39 @@ class InformacoesPessoaisService {
     @Autowired
     lateinit var usuarioRepository: UsuarioRepository;
 
+    @Autowired
+    lateinit var enderecoRepository: EnderecoRepository
+
     fun postInformacoes(id: Long, informacao: InformacoesPessoaisRequestDTO): InformacoesPessoaisResponseDTO {
         if (informacao == null) {
-            throw RuntimeException("Informações não preenchidas");
+            throw RuntimeException("Informações não preenchidas")
         }
 
-        val usuarioEncontado = usuarioRepository.findById(id)
-
-        if (usuarioEncontado.isEmpty) {
-            throw RuntimeException("Usuário não encontrado");
+        val usuarioEncontrado = usuarioRepository.findById(id)
+        if (usuarioEncontrado.isEmpty) {
+            throw RuntimeException("Usuário não encontrado")
         }
 
-        val novaInformacao = informacaoRepository.save(informacao.toEntity());
+        val enderecoExiste = enderecoRepository.existsById(informacao.endereco)
+        if (!enderecoExiste) {
+            throw RuntimeException("Endereço não encontrado")
+        }
+
+        // Prepara a entidade para salvar, setando o usuário com o id do path
+        val entidade = informacao.toEntity()
+        entidade.usuario = id // garante que o usuário é o do path (e não do DTO)
+        entidade.endereco = informacao.endereco
+
+        val novaInformacao = informacaoRepository.save(entidade)
 
         return InformacoesPessoaisResponseDTO(
-            contato_emergencia = informacao.contato_emergencia,
-            endereco = informacao.endereco,
-            nivel = informacao.nivel,
-            usuario = informacao.usuario,
-            relatorioAnamnese = informacao.relatorioAnamnese,
-            idioma = informacao.idioma,
-            questionario_respondido = informacao.questionario_respondido
+            contatoEmergencia = novaInformacao.contatoEmergencia,
+            endereco = novaInformacao.endereco ?: 0,
+            nivel = novaInformacao.nivel ?: throw RuntimeException("Nível não informado"),
+            usuario = novaInformacao.usuario,
+            relatorioAnamnese = novaInformacao.relatorioAnamnese,
+            idioma = novaInformacao.idioma,
+            questionarioRespondido = novaInformacao.questionarioRespondido
         )
     }
 
@@ -63,24 +77,24 @@ class InformacoesPessoaisService {
             RuntimeException("Informações não encontradas")
         }
 
-        informacaoEncontrada.contato_emergencia = informacao.contato_emergencia;
+        informacaoEncontrada.contatoEmergencia = informacao.contatoEmergencia;
         informacaoEncontrada.endereco = informacao.endereco;
         informacaoEncontrada.nivel = informacao.nivel;
         informacaoEncontrada.usuario = informacao.usuario;
         informacaoEncontrada.relatorioAnamnese = informacao.relatorioAnamnese;
         informacaoEncontrada.idioma = informacao.idioma;
-        informacaoEncontrada.questionario_respondido = informacao.questionario_respondido;
+        informacaoEncontrada.questionarioRespondido = informacao.questionarioRespondido;
 
         informacaoRepository.save(informacaoEncontrada)
 
         return InformacoesPessoaisResponseDTO(
-            contato_emergencia = informacao.contato_emergencia,
+            contatoEmergencia = informacao.contatoEmergencia,
             endereco = informacao.endereco,
             nivel = informacao.nivel,
             usuario = informacao.usuario,
             relatorioAnamnese = informacao.relatorioAnamnese,
             idioma = informacao.idioma,
-            questionario_respondido = informacao.questionario_respondido
+            questionarioRespondido = informacao.questionarioRespondido
         )
     }
 

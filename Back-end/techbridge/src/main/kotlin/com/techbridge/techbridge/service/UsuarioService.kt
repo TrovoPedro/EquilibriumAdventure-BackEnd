@@ -19,7 +19,7 @@ class UsuarioService {
 
         return UsuarioResponseDTO(
             nome = usuario.nome,
-            telefone_contato = usuario.telefone_contato,
+            telefone_contato = usuario.telefoneContato,
             email = usuario.email,
             descricao_guia = usuario.descricao_guia
         )
@@ -41,14 +41,14 @@ class UsuarioService {
         if(usuarioSalvo.tipo_usuario == TipoUsuario.AVENTUREIRO){
             return AventureiroResponseDTO(
                 nome = usuarioSalvo.nome,
-                telefone_contato = usuarioSalvo.telefone_contato,
+                telefone_contato = usuarioSalvo.telefoneContato,
                 email = usuarioSalvo.email,
             )
         }
 
         return UsuarioResponseDTO(
             nome = usuarioSalvo.nome,
-            telefone_contato = usuarioSalvo.telefone_contato,
+            telefone_contato = usuarioSalvo.telefoneContato,
             email = usuarioSalvo.email,
             descricao_guia = usuarioSalvo.descricao_guia
         )
@@ -60,7 +60,7 @@ class UsuarioService {
 
         usuarioEncontrado.nome = informacoesNova.nome;
         usuarioEncontrado.email = informacoesNova.email;
-        usuarioEncontrado.telefone_contato = informacoesNova.telefone_contato;
+        usuarioEncontrado.telefoneContato = informacoesNova.telefone_contato;
 
         return usuarioRepository.save(usuarioEncontrado);
     }
