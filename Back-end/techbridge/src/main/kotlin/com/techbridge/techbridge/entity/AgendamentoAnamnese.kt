@@ -8,13 +8,15 @@ data class AgendamentoAnamnese(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_anamnese")
-    val idAnamnese: Int = 0,
+    val id: Int = 0,
 
-    @Column(name = "fk_data", nullable = false)
-    val fkData: Int,
+    @ManyToOne
+    @JoinColumn(name = "fk_data", nullable = false)
+    val agendaResponsavel: AgendaResponsavel? = null,
 
-    @Column(name = "fk_aventureiro", nullable = false)
-    val fkAventureiro: Int
+    @ManyToOne
+    @JoinColumn(name = "fk_aventureiro", nullable = false)
+    val aventureiro: Usuario? = null
 ) {
-    constructor() : this(0, 0, 0)
+    constructor() : this(0, null, null)
 }
