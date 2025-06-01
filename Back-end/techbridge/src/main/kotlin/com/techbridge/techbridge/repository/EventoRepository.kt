@@ -24,11 +24,7 @@ interface EventoRepository: JpaRepository<Evento, Long> {
     """,
         nativeQuery = true
     )
-<<<<<<< HEAD
-    fun buscarTodosEventosComUsuarioEndereco(): List<Map<String, Any>>
-=======
     fun listarEventosComResponsavelERua(): List<Map<String, Any>>
->>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
 
     @Query(
         value = """
@@ -41,20 +37,12 @@ interface EventoRepository: JpaRepository<Evento, Long> {
             u.nome AS nome_responsavel,
             end.rua
         FROM evento e
-<<<<<<< HEAD
-        JOIN usuario u ON e.responsavel_id = u.id_usuario
-        JOIN endereco end ON e.endereco_id = end.id_endereco
-=======
         JOIN usuario u ON e.fk_responsavel = u.id_usuario
         JOIN endereco end ON e.fk_endereco = end.id_endereco
->>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
         WHERE u.nome = :nome
     """,
         nativeQuery = true
     )
     fun buscarEventoPorGuia(@Param("nome") nome: String): List<Map<String, Any>>
-<<<<<<< HEAD
-=======
 
->>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
 }

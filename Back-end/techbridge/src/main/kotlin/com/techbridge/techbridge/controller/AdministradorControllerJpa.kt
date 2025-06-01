@@ -1,5 +1,6 @@
 package com.techbridge.techbridge.controller
 
+import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.enums.TipoUsuario
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -9,10 +10,9 @@ import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Guia
 import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.repository.AdministradorRepository
-<<<<<<< HEAD
-=======
+import com.techbridge.techbridge.repository.AtivacaoEventoRepository
+
 import com.techbridge.techbridge.repository.EventoRepository
->>>>>>> 7a62b4ac169e0d4ea9b3b42752a3d3ecfafd038f
 import com.techbridge.techbridge.repository.GuiaRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -23,12 +23,9 @@ import org.springframework.web.bind.annotation.*
 class AdministradorControllerJpa(
     val repositorio: AdministradorRepository,
     val repositorioGuia: GuiaRepository,
-<<<<<<< HEAD
-    val repositorioEventoAtivo: EventoAtivoRepository
-=======
-    val repositorioEventoAtivo: E,
+    val repositorioEventoAtivo: AtivacaoEventoRepository,
     val repositorioEvento: EventoRepository
->>>>>>> 7a62b4ac169e0d4ea9b3b42752a3d3ecfafd038f
+
 ) {
 
     @PostMapping("/cadastrar-evento")
@@ -38,7 +35,7 @@ class AdministradorControllerJpa(
     }
 
     @PostMapping("/cadastrar-evento-ativo")
-    fun postEventoAtivo(@RequestBody novoEvento: Evento): ResponseEntity<Evento> {
+    fun postEventoAtivo(@RequestBody novoEvento: AtivacaoEvento): ResponseEntity<AtivacaoEvento> {
         val eventoSalvo = repositorioEventoAtivo.save(novoEvento)
         return ResponseEntity.status(201).body(eventoSalvo)
     }
@@ -54,13 +51,9 @@ class AdministradorControllerJpa(
     }
 
     @GetMapping("/buscar-evento-base-especifico/{id}")
-<<<<<<< HEAD
-    fun getEventoEspecifico(@PathVariable id: Int): ResponseEntity<Evento> {
-        val eventoOptional = repositorio.findById(id)
-=======
     fun getEventoEspecifico(@PathVariable id: Long): ResponseEntity<Evento> {
         val eventoOptional = repositorioEvento.findById(id)
->>>>>>> 7a62b4ac169e0d4ea9b3b42752a3d3ecfafd038f
+
 
         return if (eventoOptional.isPresent) {
             ResponseEntity.ok(eventoOptional.get())
@@ -70,7 +63,7 @@ class AdministradorControllerJpa(
     }
 
     @GetMapping("/buscar-todos-eventos-ativo")
-    fun getAllEventosAtivo(): ResponseEntity<MutableList<Evento>> {
+    fun getAllEventosAtivo(): ResponseEntity<MutableList<AtivacaoEvento>> {
         val eventos = repositorioEventoAtivo.findAll()
         return if (eventos.isEmpty()) {
             ResponseEntity.status(204).build()
@@ -80,25 +73,16 @@ class AdministradorControllerJpa(
     }
 
     @GetMapping("/buscar-evento-ativo-especifico/{id}")
-<<<<<<< HEAD
-    fun getEventoEspecificoAtivo(@PathVariable id: Int): ResponseEntity<Evento> {
+    fun getEventoEspecificoAtivo(@PathVariable id: Long): ResponseEntity<AtivacaoEvento> {
         val eventoOptional = repositorioEventoAtivo.findById(id)
 
         return if (eventoOptional.isPresent) {
             ResponseEntity.ok(eventoOptional.get())
         } else {
             ResponseEntity.notFound().build()
-=======
-    fun getEventoEspecificoAtivo(@PathVariable id: Long): ResponseEntity<Evento> {
-        val eventoOptional = repositorioEvento.findById(id)
-
-        if (eventoOptional.isPresent) {
-           return ResponseEntity.ok(eventoOptional.get())
-        } else {
-           return ResponseEntity.notFound().build()
->>>>>>> 7a62b4ac169e0d4ea9b3b42752a3d3ecfafd038f
         }
-    }
+        }
+
 
 
     @PutMapping("/editar-evento/{id}")
@@ -137,7 +121,7 @@ class AdministradorControllerJpa(
 
     @PostMapping("/cadastrar-guia")
     fun postGuia(@RequestBody novoGuia: Usuario): ResponseEntity<Usuario> {
-        novoGuia.fk_tipo_usuario = TipoUsuario.GUIA
+        novoGuia.tipo_usuario = TipoUsuario.GUIA
         val guiaSalvo = repositorioGuia.save(novoGuia)
         return ResponseEntity.status(201).body(guiaSalvo)
     }
@@ -159,7 +143,7 @@ class AdministradorControllerJpa(
 
         return if (guiaOptional.isPresent) {
             val guia = guiaOptional.get()
-            if (guia.fk_tipo_usuario == TipoUsuario.GUIA) {
+            if (guia.tipo_usuario == TipoUsuario.GUIA) {
                 ResponseEntity.ok(guia)
             } else {
                 ResponseEntity.status(403).build()
@@ -170,19 +154,14 @@ class AdministradorControllerJpa(
     }
 
     @PutMapping("/editar-guia/{id}")
-    fun putGuia(@PathVariable id: Long, @RequestBody guiaAtualizado: Usuario): ResponseEntity<Usuario> {
+    fun putGuia(@PathVariable id: Int, @RequestBody guiaAtualizado: Usuario): ResponseEntity<Usuario> {
         val guiaOptional = repositorioGuia.findById(id)
 
-<<<<<<< HEAD
-        return if (guiaOptional.isPresent) {
+        return if (!guiaOptional.isEmpty()) {
             val guiaExistente = guiaOptional.get()
-=======
-        return if (guiaOptional !== null) {
-            val guiaExistente = guiaOptional
->>>>>>> 7a62b4ac169e0d4ea9b3b42752a3d3ecfafd038f
-            if (guiaExistente.fk_tipo_usuario == TipoUsuario.GUIA) {
-                guiaAtualizado.id_usuario = id
-                guiaAtualizado.fk_tipo_usuario = TipoUsuario.GUIA
+            if (guiaExistente.tipo_usuario == TipoUsuario.GUIA) {
+                guiaAtualizado.idUsuario = id
+                guiaAtualizado.tipo_usuario = TipoUsuario.GUIA
                 val guiaSalvo = repositorioGuia.save(guiaAtualizado)
                 ResponseEntity.ok(guiaSalvo)
             } else {
@@ -200,7 +179,7 @@ class AdministradorControllerJpa(
 
         return if (guiaOptional.isPresent) {
             val guiaExistente = guiaOptional.get()
-            if (guiaExistente.fk_tipo_usuario == TipoUsuario.GUIA) {
+            if (guiaExistente.tipo_usuario == TipoUsuario.GUIA) {
                 repositorioGuia.deleteById(id)
                 ResponseEntity.noContent().build()
             } else {
