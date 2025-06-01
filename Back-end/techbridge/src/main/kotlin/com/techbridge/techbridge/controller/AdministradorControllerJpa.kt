@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.*
 class AdministradorControllerJpa(
     val repositorio: AdministradorRepository,
     val repositorioGuia: GuiaRepository,
-    val repositorioEventoAtivo: EventoAtivoRepository,
+    val repositorioEventoAtivo: E,
     val repositorioEvento: EventoRepository
 ) {
 

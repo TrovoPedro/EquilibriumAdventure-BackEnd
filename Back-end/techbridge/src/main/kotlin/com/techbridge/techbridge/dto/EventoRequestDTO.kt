@@ -1,7 +1,6 @@
 package com.techbridge.techbridge.dto
 
 import com.techbridge.techbridge.entity.Evento
-import com.techbridge.techbridge.entity.InformacoesPessoais
 
 data class EventoRequestDTO(
     var nome: String?,

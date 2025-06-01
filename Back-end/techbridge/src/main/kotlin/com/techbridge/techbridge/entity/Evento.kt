@@ -25,9 +25,9 @@ class Evento() {
     var nivel_dificuldade: String? = null
     var distancia_km: Double? = null
 
-    @Column(name = "responsavel_id", nullable = false)
+    @Column(name = "fk_responsavel", nullable = false)
     var responsavel: Long = 1
 
-    @Column(name = "endereco_id", nullable = false)
+    @Column(name = "fk_endereco", nullable = false)
     var endereco: Long? = null
 }

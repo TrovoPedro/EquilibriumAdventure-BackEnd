@@ -5,29 +5,29 @@ import com.techbridge.techbridge.enums.Nivel
 import java.util.*
 
 data class InformacoesPessoaisRequestDTO(
-    var data_nascimento: Date?,
+    var dataNascimento: Date?,
     var cpf: String?,
     var rg: String?,
-    var contato_emergencia: String?,
+    var contatoEmergencia: String?,
     var endereco: Long,
     var nivel: Nivel,
     var usuario: Long,
     var relatorioAnamnese: String?,
     var idioma: String?,
-    var questionario_respondido: Boolean?
+    var questionarioRespondido: Boolean?
 ) {
     fun toEntity(): InformacoesPessoais {
         val entidade = InformacoesPessoais()
-        entidade.data_nascimento = data_nascimento
+        entidade.dataNascimento = dataNascimento
         entidade.cpf = cpf
         entidade.rg = rg
-        entidade.contato_emergencia = contato_emergencia
+        entidade.contatoEmergencia = contatoEmergencia
         entidade.endereco = endereco
         entidade.nivel = nivel
         entidade.usuario = usuario
         entidade.relatorioAnamnese = relatorioAnamnese
         entidade.idioma = idioma
-        entidade.questionario_respondido = questionario_respondido
+        entidade.questionarioRespondido = questionarioRespondido
         return entidade
     }
 }
