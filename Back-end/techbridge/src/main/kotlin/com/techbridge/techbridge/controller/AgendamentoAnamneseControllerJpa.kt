@@ -1,6 +1,7 @@
 package com.techbridge.techbridge.controller
 
-import com.techbridge.techbridge.entity.AgendamentoAnamnese
+import com.techbridge.techbridge.dto.AnamneseRequestDTO
+import com.techbridge.techbridge.dto.AnamneseResponseDTO
 import com.techbridge.techbridge.service.AgendamentoAnamneseService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*
 class AgendamentoAnamneseControllerJpa(private val agendamentoService: AgendamentoAnamneseService) {
 
     @PostMapping("/agendar")
-    fun agendarAnamnese(@RequestBody agendamento: AgendamentoAnamnese): ResponseEntity<AgendamentoAnamnese> {
+    fun agendarAnamnese(@RequestBody agendamento: AnamneseRequestDTO): ResponseEntity<AnamneseResponseDTO> {
         val novoAgendamento = agendamentoService.salvarAgendamento(agendamento)
         return ResponseEntity.status(201).body(novoAgendamento)
     }
@@ -49,7 +50,7 @@ class AgendamentoAnamneseControllerJpa(private val agendamentoService: Agendamen
     }
 
     @GetMapping("/por-aventureiro/{fkAventureiro}")
-    fun listarPorAventureiro(@PathVariable fkAventureiro: Int): ResponseEntity<List<AgendamentoAnamnese>> {
+    fun listarPorAventureiro(@PathVariable fkAventureiro: Int): ResponseEntity<List<AnamneseResponseDTO>> {
         val agendamentos = agendamentoService.listarPorAventureiro(fkAventureiro)
         return if (agendamentos.isNotEmpty()) {
             ResponseEntity.status(200).body(agendamentos)

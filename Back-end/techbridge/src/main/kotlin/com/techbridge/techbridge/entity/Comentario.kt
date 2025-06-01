@@ -17,14 +17,13 @@ data class Comentario(
     @Column(name = "data_comentario", nullable = false)
     val dataComentario: LocalDateTime = LocalDateTime.now(),
 
-    @Column(name = "avaliacao", nullable = true)
-    val avaliacao: Int? = null,
+    @ManyToOne
+    @JoinColumn(name = "fk_usuario", nullable = false)
+    val usuario: Usuario? = null,
 
-    @Column(name = "fk_usuario", nullable = false)
-    val fkUsuario: Int = 0,
-
-    @Column(name = "fk_ativacao_evento", nullable = false)
-    val fkAtivacaoEvento: Int = 0
+    @ManyToOne
+    @JoinColumn(name = "fk_ativacao_evento", nullable = false)
+    val ativacaoEvento: AtivacaoEvento? = null
 ) {
-    constructor() : this(0, "", LocalDateTime.now(), null, 0, 0)
+    constructor() : this(0, "", LocalDateTime.now(), null, null,)
 }
