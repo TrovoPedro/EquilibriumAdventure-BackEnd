@@ -21,7 +21,10 @@ class ConviteServiceTests {
         usuarioRepository = this@ConviteServiceTests.usuarioRepository
     }
 
+<<<<<<< HEAD
+=======
     @Test
+>>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
     fun enviarConviteThrowsExceptionWhenConvidadoNotFound() {
         val dto = ConviteRequestDTO(emailConvidado = "inexistente@dominio.com", aventureiro = 1, convidado = 1)
         `when`(usuarioRepository.findByEmail(dto.emailConvidado)).thenReturn(null)
@@ -33,7 +36,10 @@ class ConviteServiceTests {
         assertEquals("Usuário convidado não encontrado", exception.message)
     }
 
+<<<<<<< HEAD
+=======
     @Test
+>>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
     fun enviarConviteThrowsExceptionWhenAventureiroNotFound() {
         val dto = ConviteRequestDTO(emailConvidado = "teste@dominio.com", aventureiro = 999, convidado = 1)
         `when`(usuarioRepository.findByEmail(dto.emailConvidado)).thenReturn(mock(Usuario::class.java))
@@ -46,7 +52,10 @@ class ConviteServiceTests {
         assertEquals("Usuário aventureiro não encontrado", exception.message)
     }
 
+<<<<<<< HEAD
+=======
     @Test
+>>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
     fun listarConvitesReturnsEmptyListWhenNoConvitesFound() {
         `when`(conviteRepository.findByAventureiroIdUsuario(1L)).thenReturn(emptyList())
 
@@ -55,7 +64,10 @@ class ConviteServiceTests {
         assertTrue(result.isEmpty())
     }
 
+<<<<<<< HEAD
+=======
     @Test
+>>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
     fun atualizarConviteThrowsExceptionWhenConviteNotFound() {
         val dto = ConviteReqDTO(conviteAceito = true)
         `when`(conviteRepository.findById(999L)).thenReturn(Optional.empty())

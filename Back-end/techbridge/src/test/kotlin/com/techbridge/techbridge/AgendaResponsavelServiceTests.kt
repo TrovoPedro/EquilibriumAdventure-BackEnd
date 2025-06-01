@@ -17,7 +17,10 @@ class AgendaResponsavelServiceTests {
     private val usuarioRepository = mock(UsuarioRepository::class.java)
     private val service = AgendaResponsavelService(agendaRepository, usuarioRepository)
 
+<<<<<<< HEAD
+=======
     @Test
+>>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
     fun listarDatasDisponiveisReturnsEmptyListWhenNoAgendasAvailable() {
         `when`(agendaRepository.findAllDisponiveis()).thenReturn(emptyList())
 
@@ -26,7 +29,10 @@ class AgendaResponsavelServiceTests {
         assertTrue(result.isEmpty())
     }
 
+<<<<<<< HEAD
+=======
     @Test
+>>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
     fun adicionarDisponibilidadeThrowsExceptionWhenFkGuiaIsNull() {
         val dto = AgendaRequestDTO(fkGuia = null, dataDisponivel = LocalDateTime.now().toString())
 
@@ -34,10 +40,16 @@ class AgendaResponsavelServiceTests {
             service.adicionarDisponibilidade(dto)
         }
 
+<<<<<<< HEAD
+        assertEquals("Guia não encontrado", exception.message)
+    }
+
+=======
         assertTrue(exception is RuntimeException && (exception.message == null))
     }
 
     @Test
+>>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
     fun listarAgendaReturnsEmptyListWhenNoAgendasExist() {
         `when`(agendaRepository.findAll()).thenReturn(emptyList())
 
@@ -46,7 +58,10 @@ class AgendaResponsavelServiceTests {
         assertTrue(result.isEmpty())
     }
 
+<<<<<<< HEAD
+=======
     @Test
+>>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
     fun listarDatasDisponiveisMapsAgendasCorrectly() {
         val mockAgenda = AgendaResponsavel(
             idAgenda = 1,

@@ -52,4 +52,8 @@ class GuiaService {
         return eventosEncotrados
     }
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> c978f1be428cb776d4b0bfed9085c4bb6af2834c
 }
