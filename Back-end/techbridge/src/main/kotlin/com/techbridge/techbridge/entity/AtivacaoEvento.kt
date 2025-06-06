@@ -42,4 +42,14 @@ class AtivacaoEvento {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_evento")
     var evento: Evento? = null
+
+    @Column(name = "nome")
+    var nome: String? = null
+
+    constructor()
+
+    constructor(idAtivacao: Long, limiteInscritos: Int?) {
+        this.idAtivacao = idAtivacao
+        this.limiteInscritos = limiteInscritos
+    }
 }

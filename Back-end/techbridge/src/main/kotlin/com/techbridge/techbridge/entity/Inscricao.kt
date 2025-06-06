@@ -17,15 +17,15 @@ class Inscricao(
 
     @ManyToOne
     @JoinColumn(name = "ativacaoEvento", nullable = false)
-    val evento: Evento,
+    val ativacaoEvento: AtivacaoEvento,
 
     @Column(name = "dataInscricao", nullable = false)
     val dataInscricao: java.time.LocalDateTime = java.time.LocalDateTime.now()
 
 ) {
+
     constructor() : this(
-        id_inscricao = null,
-        evento = Evento(),
+        ativacaoEvento = AtivacaoEvento(),
         aventureiro = Usuario(),
         dataInscricao = LocalDateTime.now()
     )
