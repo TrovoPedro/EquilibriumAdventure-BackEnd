@@ -1,8 +1,7 @@
-package com.techbridge.techbridge
+package com.techbridge.techbridge.service
 
 import com.techbridge.techbridge.entity.Comentario
 import com.techbridge.techbridge.repository.ComentarioRepository
-import com.techbridge.techbridge.service.ComentarioService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*

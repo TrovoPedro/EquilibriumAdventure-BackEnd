@@ -1,6 +1,5 @@
-package com.techbridge.techbridge
+package com.techbridge.techbridge.controller
 
-import com.techbridge.techbridge.controller.AgendamentoAnamneseControllerJpa
 import com.techbridge.techbridge.service.AgendamentoAnamneseService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test

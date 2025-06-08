@@ -1,15 +1,12 @@
+package com.techbridge.techbridge.service
+
 import com.techbridge.techbridge.dto.ConviteReqDTO
 import com.techbridge.techbridge.dto.ConviteRequestDTO
-import com.techbridge.techbridge.dto.ConviteResponseDTO
-import com.techbridge.techbridge.entity.Convite
 import com.techbridge.techbridge.repository.ConviteRepository
 import com.techbridge.techbridge.repository.UsuarioRepository
-import com.techbridge.techbridge.service.ConviteService
 import com.techbridge.techbridge.entity.Usuario
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
-import java.time.LocalDateTime
 import java.util.*
 
 class ConviteServiceTests {

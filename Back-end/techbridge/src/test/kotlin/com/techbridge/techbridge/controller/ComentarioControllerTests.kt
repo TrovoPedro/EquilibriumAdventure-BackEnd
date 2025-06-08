@@ -1,6 +1,5 @@
-package com.techbridge.techbridge
+package com.techbridge.techbridge.controller
 
-import com.techbridge.techbridge.controller.ComentarioControllerJpa
 import com.techbridge.techbridge.entity.Comentario
 import com.techbridge.techbridge.service.ComentarioService
 import org.junit.jupiter.api.Assertions.assertEquals

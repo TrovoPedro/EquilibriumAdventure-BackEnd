@@ -1,8 +1,7 @@
-package com.techbridge.techbridge
+package com.techbridge.techbridge.service
 
 import com.techbridge.techbridge.entity.AgendamentoAnamnese
 import com.techbridge.techbridge.repository.AgendamentoAnamneseRepository
-import com.techbridge.techbridge.service.AgendamentoAnamneseService
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*

@@ -49,6 +49,5 @@ class AtivacaoEventoController {
             ResponseEntity.status(404).body(mapOf("erro" to e.message))
         }
     }
-
 }
 

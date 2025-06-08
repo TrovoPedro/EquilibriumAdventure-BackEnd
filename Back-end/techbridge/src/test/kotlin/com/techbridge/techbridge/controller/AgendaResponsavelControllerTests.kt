@@ -1,12 +1,11 @@
+package com.techbridge.techbridge.controller
+
 import com.techbridge.techbridge.dto.AgendaRequestDTO
-import com.techbridge.techbridge.dto.AgendaResponseDTO
 import com.techbridge.techbridge.entity.AgendaResponsavel
-import com.techbridge.techbridge.controller.AgendaResponsavelController
 import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.repository.AgendaResponsavelRepository
 import com.techbridge.techbridge.repository.UsuarioRepository
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 import org.mockito.Mockito.*
 import java.time.LocalDateTime
 import java.util.*
