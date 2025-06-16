@@ -22,26 +22,20 @@ class ConviteService {
 
     fun enviarConvite(conviteRequestDTO: ConviteRequestDTO): String {
         val usuarioConvidado = usuarioRepository.findByEmail(conviteRequestDTO.emailConvidado)
-        val convidado =   usuarioConvidado?.idUsuario
             ?: throw RuntimeException("Usuário convidado não encontrado")
 
         val usuarioAventureiro = usuarioRepository.findById(conviteRequestDTO.aventureiro)
             .orElseThrow { RuntimeException("Usuário aventureiro não encontrado") }
 
-        val usuarioConvidadoOptional = conviteRequestDTO.convidado?.let {
-            usuarioRepository.findById(it).orElse(null)
-        }
-
-        val convite = conviteRequestDTO.toEntity(usuarioAventureiro, convidado.toLong())
+        val convite = conviteRequestDTO.toEntity(usuarioAventureiro, usuarioConvidado)
         conviteRepository.save(convite)
 
         return """
-            Convite enviado com sucesso!
-            Data do convite: ${convite.dataConvite}
-            Email do convidado: ${convite.emailConvidado}
-        """.trimIndent()
+        Convite enviado com sucesso!
+        Data do convite: ${convite.dataConvite}
+        Email do convidado: ${convite.emailConvidado}
+    """.trimIndent()
     }
-
 
     fun listarConvites(aventureiro: Long): List<ConviteResponseDTO> {
         return conviteRepository.findByAventureiroIdUsuario(aventureiro).map { convite ->

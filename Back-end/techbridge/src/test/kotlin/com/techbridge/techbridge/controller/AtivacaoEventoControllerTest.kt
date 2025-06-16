@@ -7,9 +7,9 @@ import com.techbridge.techbridge.enums.EstadoEvento
 import com.techbridge.techbridge.service.AtivacaoEventoService
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mock
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -26,7 +26,7 @@ class AtivacaoEventoControllerTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
-    @Mock
+    @MockBean
     private lateinit var service: AtivacaoEventoService
 
     private val requestDTO = AtivacaoEventoRequestDTO(
@@ -62,7 +62,7 @@ class AtivacaoEventoControllerTest {
         given(service.criar(requestDTO)).willReturn(ativacao)
 
         mockMvc.perform(
-            post("/criar-ativacao")
+            post("/ativacoes/criar-ativacao")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO))
         )
@@ -77,7 +77,7 @@ class AtivacaoEventoControllerTest {
         given(service.atualizar(1L, requestDTO)).willReturn(ativacao)
 
         mockMvc.perform(
-            put("/1")
+            put("/ativacoes/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(requestDTO))
         )
@@ -91,14 +91,14 @@ class AtivacaoEventoControllerTest {
         val alterado = buildAtivacaoEventoMock(EstadoEvento.FINALIZADO)
         given(service.alterarEstado(1L, EstadoEvento.FINALIZADO)).willReturn(alterado)
 
-        mockMvc.perform(put("/1/estado?estado=finalizado"))
+        mockMvc.perform(put("/ativacoes/1/estado?estado=finalizado"))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.estado").value("FINALIZADO"))
     }
 
     @Test
     fun `deve retornar erro ao enviar estado invalido`() {
-        mockMvc.perform(put("/1/estado?estado=invalido"))
+        mockMvc.perform(put("/ativacoes/1/estado?estado=invalido"))
             .andExpect(status().isBadRequest)
             .andExpect(jsonPath("$.erro").value("Estado inválido: invalido"))
     }

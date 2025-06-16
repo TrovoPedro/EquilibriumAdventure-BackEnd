@@ -1,25 +1,29 @@
-/*package com.techbridge.techbridge.controller
+package com.techbridge.techbridge.controller
 
+import com.techbridge.techbridge.dto.UsuarioRequestDTO
 import com.techbridge.techbridge.entity.Evento
-import com.techbridge.techbridge.entity.Guia
 import com.techbridge.techbridge.entity.Usuario
-import com.techbridge.techbridge.repository.AdministradorEventoRepository
-import com.techbridge.techbridge.repository.AdministradorGuiaRepository
+import com.techbridge.techbridge.service.AdministradorService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/administrador")
-class AdministradorControllerJpa(
-    val repositorio: AdministradorEventoRepository,
-    val repositorioGuia: AdministradorGuiaRepository
-) {
+class AdministradorControllerJpa{
+
+    @Autowired
+    lateinit var administradorService: AdministradorService
 
     @PostMapping("/cadastrar-evento")
-    fun postEvento(@RequestBody novoEvento: Evento): ResponseEntity<Evento> {
-        val eventoSalvo = repositorio.save(novoEvento)
-        return ResponseEntity.status(201).body(eventoSalvo)
+    fun postEvento(@RequestBody novoEvento: Evento): Any? {
+        val eventoSalvo = administradorService.salvarEvento(novoEvento)
+        try {
+            return ResponseEntity.status(201).body(novoEvento)
+        }catch (e:RuntimeException){
+            return e.message
+        }
     }
 
     @GetMapping("/buscar-todos-eventos")
@@ -72,15 +76,14 @@ class AdministradorControllerJpa(
 
     // GUIAS
 
-    companion object {
-        const val tipoGuia = 2
-    }
-
     @PostMapping("/cadastrar-guia")
-    fun postGuia(@RequestBody novoGuia: Usuario): ResponseEntity<Usuario> {
-        novoGuia.fk_tipo_usuario = 2
-        val guiaSalvo = repositorioGuia.save(novoGuia)
-        return ResponseEntity.status(201).body(guiaSalvo)
+    fun postGuia(@RequestBody novoGuia: UsuarioRequestDTO): Any? {
+        val guiaSalvo = administradorService.salvarGuia(novoGuia)
+        try {
+            return ResponseEntity.status(201).body(novoGuia)
+        }catch (e:RuntimeException){
+            return e.message
+        }
     }
 
     @GetMapping("/buscar-guias")
@@ -146,6 +149,4 @@ class AdministradorControllerJpa(
             ResponseEntity.notFound().build()
         }
     }
-
-
-}*/
+}
