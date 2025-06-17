@@ -5,6 +5,7 @@ import com.techbridge.techbridge.dto.ComentarioResponseDTO
 import com.techbridge.techbridge.service.ComentarioService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.http.HttpStatus
 
 @RestController
 @RequestMapping("/comentarios")
@@ -12,16 +13,26 @@ class ComentarioControllerJpa(private val comentarioService: ComentarioService) 
 
     @PostMapping("/adicionar")
     fun adicionarComentario(@RequestBody novoComentario: ComentarioRequestDTO): ResponseEntity<ComentarioResponseDTO> {
-        val comentarioCriado = comentarioService.adicionarComentario(novoComentario)
-        return ResponseEntity.status(201).body(comentarioCriado)
+        return try {
+            val comentarioCriado = comentarioService.adicionarComentario(novoComentario)
+            ResponseEntity.status(201).body(comentarioCriado)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(400).body(null)
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(null)
+        }
     }
 
     @DeleteMapping("/excluir/{id}")
     fun excluirComentario(@PathVariable id: Int): ResponseEntity<Void> {
-        return if (comentarioService.excluirComentario(id)) {
-            ResponseEntity.noContent().build()
-        } else {
-            ResponseEntity.notFound().build()
+        return try {
+            if (comentarioService.excluirComentario(id)) {
+                ResponseEntity.noContent().build()
+            } else {
+                ResponseEntity.notFound().build()
+            }
+        } catch (e: Exception) {
+            ResponseEntity.status(500).build()
         }
     }
 
@@ -30,14 +41,24 @@ class ComentarioControllerJpa(private val comentarioService: ComentarioService) 
         @PathVariable id: Int,
         @RequestBody resposta: ComentarioRequestDTO
     ): ResponseEntity<ComentarioResponseDTO> {
-        val comentarioRespondido = comentarioService.responderComentario(id, resposta)
-            ?: return ResponseEntity.status(404).build()
-        return ResponseEntity.status(201).body(comentarioRespondido)
+        return try {
+            val comentarioRespondido = comentarioService.responderComentario(id, resposta)
+                ?: return ResponseEntity.status(404).build()
+            ResponseEntity.status(201).body(comentarioRespondido)
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(400).body(null)
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(null)
+        }
     }
 
     @GetMapping("/listar")
     fun listarComentarios(): ResponseEntity<List<ComentarioResponseDTO>> {
-        val comentarios = comentarioService.listarComentarios()
-        return ResponseEntity.status(200).body(comentarios)
+        return try {
+            val comentarios = comentarioService.listarComentarios()
+            ResponseEntity.status(200).body(comentarios)
+        } catch (e: Exception) {
+            ResponseEntity.status(500).build()
+        }
     }
 }

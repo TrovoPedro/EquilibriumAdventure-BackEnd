@@ -11,13 +11,13 @@ data class ConviteRequestDTO(
     var aventureiro: Long,
     var convidado: Long
 ) {
-    fun toEntity(aventureiroUsuario: Usuario, convidadoUsuario: Long): Convite {
+    fun toEntity(aventureiroUsuario: Usuario, convidadoUsuario: Usuario): Convite {
         return Convite(
             dataConvite = LocalDateTime.parse(dataConvite ?: LocalDateTime.now().toString()),
             emailConvidado = emailConvidado,
             conviteAceito = conviteAceito,
             aventureiro = aventureiroUsuario,
-            convidado = convidadoUsuario.let { Usuario(it.toInt()) }
+            convidado = convidadoUsuario
         )
     }
 }

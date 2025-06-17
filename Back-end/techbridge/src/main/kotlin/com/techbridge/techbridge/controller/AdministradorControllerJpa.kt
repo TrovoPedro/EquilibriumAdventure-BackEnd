@@ -1,25 +1,34 @@
 package com.techbridge.techbridge.controller
+<<<<<<< HEAD
 
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.enums.TipoUsuario
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+=======
+>>>>>>> e2e3fcb979e3c68a4ec32aa0475136c12ed82436
 
+import com.techbridge.techbridge.dto.UsuarioRequestDTO
 import com.techbridge.techbridge.entity.Evento
-import com.techbridge.techbridge.entity.Guia
 import com.techbridge.techbridge.entity.Usuario
+<<<<<<< HEAD
 import com.techbridge.techbridge.repository.AdministradorRepository
 import com.techbridge.techbridge.repository.AtivacaoEventoRepository
 
 import com.techbridge.techbridge.repository.EventoRepository
 import com.techbridge.techbridge.repository.GuiaRepository
+=======
+import com.techbridge.techbridge.service.AdministradorService
+import org.springframework.beans.factory.annotation.Autowired
+>>>>>>> e2e3fcb979e3c68a4ec32aa0475136c12ed82436
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/administrador")
+<<<<<<< HEAD
 class AdministradorControllerJpa(
     val repositorio: AdministradorRepository,
     val repositorioGuia: GuiaRepository,
@@ -32,6 +41,21 @@ class AdministradorControllerJpa(
     fun postEvento(@RequestBody novoEvento: Evento): ResponseEntity<Evento> {
         val eventoSalvo = repositorioEvento.save(novoEvento)
         return ResponseEntity.status(201).body(eventoSalvo)
+=======
+class AdministradorControllerJpa{
+
+    @Autowired
+    lateinit var administradorService: AdministradorService
+
+    @PostMapping("/cadastrar-evento")
+    fun postEvento(@RequestBody novoEvento: Evento): Any? {
+        val eventoSalvo = administradorService.salvarEvento(novoEvento)
+        try {
+            return ResponseEntity.status(201).body(novoEvento)
+        }catch (e:RuntimeException){
+            return e.message
+        }
+>>>>>>> e2e3fcb979e3c68a4ec32aa0475136c12ed82436
     }
 
     @PostMapping("/cadastrar-evento-ativo")
@@ -115,15 +139,21 @@ class AdministradorControllerJpa(
 
     // GUIAS
 
-    companion object {
-        const val tipoGuia = 2
-    }
-
     @PostMapping("/cadastrar-guia")
+<<<<<<< HEAD
     fun postGuia(@RequestBody novoGuia: Usuario): ResponseEntity<Usuario> {
         novoGuia.tipo_usuario = TipoUsuario.GUIA
         val guiaSalvo = repositorioGuia.save(novoGuia)
         return ResponseEntity.status(201).body(guiaSalvo)
+=======
+    fun postGuia(@RequestBody novoGuia: UsuarioRequestDTO): Any? {
+        val guiaSalvo = administradorService.salvarGuia(novoGuia)
+        try {
+            return ResponseEntity.status(201).body(novoGuia)
+        }catch (e:RuntimeException){
+            return e.message
+        }
+>>>>>>> e2e3fcb979e3c68a4ec32aa0475136c12ed82436
     }
 
     @GetMapping("/buscar-guias")
@@ -189,8 +219,12 @@ class AdministradorControllerJpa(
             ResponseEntity.notFound().build()
         }
     }
+<<<<<<< HEAD
 
 
 }
 
 
+=======
+}
+>>>>>>> e2e3fcb979e3c68a4ec32aa0475136c12ed82436

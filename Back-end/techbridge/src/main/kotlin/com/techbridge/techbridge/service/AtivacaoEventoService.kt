@@ -20,7 +20,7 @@ class AtivacaoEventoService {
     @Autowired
     lateinit var eventoRepository: EventoRepository
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    private val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
     fun criar(dto: AtivacaoEventoRequestDTO): AtivacaoEvento {
         val ativacao = AtivacaoEvento()
@@ -29,7 +29,7 @@ class AtivacaoEventoService {
         ativacao.horaFinal = dto.horaFinal?.let { Time.valueOf(it) }
         ativacao.tempoEstimado = dto.tempoEstimado
         ativacao.limiteInscritos = dto.limiteInscritos
-        ativacao.dataAtivacao = dto.dataAtivacao?.let { LocalDate.parse(it, dateFormatter) }
+        ativacao.dataAtivacao = dto.dataAtivacao?.let { it}
         ativacao.tipo = dto.tipo
         ativacao.preco = dto.preco
         ativacao.estado = dto.estado?.let { EstadoEvento.valueOf(it.uppercase()) }
@@ -48,7 +48,7 @@ class AtivacaoEventoService {
         ativacaoExistente.horaFinal = dto.horaFinal?.let { Time.valueOf(it) }
         ativacaoExistente.tempoEstimado = dto.tempoEstimado
         ativacaoExistente.limiteInscritos = dto.limiteInscritos
-        ativacaoExistente.dataAtivacao = dto.dataAtivacao?.let { LocalDate.parse(it, dateFormatter) }
+        ativacaoExistente.dataAtivacao = dto.dataAtivacao?.let { it}
         ativacaoExistente.tipo = dto.tipo
         ativacaoExistente.preco = dto.preco
         ativacaoExistente.estado = dto.estado?.let { EstadoEvento.valueOf(it.uppercase()) }

@@ -4,7 +4,7 @@ import java.time.LocalDateTime
 
 data class InscricaoDTO(
     val idInscricao: Long?,
-    val idEvento: Long?,
-    val idUsuario: Int?,
+    val idAtivacaoEvento: Long?,
+    val idUsuario: Long?,
     val dataInscricao: LocalDateTime
 )

@@ -13,7 +13,7 @@ class InscricaoController {
     @Autowired
     lateinit var inscricaoService: InscricaoService
 
-    @PostMapping("/evento/{eventoId}/usuario/{usuarioId}")
+    @PostMapping("/ativacaoEvento/{eventoId}/usuario/{usuarioId}")
     fun criarInscricao(
         @PathVariable eventoId: Long,
         @PathVariable usuarioId: Long
@@ -22,7 +22,7 @@ class InscricaoController {
         return ResponseEntity.ok(inscricao)
     }
 
-    @GetMapping("/evento/{eventoId}")
+    @GetMapping("/ativacaoEvento/{eventoId}")
     fun listarInscritos(@PathVariable eventoId: Long): ResponseEntity<List<InscricaoDTO>> {
         val inscritos = inscricaoService.listarInscritos(eventoId)
         return ResponseEntity.ok(inscritos)
