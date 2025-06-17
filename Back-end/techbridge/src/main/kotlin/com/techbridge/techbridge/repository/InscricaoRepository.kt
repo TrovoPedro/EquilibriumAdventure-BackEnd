@@ -18,4 +18,12 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
         @Param("evento") eventoId: Long,
         @Param("dataInscricao") dataInscricao: java.time.LocalDateTime
     )
+
+    fun findByAventureiro_IdUsuario(aventureiro: Long): List<Inscricao>
+
+    @Query("delete from Inscricao i where i.id_inscricao = :id")
+    fun deleteByIdInscricao(id: Long?)
+
+    @Query("SELECT i FROM Inscricao i WHERE i.evento.id_evento = :eventoId and i.aventureiro.idUsuario = :aventureiroId")
+    fun  findByAventureiroAndEvento(aventureiroId: Long, eventoId: Long): Inscricao?
 }
