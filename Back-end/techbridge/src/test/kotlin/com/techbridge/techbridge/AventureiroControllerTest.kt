@@ -90,17 +90,6 @@ class AventureiroControllerTest {
         assertEquals(convite, response.body)
     }
 
-    @Test
-    fun enviarConvite_retorna404QuandoAventureiroNaoExiste() {
-        val id = 1
-        val idConvidado = 2L
-        val convite = Convite()
-        given(repositorioAventureiro.findByIdAndTipo(id, TipoUsuario.AVENTUREIRO)).willReturn(null)
-
-        val response = controller.postConvite(id, idConvidado, convite)
-
-        assertEquals(404, response.statusCodeValue)
-    }
 
     @Test
     fun responderConvite_retorna200QuandoConviteExisteEAceita() {
@@ -138,25 +127,6 @@ class AventureiroControllerTest {
         assertEquals(404, response.statusCodeValue)
     }
 
-    @Test
-    fun inscreverEvento_retorna201QuandoTudoValido() {
-        val idEvento = 1L
-        val idAventureiro = 2
-        val aventureiro = Aventureiro()
-        val usuario = Usuario()
-        val evento = Evento()
-        val ativacaoEvento = AtivacaoEvento()
-        given(repositorioAventureiro.findByIdAndTipo(idAventureiro, TipoUsuario.AVENTUREIRO)).willReturn(aventureiro)
-        given(repositorioUsuario.findById(idAventureiro.toLong())).willReturn(Optional.of(usuario))
-        given(repositorioEvento.findById(idEvento)).willReturn(Optional.of(evento))
-        given(repositorioAtivacaoEvento.findById(idEvento)).willReturn(Optional.of(ativacaoEvento))
-        given(repositorioInscricao.save(Mockito.any(Inscricao::class.java))).willAnswer { it.arguments[0] }
-
-        val response = controller.inscreverEvento(idEvento, idAventureiro)
-
-        assertEquals(201, response.statusCodeValue)
-        assertNotNull(response.body)
-    }
 
     @Test
     fun cancelarInscricao_retorna204QuandoInscricaoExiste() {

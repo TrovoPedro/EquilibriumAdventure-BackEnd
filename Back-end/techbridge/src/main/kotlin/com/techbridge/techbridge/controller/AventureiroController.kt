@@ -155,7 +155,7 @@ class AventureiroController(
         val dataInscricao = LocalDateTime.now()
 
         //if (aventureiro !== null && evento.isPresent) {
-        val inscricao = Inscricao(evento = evento.get(), aventureiro = usuario.get(), dataInscricao = dataInscricao)
+        val inscricao = Inscricao(ativacaoEvento = ativacaoEvento.get(), aventureiro = usuario.get(), dataInscricao = dataInscricao)
         repositorioInscricao.save(inscricao)
         val inscricaoSalva = InscricaoService().criarInscricao(idEvento, idAventureiro.toLong())
         return ResponseEntity.status(201).body(inscricao)
