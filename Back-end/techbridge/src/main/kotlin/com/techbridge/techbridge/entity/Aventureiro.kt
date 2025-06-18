@@ -5,9 +5,10 @@ import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 
 @Entity
-@DiscriminatorValue(value = "2")
-class Guia : Usuario(
-    tipo_usuario = TipoUsuario.GUIA
+@DiscriminatorValue(value = "1")
+class Aventureiro: Usuario(
+
+    tipo_usuario = TipoUsuario.AVENTUREIRO
 ) {
 
 }

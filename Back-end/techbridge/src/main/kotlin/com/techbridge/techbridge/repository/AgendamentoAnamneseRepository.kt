@@ -24,6 +24,19 @@ interface AgendamentoAnamneseRepository : JpaRepository<AgendamentoAnamnese, Int
     fun listarHistorico(): List<Map<String, Any>>
 
     @Query(
+        value = """
+    SELECT aa.id_anamnese AS idAnamnese, ar.data_disponivel AS dataDisponivel, u.nome AS nomeUsuario
+    FROM agendamento_anamnese aa
+    JOIN agenda_responsavel ar ON aa.fk_data = ar.id_agenda
+    JOIN usuario u ON aa.fk_aventureiro = u.id_usuario
+    WHERE aa.fk_aventureiro = :idUsuario
+    """,
+        nativeQuery = true
+    )
+    fun listarHistoricoGuia(idUsuario: Int): List<Map<String, Any>>
+
+
+    @Query(
         value = "SELECT id_agenda AS idAgenda, data_disponivel AS dataDisponivel FROM agenda_responsavel",
         nativeQuery = true
     )

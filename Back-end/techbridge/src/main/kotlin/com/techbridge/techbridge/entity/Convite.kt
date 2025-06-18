@@ -23,11 +23,11 @@ data class Convite(
 
     @ManyToOne
     @JoinColumn(name = "fk_aventureiro")
-    val aventureiro: Usuario? = null,
+    var aventureiro: Usuario? = null,
 
     @ManyToOne
     @JoinColumn(name = "fk_convidado")
-    val convidado: Usuario? = null,
+    var convidado: Usuario? = null,
 ) {
     constructor() : this(0, LocalDateTime.now(), "", null, null, null)
 }
