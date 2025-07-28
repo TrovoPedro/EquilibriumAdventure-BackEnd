@@ -2,6 +2,7 @@ package com.techbridge.techbridge.repository
 
 import com.techbridge.techbridge.entity.InformacoesPessoais
 import com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO
+import com.techbridge.techbridge.enums.Nivel
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -36,4 +37,21 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
         nativeQuery = true
     )
     fun atualizarRelatorioPorCpf(@Param("cpf") cpf: String, @Param("descricao") descricao: String): Int
+
+    @Query("""
+    SELECT ip
+    FROM InformacoesPessoais ip
+    WHERE ip.usuario = :usuarioId
+""")
+    fun buscarPorUsuario(@Param("usuarioId") usuarioId: Long): InformacoesPessoais?
+
+    @Modifying
+    @Query("""
+    UPDATE InformacoesPessoais ip
+    SET ip.nivel = :nivel
+    WHERE ip.usuario = :usuarioId
+""")
+    fun atualizarNivelPorUsuario(@Param("usuarioId") usuarioId: Long, @Param("nivel") nivel: Nivel): Int
 }
+
+

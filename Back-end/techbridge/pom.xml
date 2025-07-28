@@ -30,6 +30,13 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>io.mockk</groupId>
+			<artifactId>mockk</artifactId>
+			<version>1.13.5</version>
+			<scope>test</scope>
+		</dependency>
+
 		<!-- Jackson Kotlin -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>

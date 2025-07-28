@@ -37,12 +37,12 @@ class AtivacaoEventoServiceUnitTest {
     }
 
     private val requestDTO = AtivacaoEventoRequestDTO(
-        horaInicio = "10:00:00",
-        horaFinal = "12:00:00",
+        horaInicio = "08:00:00",
+        horaFinal = "10:00:00",
         limiteInscritos = 30,
         tempoEstimado = 2.0,
         tipo = "Trilha",
-        dataAtivacao = "2025-10-01",
+        dataAtivacao = LocalDate.parse("2025-12-01"), // Corrigido para LocalDate
         preco = 49.99,
         estado = "NAO_INICIADO",
         eventoId = 1L
@@ -70,10 +70,10 @@ class AtivacaoEventoServiceUnitTest {
 
         val result = service.criar(requestDTO)
 
-        assertEquals(Time.valueOf("10:00:00"), result.horaInicio)
-        assertEquals(LocalDate.parse("2025-10-01"), result.dataAtivacao)
-        assertEquals(EstadoEvento.NAO_INICIADO, result.estado)
-        assertEquals(30, result.limiteInscritos)
+        assertEquals(Time.valueOf(requestDTO.horaInicio), result.horaInicio)
+        assertEquals(requestDTO.dataAtivacao, result.dataAtivacao)
+        assertEquals(EstadoEvento.valueOf(requestDTO.estado!!), result.estado)
+        assertEquals(requestDTO.limiteInscritos, result.limiteInscritos)
     }
 
     @Test

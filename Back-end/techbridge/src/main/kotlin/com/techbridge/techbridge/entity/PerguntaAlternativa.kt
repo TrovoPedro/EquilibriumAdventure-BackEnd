@@ -1,49 +1,52 @@
 package com.techbridge.techbridge.entity
 
-import com.fasterxml.jackson.annotation.JsonIgnore
-import com.fasterxml.jackson.annotation.JsonProperty
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "pergunta_alternativa")
-class PerguntaAlternativa {
-
+data class PerguntaAlternativa(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_pergunta")
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @JsonIgnore
-    var id: Int? = null
+    val id: Int = 0,
 
     @Column(name = "texto_pergunta", nullable = false)
-    var textoPergunta: String? = null
+    val textoPergunta: String = "",
 
     @Column(name = "alternativa_1", nullable = false)
-    var alternativa1: String? = null
+    val alternativa1: String = "",
 
     @Column(name = "valor_1", nullable = false)
-    var valor1: Int? = null
+    val valor1: Int = 0,
 
     @Column(name = "alternativa_2", nullable = false)
-    var alternativa2: String? = null
+    val alternativa2: String = "",
 
     @Column(name = "valor_2", nullable = false)
-    var valor2: Int? = null
+    val valor2: Int = 0,
 
     @Column(name = "alternativa_3", nullable = false)
-    var alternativa3: String? = null
+    val alternativa3: String = "",
 
     @Column(name = "valor_3", nullable = false)
-    var valor3: Int? = null
+    val valor3: Int = 0,
 
     @Column(name = "alternativa_4", nullable = false)
-    var alternativa4: String? = null
+    val alternativa4: String = "",
 
     @Column(name = "valor_4", nullable = false)
-    var valor4: Int? = null
+    val valor4: Int = 0
+) {
+    constructor() : this(
+        id = 0,
+        textoPergunta = "",
+        alternativa1 = "",
+        valor1 = 0,
+        alternativa2 = "",
+        valor2 = 0,
+        alternativa3 = "",
+        valor3 = 0,
+        alternativa4 = "",
+        valor4 = 0
+    )
 }

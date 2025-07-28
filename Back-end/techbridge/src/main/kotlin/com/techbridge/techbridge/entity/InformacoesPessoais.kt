@@ -49,6 +49,6 @@ class InformacoesPessoais {
     @Column(name = "nivel", nullable = false)
     var nivel: Nivel? = null
 
-    @Column(name = "usuario_id", nullable = false)
+    @Column(name = "fk_aventureiro", nullable = false)
     var usuario: Long = 0
 }
