@@ -6,10 +6,8 @@ import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.enums.EstadoEvento
 import com.techbridge.techbridge.service.AtivacaoEventoService
 import org.junit.jupiter.api.Test
-import org.mockito.BDDMockito.given
+import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
@@ -17,7 +15,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import java.sql.Time
 import java.time.LocalDate
 
-@WebMvcTest(AtivacaoEventoController::class)
 class AtivacaoEventoControllerTest {
 
     @Autowired
@@ -26,8 +23,7 @@ class AtivacaoEventoControllerTest {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
-    @MockBean
-    private lateinit var service: AtivacaoEventoService
+    private val service = mock(AtivacaoEventoService::class.java)
 
     private val requestDTO = AtivacaoEventoRequestDTO(
         horaInicio = "08:00:00",
@@ -35,7 +31,7 @@ class AtivacaoEventoControllerTest {
         limiteInscritos = 30,
         tempoEstimado = 2.0,
         tipo = "Trilha",
-        dataAtivacao = "2025-12-01",
+        dataAtivacao = LocalDate.parse("2025-12-01"),
         preco = 49.99,
         estado = "NAO_INICIADO",
         eventoId = 1L
@@ -59,7 +55,7 @@ class AtivacaoEventoControllerTest {
     @Test
     fun `deve criar ativacao com sucesso`() {
         val ativacao = buildAtivacaoEventoMock(EstadoEvento.NAO_INICIADO)
-        given(service.criar(requestDTO)).willReturn(ativacao)
+        `when`(service.criar(requestDTO)).thenReturn(ativacao)
 
         mockMvc.perform(
             post("/ativacoes/criar-ativacao")
@@ -74,7 +70,7 @@ class AtivacaoEventoControllerTest {
     @Test
     fun `deve atualizar ativacao com sucesso`() {
         val ativacao = buildAtivacaoEventoMock(EstadoEvento.NAO_INICIADO)
-        given(service.atualizar(1L, requestDTO)).willReturn(ativacao)
+        `when`(service.atualizar(1L, requestDTO)).thenReturn(ativacao)
 
         mockMvc.perform(
             put("/ativacoes/1")
@@ -89,7 +85,7 @@ class AtivacaoEventoControllerTest {
     @Test
     fun `deve alterar estado com sucesso`() {
         val alterado = buildAtivacaoEventoMock(EstadoEvento.FINALIZADO)
-        given(service.alterarEstado(1L, EstadoEvento.FINALIZADO)).willReturn(alterado)
+        `when`(service.alterarEstado(1L, EstadoEvento.FINALIZADO)).thenReturn(alterado)
 
         mockMvc.perform(put("/ativacoes/1/estado?estado=finalizado"))
             .andExpect(status().isOk)
