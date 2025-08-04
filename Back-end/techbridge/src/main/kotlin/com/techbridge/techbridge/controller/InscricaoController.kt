@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/inscricoes")
+@CrossOrigin(origins = ["*"])
 class InscricaoController {
 
     @Autowired
@@ -28,17 +29,24 @@ class InscricaoController {
         return ResponseEntity.ok(inscritos)
     }
 
-    // Guia pode remover um inscrito
     @DeleteMapping("/{idInscricao}")
     fun removerInscrito(@PathVariable idInscricao: Long): ResponseEntity<Void> {
         inscricaoService.removerInscrito(idInscricao)
         return ResponseEntity.noContent().build()
     }
 
-    // Usuário pode cancelar sua inscrição
     @DeleteMapping("/remover/{idInscricao}")
     fun cancelarInscricao(@PathVariable idInscricao: Long): ResponseEntity<Void> {
         inscricaoService.cancelarInscricao(idInscricao)
+        return ResponseEntity.noContent().build()
+    }
+
+    @PatchMapping("/{idInscricao}/avaliar")
+    fun avaliarEvento(
+        @PathVariable idInscricao: Long,
+        @RequestParam avaliacao: Int
+    ): ResponseEntity<Void> {
+        inscricaoService.avaliarEvento(idInscricao, avaliacao)
         return ResponseEntity.noContent().build()
     }
 }
