@@ -9,19 +9,22 @@ class Inscricao(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id_inscricao: Long? = null,
+    @Column(name = "id_inscricao")
+    val idInscricao: Long? = null,
 
     @ManyToOne
-    @JoinColumn(name = "aventureiro", nullable = false)
+    @JoinColumn(name = "fk_aventureiro", nullable = false)
     val aventureiro: Usuario,
 
     @ManyToOne
-    @JoinColumn(name = "ativacaoEvento", nullable = false)
+    @JoinColumn(name = "fk_ativacao_evento", nullable = false)
     val ativacaoEvento: AtivacaoEvento,
 
-    @Column(name = "dataInscricao", nullable = false)
-    val dataInscricao: java.time.LocalDateTime = java.time.LocalDateTime.now()
+    @Column(name = "data_inscricao", nullable = false)
+    val dataInscricao: LocalDateTime = LocalDateTime.now(),
 
+    @Column(name = "avaliacao")
+    val avaliacao: Int? = null
 ) {
 
     constructor() : this(

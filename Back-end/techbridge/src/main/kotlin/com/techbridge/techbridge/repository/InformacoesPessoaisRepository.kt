@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository
 @Repository
 interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Long> {
 
+
     @Query("""
     SELECT new com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO(
         u.telefoneContato,
@@ -52,6 +53,7 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
     WHERE ip.usuario = :usuarioId
 """)
     fun atualizarNivelPorUsuario(@Param("usuarioId") usuarioId: Long, @Param("nivel") nivel: Nivel): Int
+
 }
 
 

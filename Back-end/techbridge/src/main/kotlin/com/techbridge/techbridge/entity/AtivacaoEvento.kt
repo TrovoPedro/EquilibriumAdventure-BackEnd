@@ -43,8 +43,6 @@ class AtivacaoEvento {
     @JoinColumn(name = "fk_evento")
     var evento: Evento? = null
 
-    @Column(name = "nome")
-    var nome: String? = null
 
     constructor()
 
