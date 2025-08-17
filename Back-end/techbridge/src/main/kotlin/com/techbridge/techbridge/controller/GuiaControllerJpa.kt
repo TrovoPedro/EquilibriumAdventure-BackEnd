@@ -70,7 +70,6 @@ class GuiaControllerJpa(
         }
     }
 
-
     @GetMapping("/buscar-eventos")
     fun getAllEventos(): ResponseEntity<Any>{
         val eventosEncontrados: List<Map<String, Any>> = eventoService.getEventos();

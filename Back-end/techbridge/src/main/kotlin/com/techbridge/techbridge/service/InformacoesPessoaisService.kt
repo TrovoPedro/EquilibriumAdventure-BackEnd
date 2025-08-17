@@ -3,6 +3,7 @@ package com.techbridge.techbridge.service;
 import com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO
 import com.techbridge.techbridge.dto.InformacoesPessoaisRequestDTO
 import com.techbridge.techbridge.dto.InformacoesPessoaisResponseDTO
+import com.techbridge.techbridge.entity.InformacoesPessoais
 import com.techbridge.techbridge.repository.EnderecoRepository
 import com.techbridge.techbridge.repository.InformacoesPessoaisRepository;
 import com.techbridge.techbridge.repository.UsuarioRepository
@@ -10,6 +11,8 @@ import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.multipart.MultipartFile
+import java.util.*
 
 @Service
 @Transactional
@@ -24,7 +27,10 @@ class InformacoesPessoaisService {
     @Autowired
     lateinit var enderecoRepository: EnderecoRepository
 
-    fun postInformacoes(id: Long, informacao: InformacoesPessoaisRequestDTO): InformacoesPessoaisResponseDTO {
+    fun postInformacoes(id: Long, informacaoJson: String, img_usuario: MultipartFile?): InformacoesPessoaisResponseDTO {
+        val objectMapper = com.fasterxml.jackson.databind.ObjectMapper()
+        val informacao = objectMapper.readValue(informacaoJson, InformacoesPessoaisRequestDTO::class.java)
+
         if (informacao == null) {
             throw RuntimeException("Informações não preenchidas")
         }
@@ -39,10 +45,11 @@ class InformacoesPessoaisService {
             throw RuntimeException("Endereço não encontrado")
         }
 
-        // Prepara a entidade para salvar, setando o usuário com o id do path
         val entidade = informacao.toEntity()
-        entidade.usuario = id // garante que o usuário é o do path (e não do DTO)
+        entidade.usuario = id
         entidade.endereco = informacao.endereco
+
+        entidade.img_usuario = img_usuario?.bytes
 
         val novaInformacao = informacaoRepository.save(entidade)
 
@@ -50,11 +57,22 @@ class InformacoesPessoaisService {
             contatoEmergencia = novaInformacao.contatoEmergencia,
             endereco = novaInformacao.endereco ?: 0,
             nivel = novaInformacao.nivel ?: throw RuntimeException("Nível não informado"),
-            usuario = novaInformacao.usuario,
+            usuario = novaInformacao.usuario ?: throw RuntimeException("id não informado"),
             relatorioAnamnese = novaInformacao.relatorioAnamnese,
             idioma = novaInformacao.idioma,
-            questionarioRespondido = novaInformacao.questionarioRespondido
+            questionarioRespondido = novaInformacao.questionarioRespondido,
         )
+    }
+
+    fun getInformacoesId(id: Long): Optional<InformacoesPessoais> {
+        return informacaoRepository.findById(id)
+    }
+
+    fun getImagemUsuario(id: Long): ByteArray? {
+        val informacao = informacaoRepository.findById(id)
+            .orElseThrow { RuntimeException("Informações do usuário não encontradas") }
+
+        return informacao.img_usuario
     }
 
     fun getInformacoesPerfil(id: Long): InformacoesPessoaisGetPerfilDTO? {
@@ -90,8 +108,8 @@ class InformacoesPessoaisService {
         return InformacoesPessoaisResponseDTO(
             contatoEmergencia = informacao.contatoEmergencia,
             endereco = informacao.endereco,
-            nivel = informacao.nivel,
-            usuario = informacao.usuario,
+            nivel = informacao.nivel ?: throw RuntimeException("Nível não informado"),
+            usuario = informacao.usuario ?: throw RuntimeException("id não informado"),
             relatorioAnamnese = informacao.relatorioAnamnese,
             idioma = informacao.idioma,
             questionarioRespondido = informacao.questionarioRespondido

@@ -25,6 +25,7 @@ class Evento() {
     var descricao: String? = null
     var nivel_dificuldade: String? = null
     var distancia_km: Double? = null
+    var caminho_arquivo_evento: String? = null
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")

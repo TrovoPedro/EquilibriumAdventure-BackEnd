@@ -50,5 +50,9 @@ class InformacoesPessoais {
     var nivel: Nivel? = null
 
     @Column(name = "fk_aventureiro", nullable = false)
-    var usuario: Long = 0
+    var usuario: Long? = 0
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    var img_usuario: ByteArray? = null
 }

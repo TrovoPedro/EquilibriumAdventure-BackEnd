@@ -8,7 +8,8 @@ data class EventoRequestDTO(
     var nivel_dificuldade: String? = null,
     var distancia_km: Double? = null,
     var responsavel: Long = 0,
-    var endereco: Long? = null
+    var endereco: Long? = null,
+    var caminho_arquivo_evento: String? = null
 ) {
     fun toEntity(): Evento {
         val entidade = Evento()
@@ -18,6 +19,7 @@ data class EventoRequestDTO(
         entidade.distancia_km = distancia_km
         entidade.responsavel = responsavel
         entidade.endereco = endereco
+        entidade.caminho_arquivo_evento = caminho_arquivo_evento
         return entidade
     }
 }
