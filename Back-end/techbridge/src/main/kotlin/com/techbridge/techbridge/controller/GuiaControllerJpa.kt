@@ -16,16 +16,12 @@ import com.techbridge.techbridge.repository.InformacoesPessoaisRepository
 import com.techbridge.techbridge.repository.InscricaoRepository
 import com.techbridge.techbridge.repository.UsuarioRepository
 import com.techbridge.techbridge.service.GuiaService
+import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/guia")
@@ -36,7 +32,6 @@ class GuiaControllerJpa(
     private val repositorioEvento: EventoRepository,
     val repositorioInscricao: InscricaoRepository,
     val repositorioAtivacaoEvento: AtivacaoEventoRepository,
-    val repositorioUsuario: UsuarioRepository,
     val repositorioComentario: ComentarioRepository,
     val repositorioAgendaResponsavel: AgendaResponsavelRepository,
     val repositorioAgendaAnamnese: AgendamentoAnamneseRepository
@@ -45,15 +40,36 @@ class GuiaControllerJpa(
     @Autowired
     lateinit var eventoService: GuiaService
 
-    @PostMapping("/cadastrar-evento")
-    fun postEvento(@RequestBody novoEvento: EventoRequestDTO): ResponseEntity<Any>{
+    @PostMapping("/cadastrar-evento", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun postEvento(
+        @RequestPart("evento") eventoJson: String,
+        @RequestPart("imagem", required = false) img_evento: MultipartFile?
+    ): ResponseEntity<Any> {
         return try {
-            val eventoSalvo = eventoService.postEvento(novoEvento);
-            ResponseEntity.ok(novoEvento)
-        }catch (e: RuntimeException){
-            ResponseEntity.status(400).body(e.message)
+            val objectMapper = com.fasterxml.jackson.databind.ObjectMapper()
+            val novoEvento = objectMapper.readValue(eventoJson, EventoRequestDTO::class.java)
+
+            val eventoSalvo = eventoService.postEvento(novoEvento, img_evento)
+            ResponseEntity.ok(eventoSalvo)
+        } catch (e: Exception) {
+            ResponseEntity.status(400).body("Erro ao processar requisição: ${e.message}")
         }
     }
+
+    @GetMapping("/{id}/imagem")
+    fun getImagem(@PathVariable id: Long): ResponseEntity<ByteArray> {
+        val evento = eventoService.getEventoId(id)
+            .orElseThrow { RuntimeException("Evento não encontrado") }
+
+        return if (evento.img_evento != null) {
+            ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(evento.img_evento)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
 
     @GetMapping("/buscar-eventos")
     fun getAllEventos(): ResponseEntity<Any>{
@@ -73,9 +89,6 @@ class GuiaControllerJpa(
             return ResponseEntity.status(204).build()
         }
         return ResponseEntity.status(200).body(eventosEncontrados)
-
-
-
     }
 
     @GetMapping("Adicionar-comentario/{idEvento}/{idAventureiro}")
@@ -195,17 +208,7 @@ class GuiaControllerJpa(
             return ResponseEntity.status(200).body(datasDisponiveis)
         }
     }
-/*
-    @GetMapping("/buscar-eventos-ativos")
-    fun getHistoricoEventoAtivos(): ResponseEntity<List<AtivacaoEvento>?> {
-        val eventosAtivos = repositorioAtivacaoEvento.()
-        if (eventosAtivos.isEmpty()) {
-            return ResponseEntity.status(204).build()
-        } else {
-            return ResponseEntity.status(200).body(eventosAtivos)
-        }
-    }
-*/
+
     @GetMapping("/buscar-informacoes-pessoais/{usuarioSelecionado}")
     fun getInformacoesPessoas(@PathVariable usuarioSelecionado: Long): ResponseEntity<out Any?> {
         val informacoes = repositorioInformacoes.buscarInformacoes(usuarioSelecionado)

@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor
 import lombok.Getter
 import lombok.NoArgsConstructor
 import lombok.Setter
+import org.springframework.web.multipart.MultipartFile
 
 @Entity
 @Table(name = "evento")
@@ -24,6 +25,10 @@ class Evento() {
     var descricao: String? = null
     var nivel_dificuldade: String? = null
     var distancia_km: Double? = null
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    var img_evento: ByteArray? = null
 
     @Column(name = "fk_responsavel", nullable = false)
     var responsavel: Long = 1

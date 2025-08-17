@@ -34,18 +34,7 @@ class AdministradorControllerJpa(
         val eventoSalvo = repositorioEvento.save(novoEvento)
         return ResponseEntity.status(201).body(eventoSalvo)
     }
-    /*@Autowired
-    lateinit var administradorService: AdministradorService
 
-    @PostMapping("/cadastrar-evento")
-    fun postEvento(@RequestBody novoEvento: Evento): Any? {
-        val eventoSalvo = administradorService.salvarEvento(novoEvento)
-        try {
-            return ResponseEntity.status(201).body(novoEvento)
-        }catch (e:RuntimeException){
-            return e.message
-        }
-*/
     @PostMapping("/cadastrar-evento-ativo")
     fun postEventoAtivo(@RequestBody novoEvento: AtivacaoEvento): ResponseEntity<AtivacaoEvento> {
         val eventoSalvo = repositorioEventoAtivo.save(novoEvento)
