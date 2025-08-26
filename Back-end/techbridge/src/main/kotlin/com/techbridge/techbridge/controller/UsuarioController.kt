@@ -5,6 +5,7 @@ import com.techbridge.techbridge.dto.EditarInformacoesDTO
 import com.techbridge.techbridge.dto.UsuarioRequestDTO
 import com.techbridge.techbridge.dto.UsuarioResponseDTO
 import com.techbridge.techbridge.entity.Usuario
+import com.techbridge.techbridge.entity.UsuarioLogin
 import com.techbridge.techbridge.repository.UsuarioRepository
 import com.techbridge.techbridge.service.UsuarioService
 import jakarta.validation.Valid
@@ -68,5 +69,47 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
         } catch (e: RuntimeException) {
             ResponseEntity.notFound().build()
         }
+    }
+
+    @GetMapping("/login")
+    fun getUsuarioLogin(@RequestBody credenciais:UsuarioLogin): ResponseEntity<UsuarioLogin> {
+        var consultaUsuarioExistente = repositorioUsuario.findByEmail(credenciais.email)
+
+        var usuarioLogado = credenciais
+
+        if (usuarioLogado.autenticado == false) {
+
+            if (usuarioLogado.senha == consultaUsuarioExistente?.senha || usuarioLogado.email == consultaUsuarioExistente?.email) {
+                usuarioLogado.autenticado = true
+                return ResponseEntity.status(200).body(usuarioLogado)
+            }
+        }
+
+
+
+
+        return ResponseEntity.status(401).build() // Retorna erro 401 se as credenciais estiverem incorretas
+
+
+    }
+
+    @GetMapping("/logoff")
+    fun getUsuarioLogoff(@RequestBody credenciais: UsuarioLogin): ResponseEntity<UsuarioLogin> {
+        var usuarioLogado: UsuarioLogin = UsuarioLogin(
+            email = credenciais.email,
+            senha = credenciais.senha,
+            autenticado = true
+        )
+
+        if (usuarioLogado.autenticado == true) {
+            usuarioLogado.autenticado = false
+
+            return ResponseEntity.status(200).body(usuarioLogado)
+
+
+        }
+        return ResponseEntity.noContent().build() // Retorna erro 401 se as credenciais estiverem incorretas
+
+
     }
 }
