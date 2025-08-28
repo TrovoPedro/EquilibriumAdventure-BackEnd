@@ -12,7 +12,7 @@ import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-
+import com.techbridge.techbridge.enums.TipoUsuario
 
 @RestController
 @RequestMapping("usuarios")
@@ -71,26 +71,23 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
         }
     }
 
-    @GetMapping("/login")
-    fun getUsuarioLogin(@RequestBody credenciais:UsuarioLogin): ResponseEntity<UsuarioLogin> {
-        var consultaUsuarioExistente = repositorioUsuario.findByEmail(credenciais.email)
+    @PostMapping("/login")
+    fun login(@RequestBody credenciais: UsuarioLogin): ResponseEntity<UsuarioLogin> {
+        val usuario = repositorioUsuario.findByEmail(credenciais.email)
 
-        var usuarioLogado = credenciais
-
-        if (usuarioLogado.autenticado == false) {
-
-            if (usuarioLogado.senha == consultaUsuarioExistente?.senha || usuarioLogado.email == consultaUsuarioExistente?.email) {
-                usuarioLogado.autenticado = true
-                return ResponseEntity.status(200).body(usuarioLogado)
+        return if (usuario != null && usuario.senha == credenciais.senha) {
+            val usuarioLogado = usuario.email?.let {
+                UsuarioLogin(
+                    email = it,
+                    senha = "", // não retorna a senha
+                    autenticado = true,
+                    tipoUsuario = usuario.tipo_usuario.toString()
+                )
             }
+            ResponseEntity.ok(usuarioLogado)
+        } else {
+            ResponseEntity.status(401).build()
         }
-
-
-
-
-        return ResponseEntity.status(401).build() // Retorna erro 401 se as credenciais estiverem incorretas
-
-
     }
 
     @GetMapping("/logoff")
@@ -98,7 +95,8 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
         var usuarioLogado: UsuarioLogin = UsuarioLogin(
             email = credenciais.email,
             senha = credenciais.senha,
-            autenticado = true
+            autenticado = true,
+            tipoUsuario = credenciais.tipoUsuario,
         )
 
         if (usuarioLogado.autenticado == true) {
