@@ -14,6 +14,5 @@ interface AdministradorRepository: JpaRepository<Administrador, Int> {
     @Query("SELECT u FROM Usuario u WHERE u.idUsuario = :idUsuario and u.tipo_usuario = :tipoUsuario")
     fun findByIdAndTipo(@Param("idUsuario") idUsuario: Int, @Param("tipo_usuario") tipo_usuario: TipoUsuario): Usuario?
 
-
     fun findByIdUsuario(id: Long): Administrador?
 }

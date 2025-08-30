@@ -2,6 +2,7 @@ package com.techbridge.techbridge.repository
 
 import com.techbridge.techbridge.entity.InformacoesPessoais
 import com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO
+import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.enums.Nivel
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -53,7 +54,6 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
     WHERE ip.usuario = :usuarioId
 """)
     fun atualizarNivelPorUsuario(@Param("usuarioId") usuarioId: Long, @Param("nivel") nivel: Nivel): Int
-
 }
 
 

@@ -43,21 +43,24 @@ class InformacoesPessoaisController {
     }
 
     @GetMapping("/perfil/{id}")
-    fun getInformacaoPerfil(@PathVariable id: Long): ResponseEntity<Any>{
-        return try{
+    fun getInformacaoPerfil(@PathVariable id: Long): ResponseEntity<Any> {
+        return try {
             val informacaoEncontrada = informacaoService.getInformacoesPerfil(id);
             ResponseEntity.ok(informacaoEncontrada);
-        }catch (e: RuntimeException){
+        } catch (e: RuntimeException) {
             ResponseEntity.status(404).body(e.message)
         }
     }
 
     @PutMapping("/editar-perfil/{id}")
-    fun putInformacaoPerfil(@PathVariable id: Long, @RequestBody novaInformacao: InformacoesPessoaisRequestDTO): ResponseEntity<Any>{
+    fun putInformacaoPerfil(
+        @PathVariable id: Long,
+        @RequestBody novaInformacao: InformacoesPessoaisRequestDTO
+    ): ResponseEntity<Any> {
         return try {
             val informacaoSalva = informacaoService.putInformacoes(id, novaInformacao)
             ResponseEntity.status(200).body(informacaoSalva)
-        }catch (e: RuntimeException){
+        } catch (e: RuntimeException) {
             ResponseEntity.status(404).body(e.message)
         }
     }

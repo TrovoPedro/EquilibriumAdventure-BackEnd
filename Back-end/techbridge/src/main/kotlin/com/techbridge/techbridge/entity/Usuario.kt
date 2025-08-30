@@ -48,5 +48,9 @@ open class Usuario(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    open var tipo_usuario: TipoUsuario? = null
+    open var tipo_usuario: TipoUsuario? = null,
+
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    var img_usuario: ByteArray? = null
 )

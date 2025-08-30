@@ -6,6 +6,7 @@ import com.techbridge.techbridge.enums.TipoUsuario
 import com.techbridge.techbridge.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import java.util.*
 
 @Service
 class UsuarioService {
@@ -63,6 +64,21 @@ class UsuarioService {
         usuarioEncontrado.telefoneContato = informacoesNova.telefone_contato;
 
         return usuarioRepository.save(usuarioEncontrado);
+    }
+
+    fun getGuiasComImagens(): List<GuiaImagemDto> {
+        val guias = usuarioRepository.findGuiaOuAdministrador()
+
+        return guias.map {
+            GuiaImagemDto(
+                id = it.idUsuario,
+                nome = it.nome,
+                email = it.email,
+                imagemBase64 = it.img_usuario?.let { img ->
+                    Base64.getEncoder().encodeToString(img)
+                }
+            )
+        }
     }
 
     fun deleteUsuario(id: Long){

@@ -18,9 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.http.MediaType
 
 @RestController
-@RequestMapping("/administrador")
+@RequestMapping("/adiministrador")
 class AdministradorControllerJpa(
     val repositorio: AdministradorRepository,
     val repositorioGuia: GuiaRepository,
@@ -122,17 +123,6 @@ class AdministradorControllerJpa(
         val guiaSalvo = repositorioGuia.save(novoGuia)
         return ResponseEntity.status(201).body(guiaSalvo)
     }
-
-
-        /*fun postGuia(@RequestBody novoGuia: UsuarioRequestDTO): Any? {
-        val guiaSalvo = administradorService.salvarGuia(novoGuia)
-        try {
-            return ResponseEntity.status(201).body(novoGuia)
-        }catch (e:RuntimeException){
-            return e.message
-        }
->>>>>>> e2e3fcb979e3c68a4ec32aa0475136c12ed82436
-    }*/
 
     @GetMapping("/buscar-guias")
     fun getAllGuias(): ResponseEntity<List<Usuario>> {

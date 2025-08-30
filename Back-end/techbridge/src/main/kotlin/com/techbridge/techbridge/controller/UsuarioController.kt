@@ -1,9 +1,6 @@
 package com.techbridge.techbridge.controller
 
-import com.techbridge.techbridge.dto.AlterarSenhaDTO
-import com.techbridge.techbridge.dto.EditarInformacoesDTO
-import com.techbridge.techbridge.dto.UsuarioRequestDTO
-import com.techbridge.techbridge.dto.UsuarioResponseDTO
+import com.techbridge.techbridge.dto.*
 import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.entity.UsuarioLogin
 import com.techbridge.techbridge.repository.UsuarioRepository
@@ -109,5 +106,16 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
         return ResponseEntity.noContent().build() // Retorna erro 401 se as credenciais estiverem incorretas
 
 
+    }
+
+    @GetMapping("/guias")
+    fun getGuiasComImagens(): ResponseEntity<List<GuiaImagemDto>> {
+        val guias = usuarioService.getGuiasComImagens()
+
+        return if (guias.isEmpty()) {
+            ResponseEntity.noContent().build()
+        } else {
+            ResponseEntity.ok(guias)
+        }
     }
 }
