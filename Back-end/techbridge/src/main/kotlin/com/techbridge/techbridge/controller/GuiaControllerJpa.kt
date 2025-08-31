@@ -49,10 +49,21 @@ class GuiaControllerJpa(
             val objectMapper = com.fasterxml.jackson.databind.ObjectMapper()
             val novoEvento = objectMapper.readValue(eventoJson, EventoRequestDTO::class.java)
 
-            val eventoSalvo = eventoService.postEvento(novoEvento, img_evento)
-            ResponseEntity.ok(eventoSalvo)
+            val eventoExistente = repositorioEvento.findByNome(novoEvento.nome)
+            if (eventoExistente != null) {
+                return ResponseEntity
+                    .badRequest()
+                    .body(mapOf("success" to false, "message" to "Evento já existe"))
+            }
+
+            val evento = novoEvento.toEntity()
+            evento.img_evento = img_evento?.bytes
+            val eventoSalvo = repositorioEvento.save(evento)
+
+            ResponseEntity.ok(mapOf("success" to true, "evento" to eventoSalvo))
         } catch (e: Exception) {
-            ResponseEntity.status(400).body("Erro ao processar requisição: ${e.message}")
+            ResponseEntity.status(400)
+                .body(mapOf("success" to false, "message" to "Erro ao processar requisição: ${e.message}"))
         }
     }
 

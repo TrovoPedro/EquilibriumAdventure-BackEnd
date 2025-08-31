@@ -44,5 +44,6 @@ interface EventoRepository: JpaRepository<Evento, Long> {
         nativeQuery = true
     )
     fun buscarEventoPorGuia(@Param("nome") nome: String): List<Map<String, Any>>
+    fun findByNome(nome: String?): Evento?
 
 }
