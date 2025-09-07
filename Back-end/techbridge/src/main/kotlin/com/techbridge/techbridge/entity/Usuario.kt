@@ -52,5 +52,8 @@ open class Usuario(
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")
-    var img_usuario: ByteArray? = null
+    var img_usuario: ByteArray? = null,
+
+    @Column(name = "primeira_vez", nullable = false)
+    open var primeiraVez: Boolean = true
 )

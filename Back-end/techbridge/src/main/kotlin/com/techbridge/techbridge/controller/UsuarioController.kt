@@ -73,14 +73,25 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
         val usuario = repositorioUsuario.findByEmail(credenciais.email)
 
         return if (usuario != null && usuario.senha == credenciais.senha) {
+            // salva valor atual antes de atualizar
+            val primeiraVezAtual = usuario.primeiraVez
+
+            // se for a primeira vez, já atualiza no banco
+            if (usuario.primeiraVez) {
+                usuario.primeiraVez = false
+                repositorioUsuario.save(usuario)
+            }
+
             val usuarioLogado = usuario.email?.let {
                 UsuarioLogin(
                     email = it,
                     senha = "", // não retorna a senha
                     autenticado = true,
-                    tipoUsuario = usuario.tipo_usuario.toString()
+                    tipoUsuario = usuario.tipo_usuario.toString(),
+                    primeiraVez = primeiraVezAtual // retorna o valor que estava no momento do login
                 )
             }
+
             ResponseEntity.ok(usuarioLogado)
         } else {
             ResponseEntity.status(401).build()
