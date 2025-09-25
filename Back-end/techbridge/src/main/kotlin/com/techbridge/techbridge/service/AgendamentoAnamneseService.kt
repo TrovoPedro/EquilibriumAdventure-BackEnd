@@ -27,9 +27,9 @@ class AgendamentoAnamneseService(
     }
 
     @Transactional
-    fun atualizarRelatorio(cpf: String, descricao: String): Int {
+    fun atualizarRelatorio(usuario: Long, descricao: String): Int {
         // Atualiza o relatório na tabela informacoes_pessoais
-        val linhasAfetadas = informacoesPessoaisRepository.atualizarRelatorioPorCpf(cpf, descricao)
+        val linhasAfetadas = informacoesPessoaisRepository.atualizarRelatorioPorFkAventureiro(usuario, descricao)
         if (linhasAfetadas == 0) {
             throw RuntimeException("CPF não encontrado em Informações Pessoais.")
         }

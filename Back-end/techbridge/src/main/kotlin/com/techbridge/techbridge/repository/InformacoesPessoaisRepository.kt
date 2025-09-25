@@ -34,11 +34,11 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
         value = """
         UPDATE informacoes_pessoais
         SET relatorio_anamnese = :descricao
-        WHERE cpf = :cpf
+        WHERE fk_aventureiro = :fk_aventureiro
     """,
         nativeQuery = true
     )
-    fun atualizarRelatorioPorCpf(@Param("cpf") cpf: String, @Param("descricao") descricao: String): Int
+    fun atualizarRelatorioPorFkAventureiro(@Param("fk_aventureiro") fk_aventureiro: Long, @Param("descricao") descricao: String): Int
 
     @Query("""
     SELECT ip

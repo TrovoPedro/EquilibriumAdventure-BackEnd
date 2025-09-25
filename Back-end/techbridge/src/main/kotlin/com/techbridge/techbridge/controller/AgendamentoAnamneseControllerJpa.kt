@@ -40,11 +40,11 @@ class AgendamentoAnamneseControllerJpa(private val agendamentoService: Agendamen
 
     @PatchMapping("/gerar-relatorio")
     fun gerarRelatorio(
-        @RequestParam cpf: String,
+        @RequestParam fkAventureiro: Long ,
         @RequestParam descricao: String
     ): ResponseEntity<String> {
         return try {
-            val linhasAfetadas = agendamentoService.atualizarRelatorio(cpf, descricao)
+            val linhasAfetadas = agendamentoService.atualizarRelatorio(fkAventureiro, descricao)
             if (linhasAfetadas > 0) {
                 ResponseEntity.status(200).body("Relatório atualizado com sucesso.")
             } else {
