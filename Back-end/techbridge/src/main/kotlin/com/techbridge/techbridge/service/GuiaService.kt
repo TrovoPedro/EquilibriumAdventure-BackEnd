@@ -4,6 +4,7 @@ import com.techbridge.techbridge.dto.EventoGuiaEnderecoDTO
 import com.techbridge.techbridge.dto.EventoRequestDTO
 import com.techbridge.techbridge.dto.EventoResponseDTO
 import com.techbridge.techbridge.entity.Evento
+import com.techbridge.techbridge.repository.EnderecoRepository
 import com.techbridge.techbridge.repository.EventoRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -21,11 +22,21 @@ class GuiaService {
     @Autowired
     lateinit var eventoRepository: EventoRepository
 
+    @Autowired
+    lateinit var enderecoRepository: EnderecoRepository
+
     fun postEvento(novoEvento: EventoRequestDTO, img_evento: MultipartFile?): Evento {
-        val evento = novoEvento.toEntity()
+        val enderecoDto = novoEvento.endereco ?: throw IllegalArgumentException("Endereço é obrigatório")
+
+        val enderecoSalvo = enderecoRepository.save(enderecoDto.toEntity())
+
+        val evento = novoEvento.toEntity(enderecoSalvo.id_endereco)
+
         evento.img_evento = img_evento?.bytes
+
         return eventoRepository.save(evento)
     }
+
 
     fun getEventos(): List<Map<String, Any>> {
         val eventosEncontrados = eventoRepository.listarEventosComResponsavelERua()

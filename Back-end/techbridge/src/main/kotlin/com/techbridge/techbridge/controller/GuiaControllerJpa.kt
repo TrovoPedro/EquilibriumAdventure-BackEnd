@@ -1,5 +1,6 @@
 package com.techbridge.techbridge.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.techbridge.techbridge.dto.EventoRequestDTO
 import com.techbridge.techbridge.entity.AgendaResponsavel
 import com.techbridge.techbridge.entity.Comentario
@@ -40,30 +41,22 @@ class GuiaControllerJpa(
     @Autowired
     lateinit var eventoService: GuiaService
 
-    @PostMapping("/cadastrar-evento", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
-    fun postEvento(
+    @PostMapping("/cadastrar", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun cadastrarEvento(
         @RequestPart("evento") eventoJson: String,
         @RequestPart("imagem", required = false) img_evento: MultipartFile?
     ): ResponseEntity<Any> {
         return try {
-            val objectMapper = com.fasterxml.jackson.databind.ObjectMapper()
+            val objectMapper = ObjectMapper()
             val novoEvento = objectMapper.readValue(eventoJson, EventoRequestDTO::class.java)
 
-            val eventoExistente = repositorioEvento.findByNome(novoEvento.nome)
-            if (eventoExistente != null) {
-                return ResponseEntity
-                    .badRequest()
-                    .body(mapOf("success" to false, "message" to "Evento já existe"))
-            }
-
-            val evento = novoEvento.toEntity()
-            evento.img_evento = img_evento?.bytes
-            val eventoSalvo = repositorioEvento.save(evento)
+            val eventoSalvo = eventoService.postEvento(novoEvento, img_evento)
 
             ResponseEntity.ok(mapOf("success" to true, "evento" to eventoSalvo))
         } catch (e: Exception) {
-            ResponseEntity.status(400)
-                .body(mapOf("success" to false, "message" to "Erro ao processar requisição: ${e.message}"))
+            ResponseEntity.status(400).body(
+                mapOf("success" to false, "message" to "Erro ao processar requisição: ${e.message}")
+            )
         }
     }
 
