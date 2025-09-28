@@ -1,5 +1,6 @@
 package com.techbridge.techbridge.controller
 
+import com.techbridge.techbridge.dto.PerguntaComRespostaDTO
 import com.techbridge.techbridge.dto.RespostaAventureiroDTO
 import com.techbridge.techbridge.entity.RespostaAventureiro
 import com.techbridge.techbridge.enums.Nivel
@@ -21,6 +22,16 @@ class RespostaAventureiroController(private val respostaService: RespostaAventur
             ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null)
         } catch (e: IllegalStateException) {
             ResponseEntity.status(HttpStatus.CONFLICT).body(null)
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
+        }
+    }
+
+    @GetMapping("/perguntas-com-respostas")
+    fun listarPerguntasComRespostas(@RequestParam idUsuario: Long): ResponseEntity<List<PerguntaComRespostaDTO>> {
+        return try {
+            val lista = respostaService.listarPerguntasComRespostas(idUsuario)
+            ResponseEntity.ok(lista)
         } catch (e: Exception) {
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
         }

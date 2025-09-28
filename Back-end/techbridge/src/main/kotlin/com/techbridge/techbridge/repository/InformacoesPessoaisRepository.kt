@@ -15,19 +15,34 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
 
 
     @Query("""
-    SELECT new com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO(
-        u.telefoneContato,
-        u.nome,
-        ip.dataNascimento,
-        ip.nivel,
-        e.rua
-    )
-    FROM Usuario u, InformacoesPessoais ip, Endereco e
-    WHERE u.idUsuario = ip.usuario
-      AND e.id_endereco = ip.endereco
-      AND u.idUsuario = :idUsuario
+    SELECT ip
+    FROM InformacoesPessoais ip
+    WHERE ip.usuario = :usuarioId
 """)
-    fun buscarInformacoes(@Param("idUsuario") idUsuario: Long): InformacoesPessoaisGetPerfilDTO?
+    fun buscarInformacoes(@Param("usuarioId") usuarioId: Long): InformacoesPessoais?
+
+    @Query("""
+SELECT new com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO(
+    u.nome,
+    u.email,
+    u.telefoneContato,
+    ip.dataNascimento,
+    ip.cpf,
+    ip.rg,
+    ip.idioma,
+    ip.contatoEmergencia,
+    new com.techbridge.techbridge.dto.EnderecoDTO(
+        e.rua, e.numero, e.complemento, e.bairro, e.cidade, e.estado, e.cep
+    ),
+    ip.nivel,
+    ip.relatorioAnamnese
+)
+FROM Usuario u, InformacoesPessoais ip, Endereco e
+WHERE u.idUsuario = ip.usuario
+  AND e.id_endereco = ip.endereco
+  AND ip.usuario = :usuarioId
+""")
+    fun buscarInformacoesPerfil(@Param("usuarioId") usuarioId: Long): InformacoesPessoaisGetPerfilDTO?
 
     @Modifying
     @Query(

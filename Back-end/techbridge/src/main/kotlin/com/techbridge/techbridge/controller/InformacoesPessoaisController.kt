@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile
 class InformacoesPessoaisController {
 
     @Autowired
-    lateinit var informacaoService: InformacoesPessoaisService;
+    lateinit var informacaoService: InformacoesPessoaisService
 
     @PostMapping("/cadastrar/{id}", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun postInformacao(
@@ -42,11 +42,11 @@ class InformacoesPessoaisController {
         }
     }
 
-    @GetMapping("/perfil/{id}")
-    fun getInformacaoPerfil(@PathVariable id: Long): ResponseEntity<Any> {
+    @GetMapping("/perfil-info/{usuarioId}")
+    fun getInformacaoPerfilPorUsuarioId(@PathVariable usuarioId: Long): ResponseEntity<Any> {
         return try {
-            val informacaoEncontrada = informacaoService.getInformacoesPerfil(id);
-            ResponseEntity.ok(informacaoEncontrada);
+            val informacaoEncontrada = informacaoService.getInformacoesPerfilPorUsuarioId(usuarioId)
+            ResponseEntity.ok(informacaoEncontrada)
         } catch (e: RuntimeException) {
             ResponseEntity.status(404).body(e.message)
         }
@@ -62,6 +62,19 @@ class InformacoesPessoaisController {
             ResponseEntity.status(200).body(informacaoSalva)
         } catch (e: RuntimeException) {
             ResponseEntity.status(404).body(e.message)
+        }
+    }
+
+    @PutMapping("/atualizar-perfil/{usuarioId}")
+    fun atualizarPerfilPorUsuario(
+        @PathVariable usuarioId: Long,
+        @RequestBody informacao: InformacoesPessoaisRequestDTO
+    ): ResponseEntity<Any> {
+        return try {
+            val atualizado = informacaoService.atualizarPorUsuario(usuarioId, informacao)
+            ResponseEntity.ok(atualizado)
+        } catch (e: RuntimeException) {
+            ResponseEntity.status(404).body(mapOf("erro" to e.message))
         }
     }
 }

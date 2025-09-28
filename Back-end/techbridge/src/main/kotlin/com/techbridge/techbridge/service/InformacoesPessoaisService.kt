@@ -1,16 +1,15 @@
-package com.techbridge.techbridge.service;
+package com.techbridge.techbridge.service
 
 import com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO
 import com.techbridge.techbridge.dto.InformacoesPessoaisRequestDTO
 import com.techbridge.techbridge.dto.InformacoesPessoaisResponseDTO
 import com.techbridge.techbridge.entity.InformacoesPessoais
 import com.techbridge.techbridge.repository.EnderecoRepository
-import com.techbridge.techbridge.repository.InformacoesPessoaisRepository;
+import com.techbridge.techbridge.repository.InformacoesPessoaisRepository
 import com.techbridge.techbridge.repository.UsuarioRepository
 import jakarta.transaction.Transactional
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
@@ -19,10 +18,10 @@ import java.util.*
 class InformacoesPessoaisService {
 
     @Autowired
-    lateinit var informacaoRepository: InformacoesPessoaisRepository;
+    lateinit var informacaoRepository: InformacoesPessoaisRepository
 
     @Autowired
-    lateinit var usuarioRepository: UsuarioRepository;
+    lateinit var usuarioRepository: UsuarioRepository
 
     @Autowired
     lateinit var enderecoRepository: EnderecoRepository
@@ -75,45 +74,84 @@ class InformacoesPessoaisService {
         return informacao.img_usuario
     }
 
-    fun getInformacoesPerfil(id: Long): InformacoesPessoaisGetPerfilDTO? {
-        var usuarioEncotrado = usuarioRepository.findById(id)
-
-        if (usuarioEncotrado.isEmpty) {
-            throw RuntimeException("Usuário não encotrado");
-        }
-
-        return informacaoRepository.buscarInformacoes(id);
+    fun getInformacoesPerfilPorUsuarioId(usuarioId: Long): InformacoesPessoaisGetPerfilDTO? {
+        return informacaoRepository.buscarInformacoesPerfil(usuarioId)
     }
 
     @Transactional
     fun putInformacoes(id: Long, informacao: InformacoesPessoaisRequestDTO): InformacoesPessoaisResponseDTO {
-       if(informacao == null){
-           throw RuntimeException("Informações em branco")
-       }
+        if (informacao == null) {
+            throw RuntimeException("Informações em branco")
+        }
 
         val informacaoEncontrada = informacaoRepository.findById(id).orElseThrow {
             RuntimeException("Informações não encontradas")
         }
 
-        informacaoEncontrada.contatoEmergencia = informacao.contatoEmergencia;
-        informacaoEncontrada.endereco = informacao.endereco;
-        informacaoEncontrada.nivel = informacao.nivel;
-        informacaoEncontrada.usuario = informacao.usuario;
-        informacaoEncontrada.relatorioAnamnese = informacao.relatorioAnamnese;
-        informacaoEncontrada.idioma = informacao.idioma;
-        informacaoEncontrada.questionarioRespondido = informacao.questionarioRespondido;
+        // Atualize todos os campos
+        informacaoEncontrada.dataNascimento = informacao.dataNascimento
+        informacaoEncontrada.cpf = informacao.cpf
+        informacaoEncontrada.rg = informacao.rg
+        informacaoEncontrada.contatoEmergencia = informacao.contatoEmergencia
+        informacaoEncontrada.endereco = informacao.endereco
+        informacaoEncontrada.nivel = informacao.nivel
+        informacaoEncontrada.usuario = informacao.usuario
+        informacaoEncontrada.relatorioAnamnese = informacao.relatorioAnamnese
+        informacaoEncontrada.idioma = informacao.idioma
+        informacaoEncontrada.questionarioRespondido = informacao.questionarioRespondido
 
         informacaoRepository.save(informacaoEncontrada)
 
         return InformacoesPessoaisResponseDTO(
-            contatoEmergencia = informacao.contatoEmergencia,
-            endereco = informacao.endereco,
-            nivel = informacao.nivel ?: throw RuntimeException("Nível não informado"),
-            usuario = informacao.usuario ?: throw RuntimeException("id não informado"),
-            relatorioAnamnese = informacao.relatorioAnamnese,
-            idioma = informacao.idioma,
-            questionarioRespondido = informacao.questionarioRespondido
+            contatoEmergencia = informacaoEncontrada.contatoEmergencia,
+            endereco = informacaoEncontrada.endereco ?: 0,
+            nivel = informacaoEncontrada.nivel ?: throw RuntimeException("Nível não informado"),
+            usuario = informacaoEncontrada.usuario ?: throw RuntimeException("id não informado"),
+            relatorioAnamnese = informacaoEncontrada.relatorioAnamnese,
+            idioma = informacaoEncontrada.idioma,
+            questionarioRespondido = informacaoEncontrada.questionarioRespondido
         )
     }
 
+    fun atualizarPorUsuario(usuarioId: Long, informacao: InformacoesPessoaisRequestDTO): InformacoesPessoaisResponseDTO {
+        // Validação de campos obrigatórios
+        if (informacao.endereco == 0L) throw RuntimeException("Endereço obrigatório")
+        if (informacao.nivel == null) throw RuntimeException("Nível obrigatório")
+
+        // Verifica se o usuário existe
+        val usuario = usuarioRepository.findById(usuarioId)
+        if (usuario.isEmpty) throw RuntimeException("Usuário não encontrado")
+
+        // Verifica se o endereço existe
+        val enderecoExiste = enderecoRepository.existsById(informacao.endereco)
+        if (!enderecoExiste) throw RuntimeException("Endereço não encontrado")
+
+        // Busca as informações pessoais pelo usuário
+        val entidade = informacaoRepository.buscarPorUsuario(usuarioId)
+            ?: throw RuntimeException("Informações não encontradas para usuário $usuarioId")
+
+        // Atualiza os campos
+        entidade.dataNascimento = informacao.dataNascimento
+        entidade.cpf = informacao.cpf
+        entidade.rg = informacao.rg
+        entidade.contatoEmergencia = informacao.contatoEmergencia
+        entidade.endereco = informacao.endereco
+        entidade.nivel = informacao.nivel
+        entidade.usuario = usuarioId
+        entidade.relatorioAnamnese = informacao.relatorioAnamnese
+        entidade.idioma = informacao.idioma
+        entidade.questionarioRespondido = informacao.questionarioRespondido
+
+        informacaoRepository.save(entidade)
+
+        return InformacoesPessoaisResponseDTO(
+            contatoEmergencia = entidade.contatoEmergencia,
+            endereco = entidade.endereco ?: 0,
+            nivel = entidade.nivel ?: throw RuntimeException("Nível não informado"),
+            usuario = entidade.usuario ?: throw RuntimeException("id não informado"),
+            relatorioAnamnese = entidade.relatorioAnamnese,
+            idioma = entidade.idioma,
+            questionarioRespondido = entidade.questionarioRespondido
+        )
+    }
 }
