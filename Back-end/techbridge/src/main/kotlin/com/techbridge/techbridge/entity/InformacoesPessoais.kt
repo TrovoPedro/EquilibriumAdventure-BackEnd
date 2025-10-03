@@ -42,7 +42,7 @@ class InformacoesPessoais {
     @Column(name = "questionario_respondido")
     var questionarioRespondido: Boolean? = null
 
-    @Column(name = "endereco_id", nullable = false)
+    @Column(name = "fk_endereco")
     var endereco: Long? = null
 
     @Enumerated(EnumType.STRING)
@@ -55,4 +55,12 @@ class InformacoesPessoais {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     var img_usuario: ByteArray? = null
+
+    constructor()
+
+    constructor(usuario: Usuario, nivel: Nivel, questionarioRespondido: Boolean) {
+        this.usuario = usuario.idUsuario
+        this.nivel = nivel
+        this.questionarioRespondido = questionarioRespondido
+    }
 }

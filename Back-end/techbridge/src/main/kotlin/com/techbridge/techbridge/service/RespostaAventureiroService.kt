@@ -2,6 +2,7 @@ package com.techbridge.techbridge.service
 
 import com.techbridge.techbridge.dto.PerguntaComRespostaDTO
 import com.techbridge.techbridge.dto.RespostaAventureiroDTO
+import com.techbridge.techbridge.entity.InformacoesPessoais
 import com.techbridge.techbridge.entity.RespostaAventureiro
 import com.techbridge.techbridge.enums.Nivel
 import com.techbridge.techbridge.repository.InformacoesPessoaisRepository
@@ -79,9 +80,16 @@ class RespostaAventureiroService(
             else -> Nivel.EXPLORADOR
         }
 
-        val informacoesPessoais = informacoesPessoaisRepository.buscarPorUsuario(idUsuario)
-            ?: throw IllegalArgumentException("Informações pessoais não encontradas")
+        val informacoesPessoais = informacoesPessoaisRepository.buscarPorUsuario(idUsuario) ?: run {
+            val novasInformacoes = InformacoesPessoais(
+                usuario = usuarioRepository.findById(idUsuario).get(),
+                nivel = nivel,
+                questionarioRespondido = true
+            )
+            informacoesPessoaisRepository.save(novasInformacoes)
+        }
 
+        // Atualiza o nível nas informações pessoais
         informacoesPessoaisRepository.atualizarNivelPorUsuario(idUsuario, nivel)
 
         return nivel
