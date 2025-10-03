@@ -1,8 +1,7 @@
 package com.techbridge.techbridge.service
 
-import com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO
-import com.techbridge.techbridge.dto.InformacoesPessoaisRequestDTO
-import com.techbridge.techbridge.dto.InformacoesPessoaisResponseDTO
+import com.techbridge.techbridge.dto.*
+import com.techbridge.techbridge.entity.Endereco
 import com.techbridge.techbridge.entity.InformacoesPessoais
 import com.techbridge.techbridge.repository.EnderecoRepository
 import com.techbridge.techbridge.repository.InformacoesPessoaisRepository
@@ -153,5 +152,63 @@ class InformacoesPessoaisService {
             idioma = entidade.idioma,
             questionarioRespondido = entidade.questionarioRespondido
         )
+    }
+
+    fun cadastrarPerfilCompleto(dto: CadastroPerfilDTO, usuarioId: Long): InformacoesPessoaisGetPerfilDTO {
+
+        val enderecoEntity = Endereco(
+            rua = dto.endereco.rua,
+            numero = dto.endereco.numero,
+            complemento = dto.endereco.complemento,
+            bairro = dto.endereco.bairro,
+            cidade = dto.endereco.cidade,
+            estado = dto.endereco.estado,
+            cep = dto.endereco.cep
+        )
+        val enderecoSalvo = enderecoRepository.save(enderecoEntity)
+
+        val infoEntity = dto.informacoes.toEntity()
+        infoEntity.usuario = usuarioId
+        infoEntity.endereco = enderecoSalvo.id_endereco ?: throw RuntimeException("Endereço não salvo")
+        val infoSalva = informacaoRepository.save(infoEntity)
+
+        return informacaoRepository.buscarInformacoesPerfil(usuarioId)
+            ?: throw RuntimeException("Perfil não encontrado")
+    }
+
+    fun editarPerfilCompleto(usuarioId: Long, dto: EditarPerfilDTO): InformacoesPessoaisGetPerfilDTO {
+        // Atualiza usuário
+        val usuario = usuarioRepository.findById(usuarioId).orElseThrow { RuntimeException("Usuário não encontrado") }
+        usuario.nome = dto.nome
+        usuario.email = dto.email
+        usuario.telefoneContato = dto.telefoneContato
+        usuarioRepository.save(usuario)
+
+        // Atualiza endereço
+        val info = informacaoRepository.buscarPorUsuario(usuarioId) ?: throw RuntimeException("Informações não encontradas")
+        val endereco = enderecoRepository.findById(info.endereco ?: 0).orElseThrow { RuntimeException("Endereço não encontrado") }
+        endereco.rua = dto.endereco.rua
+        endereco.numero = dto.endereco.numero
+        endereco.complemento = dto.endereco.complemento
+        endereco.bairro = dto.endereco.bairro
+        endereco.cidade = dto.endereco.cidade
+        endereco.estado = dto.endereco.estado
+        endereco.cep = dto.endereco.cep
+        enderecoRepository.save(endereco)
+
+        // Atualiza informações pessoais
+        info.dataNascimento = dto.informacoes.dataNascimento
+        info.cpf = dto.informacoes.cpf
+        info.rg = dto.informacoes.rg
+        info.contatoEmergencia = dto.informacoes.contatoEmergencia
+        info.nivel = dto.informacoes.nivel
+        info.relatorioAnamnese = dto.informacoes.relatorioAnamnese
+        info.idioma = dto.informacoes.idioma
+        info.questionarioRespondido = dto.informacoes.questionarioRespondido
+        informacaoRepository.save(info)
+
+        // Retorna perfil atualizado
+        return informacaoRepository.buscarInformacoesPerfil(usuarioId)
+            ?: throw RuntimeException("Perfil não encontrado")
     }
 }

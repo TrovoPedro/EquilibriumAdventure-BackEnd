@@ -1,5 +1,7 @@
 package com.techbridge.techbridge.controller
 
+import com.techbridge.techbridge.dto.CadastroPerfilDTO
+import com.techbridge.techbridge.dto.EditarPerfilDTO
 import com.techbridge.techbridge.dto.InformacoesPessoaisRequestDTO
 import com.techbridge.techbridge.service.InformacoesPessoaisService
 import org.springframework.beans.factory.annotation.Autowired
@@ -75,6 +77,31 @@ class InformacoesPessoaisController {
             ResponseEntity.ok(atualizado)
         } catch (e: RuntimeException) {
             ResponseEntity.status(404).body(mapOf("erro" to e.message))
+        }
+    }
+    @PostMapping("/cadastrar-perfil-completo/{usuarioId}")
+    fun cadastrarPerfilCompleto(
+        @PathVariable usuarioId: Long,
+        @RequestBody dto: CadastroPerfilDTO
+    ): ResponseEntity<Any> {
+        return try {
+            val perfil = informacaoService.cadastrarPerfilCompleto(dto, usuarioId)
+            ResponseEntity.status(201).body(perfil)
+        } catch (e: RuntimeException) {
+            ResponseEntity.status(400).body(mapOf("erro" to e.message))
+        }
+    }
+
+    @PutMapping("/editar-perfil-completo/{usuarioId}")
+    fun editarPerfilCompleto(
+        @PathVariable usuarioId: Long,
+        @RequestBody dto: EditarPerfilDTO
+    ): ResponseEntity<Any> {
+        return try {
+            val perfil = informacaoService.editarPerfilCompleto(usuarioId, dto)
+            ResponseEntity.ok(perfil)
+        } catch (e: RuntimeException) {
+            ResponseEntity.status(400).body(mapOf("erro" to e.message))
         }
     }
 }
