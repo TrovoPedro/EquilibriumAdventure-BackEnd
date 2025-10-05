@@ -9,7 +9,7 @@ data class Comentario(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_comentario")
-    val id: Int = 0,
+    val id: Long = 0,
 
     @Column(name = "texto", nullable = false)
     val texto: String = "",

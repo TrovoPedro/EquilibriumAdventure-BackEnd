@@ -9,7 +9,7 @@ data class AgendaResponsavel(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_agenda")
-    var idAgenda: Int = 0,
+    var idAgenda: Long = 0,
 
     @Column(name = "data_disponivel", nullable = false)
     var dataDisponivel: LocalDateTime = LocalDateTime.now(),

@@ -10,7 +10,7 @@ data class Convite(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_convite")
-    val idConvite: Int = 0,
+    val idConvite: Long = 0,
 
     @Column(name = "data_convite", nullable = false)
     val dataConvite: LocalDateTime = LocalDateTime.now(),

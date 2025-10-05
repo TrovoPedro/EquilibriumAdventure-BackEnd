@@ -8,7 +8,10 @@ import jakarta.validation.constraints.Size
 import java.util.*
 
 @Entity
-@Table(name = "informacoes_pessoais")
+@Table(
+    name = "informacoes_pessoais",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["fk_aventureiro"])]
+)
 class InformacoesPessoais {
 
     @Id
@@ -42,15 +45,17 @@ class InformacoesPessoais {
     @Column(name = "questionario_respondido")
     var questionarioRespondido: Boolean? = null
 
-    @Column(name = "fk_endereco")
-    var endereco: Long? = null
+    @ManyToOne
+    @JoinColumn(name = "fk_endereco")
+    var endereco: Endereco? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "nivel", nullable = false)
     var nivel: Nivel? = null
 
-    @Column(name = "fk_aventureiro", nullable = false)
-    var usuario: Long? = 0
+    @ManyToOne
+    @JoinColumn(name = "fk_aventureiro", nullable = false)
+    var usuario: Usuario? = null
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")
@@ -59,7 +64,7 @@ class InformacoesPessoais {
     constructor()
 
     constructor(usuario: Usuario, nivel: Nivel, questionarioRespondido: Boolean) {
-        this.usuario = usuario.idUsuario
+        this.usuario = usuario
         this.nivel = nivel
         this.questionarioRespondido = questionarioRespondido
     }

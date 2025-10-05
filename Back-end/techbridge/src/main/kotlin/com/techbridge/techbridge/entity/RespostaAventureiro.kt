@@ -8,7 +8,7 @@ data class RespostaAventureiro(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_resposta")
-    val id: Int = 0,
+    val id: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "fk_aventureiro", nullable = false)

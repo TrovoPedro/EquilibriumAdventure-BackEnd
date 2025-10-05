@@ -8,7 +8,7 @@ data class PerguntaAlternativa(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_pergunta")
-    val id: Int = 0,
+    val id: Long = 0,
 
     @Column(name = "texto_pergunta", nullable = false)
     val textoPergunta: String = "",

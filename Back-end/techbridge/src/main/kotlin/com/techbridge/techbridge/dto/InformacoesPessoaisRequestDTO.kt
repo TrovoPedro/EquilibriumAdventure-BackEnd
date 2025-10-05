@@ -1,6 +1,8 @@
 package com.techbridge.techbridge.dto
 
 import com.techbridge.techbridge.entity.InformacoesPessoais
+import com.techbridge.techbridge.entity.Endereco
+import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.enums.Nivel
 import java.util.*
 
@@ -16,15 +18,15 @@ data class InformacoesPessoaisRequestDTO(
     var idioma: String? = null,
     var questionarioRespondido: Boolean? = null
 ) {
-    fun toEntity(): InformacoesPessoais {
+    fun toEntity(enderecoObj: Endereco, usuarioObj: Usuario): InformacoesPessoais {
         val entidade = InformacoesPessoais()
         entidade.dataNascimento = dataNascimento
         entidade.cpf = cpf
         entidade.rg = rg
         entidade.contatoEmergencia = contatoEmergencia
-        entidade.endereco = endereco
+        entidade.endereco = enderecoObj
         entidade.nivel = nivel
-        entidade.usuario = usuario
+        entidade.usuario = usuarioObj
         entidade.relatorioAnamnese = relatorioAnamnese
         entidade.idioma = idioma
         entidade.questionarioRespondido = questionarioRespondido

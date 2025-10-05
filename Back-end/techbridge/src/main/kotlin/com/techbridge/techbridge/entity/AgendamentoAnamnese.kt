@@ -8,7 +8,7 @@ data class AgendamentoAnamnese(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_anamnese")
-    val id: Int = 0,
+    val id: Long = 0,
 
     @ManyToOne
     @JoinColumn(name = "fk_data", nullable = false)
