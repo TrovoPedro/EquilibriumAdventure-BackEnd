@@ -24,14 +24,14 @@ class DashboardRepository(private val jdbcTemplate: JdbcTemplate) {
         return jdbcTemplate.queryForList(sql, usuarioId)
     }
 
-    fun getUsuariosNovos(): List<Map<String, Any>> {
+    fun getUsuariosNovos(usuarioId: Long): List<Map<String, Any>> {
         val sql = """
         SELECT Tipo_Usuario, Quantidade_Usuarios
         FROM usuarios_novos
+        WHERE fk_responsavel = ?
     """
-        return jdbcTemplate.queryForList(sql)
+        return jdbcTemplate.queryForList(sql, usuarioId)
     }
-
     fun getTopCidades(usuarioId: Long): List<Map<String, Any>> {
         val sql = """
             SELECT Cidade, Total_Participantes

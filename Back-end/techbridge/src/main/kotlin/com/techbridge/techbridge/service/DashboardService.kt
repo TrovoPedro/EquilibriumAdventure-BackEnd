@@ -14,7 +14,7 @@ class DashboardService(private val repository: DashboardRepository) {
 
     fun getUsuariosNovosFrequentes(usuarioId: Long): Map<String, Int> {
         val frequentes = repository.getUsuariosFrequentes(usuarioId)
-        val novos = repository.getUsuariosNovos()
+        val novos = repository.getUsuariosNovos(usuarioId)
 
         val mapaUsuarios = mutableMapOf("Novo" to 0, "Frequente" to 0)
 
