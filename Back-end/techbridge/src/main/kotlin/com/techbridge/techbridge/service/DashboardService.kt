@@ -37,7 +37,7 @@ class DashboardService(private val repository: DashboardRepository) {
         return repository.getTopCidades(usuarioId).map {
             CidadeDTO(
                 cidade = it["cidade"] as String,
-                totalParticipantes = (it["total_participantes"] as Long).toInt()
+                totalParticipantes = (it["total_participantes"] as? Number)?.toInt() ?: 0
             )
         }
     }
@@ -46,7 +46,7 @@ class DashboardService(private val repository: DashboardRepository) {
         return repository.getPalavrasComentarios(usuarioId).map {
             PalavraDTO(
                 palavra = it["palavra"] as String,
-                quantidade = (it["quantidade"] as Long).toInt()
+                quantidade = (it["quantidade"] as? Number)?.toInt() ?: 0
             )
         }
     }
@@ -55,8 +55,8 @@ class DashboardService(private val repository: DashboardRepository) {
         return repository.getInscricaoLimite(usuarioId).map {
             InscricaoLimiteDTO(
                 it["Evento"] as String,
-                (it["Inscricoes"] as Long).toInt(),
-                (it["Capacidade_Maxima"] as Int)
+                (it["Inscricoes"] as? Number)?.toInt() ?: 0,
+                (it["Capacidade_Maxima"] as? Number)?.toInt() ?: 0
             )
         }
     }
@@ -65,7 +65,7 @@ class DashboardService(private val repository: DashboardRepository) {
         return repository.getTaxaOcupacaoMedia(usuarioId).map {
             TaxaOcupacaoDTO(
                 it["mes"] as String,
-                (it["taxa_ocupacao_percentual"] as BigDecimal).toDouble()
+                (it["taxa_ocupacao_percentual"] as? BigDecimal)?.toDouble() ?: 0.0
             )
         }
     }
@@ -74,8 +74,8 @@ class DashboardService(private val repository: DashboardRepository) {
         return repository.getRankingEventos(usuarioId).map {
             EventoRankingDTO(
                 it["nome"] as String,
-                (it["total_inscricoes"] as Long).toInt(),
-                (it["nota_media"] as BigDecimal).toDouble()
+                (it["total_inscricoes"] as? Number)?.toInt() ?: 0,
+                (it["nota_media"] as? BigDecimal)?.toDouble() ?: 0.0
             )
         }
     }
@@ -83,8 +83,8 @@ class DashboardService(private val repository: DashboardRepository) {
     fun getTendenciasAno(usuarioId: Long): List<TendenciaAnoDTO> {
         return repository.getTendenciasAno(usuarioId).map {
             TendenciaAnoDTO(
-                it["ano"] as Int,
-                (it["total_inscricoes"] as Long).toInt()
+                (it["ano"] as? Number)?.toInt() ?: 0,
+                (it["total_inscricoes"] as? Number)?.toInt() ?: 0
             )
         }
     }
@@ -92,9 +92,9 @@ class DashboardService(private val repository: DashboardRepository) {
     fun getTendenciasMes(usuarioId: Long): List<TendenciaMesDTO> {
         return repository.getTendenciasMes(usuarioId).map {
             TendenciaMesDTO(
-                it["ano"] as Int,
-                it["mes"] as Int,
-                (it["total_inscricoes"] as Long).toInt()
+                (it["ano"] as? Number)?.toInt() ?: 0,
+                (it["mes"] as? Number)?.toInt() ?: 0,
+                (it["total_inscricoes"] as? Number)?.toInt() ?: 0
             )
         }
     }
@@ -102,8 +102,8 @@ class DashboardService(private val repository: DashboardRepository) {
     fun getTendenciasDia(usuarioId: Long): List<TendenciaDiaDTO> {
         return repository.getTendenciasDia(usuarioId).map {
             TendenciaDiaDTO(
-                (it["dia"] as java.sql.Date).toString(),
-                (it["total_inscricoes"] as Long).toInt()
+                it["dia"]?.toString() ?: "",
+                (it["total_inscricoes"] as? Number)?.toInt() ?: 0
             )
         }
     }
