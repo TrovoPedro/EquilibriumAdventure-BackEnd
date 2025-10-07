@@ -19,6 +19,7 @@ import com.techbridge.techbridge.repository.UsuarioRepository
 import com.techbridge.techbridge.service.GuiaService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -84,15 +85,15 @@ class GuiaControllerJpa(
             return ResponseEntity.status(200).body(eventosEncontrados)
     }
 
-    @GetMapping("/buscar-eventos/{nome}")
-    fun getEventoPorGuia(@PathVariable nome:String): ResponseEntity<Any>{
-
-            val eventosEncontrados: List<Map<String, Any>> = eventoService.getEventoPorGuia(nome);
-        if (eventosEncontrados.isEmpty()) {
-            return ResponseEntity.status(204).build()
+        @GetMapping("/buscar-eventos/{id}")
+        fun getEventoPorGuia(@PathVariable id:Long): ResponseEntity<Any>{
+    
+                val eventosEncontrados: List<Map<String, Any>> = eventoService.getEventoPorGuia(id);
+            if (eventosEncontrados.isEmpty()) {
+                return ResponseEntity.status(204).build()
+            }
+            return ResponseEntity.status(200).body(eventosEncontrados)
         }
-        return ResponseEntity.status(200).body(eventosEncontrados)
-    }
 
     @GetMapping("Adicionar-comentario/{idEvento}/{idAventureiro}")
     fun postComentario(
@@ -219,6 +220,19 @@ class GuiaControllerJpa(
             return  ResponseEntity.status(204).build()
         } else {
             return ResponseEntity.status(200).body(informacoes)
+        }
+    }
+
+    @GetMapping("/ativos/guia/{idGuia}")
+    fun buscarEventoAtivoPorGuia(@PathVariable idGuia: Long): ResponseEntity<Any> {
+        return try {
+            val eventos = eventoService.buscarEventoAtivoPorGuia(idGuia)
+            ResponseEntity.ok(eventos)
+        } catch (ex: NoSuchElementException) {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(mapOf("erro" to ex.message))
+        } catch (ex: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(mapOf("erro" to "Erro ao buscar eventos ativos: ${ex.message}"))
         }
     }
 }

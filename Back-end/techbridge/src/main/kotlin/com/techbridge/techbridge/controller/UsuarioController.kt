@@ -83,6 +83,7 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
             val usuarioLogado = UsuarioLogin(
                 id = usuario.idUsuario, // aqui retorna o id_usuario do banco
                 email = usuario.email ?: "",
+                nome = usuario.nome,
                 senha = "",
                 autenticado = true,
                 tipoUsuario = usuario.tipo_usuario.toString(),

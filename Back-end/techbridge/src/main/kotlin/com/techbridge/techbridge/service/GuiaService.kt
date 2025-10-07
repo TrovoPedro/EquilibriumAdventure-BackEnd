@@ -67,14 +67,34 @@ class GuiaService {
         }
     }
 
-    fun getEventoPorGuia(nome:String): List<Map<String, Any>>{
-        val eventosEncotrados = eventoRepository.buscarEventoPorGuia(nome)
+    fun getEventoPorGuia(id:Long): List<Map<String, Any>>{
+        val eventosEncotrados = eventoRepository.buscarEventoPorGuia(id)
 
         if(eventosEncotrados.isEmpty()){
             throw RuntimeException("Nenhum evento encontrado")
         }
 
         return eventosEncotrados
+    }
+
+    fun getEventoAtivoPorGuia(id:Long): List<Map<String, Any>>{
+        val eventosEncotrados = eventoRepository.buscarEventoPorGuia(id)
+
+        if(eventosEncotrados.isEmpty()){
+            throw RuntimeException("Nenhum evento encontrado")
+        }
+
+        return eventosEncotrados
+    }
+
+    fun buscarEventoAtivoPorGuia(idGuia: Long): List<Map<String, Any>> {
+        val eventos = eventoRepository.buscarEventoAtivoPorGuia(idGuia)
+
+        if (eventos.isEmpty()) {
+            throw NoSuchElementException("Nenhum evento ativo encontrado para o guia com ID $idGuia.")
+        }
+
+        return eventos
     }
 
 }
