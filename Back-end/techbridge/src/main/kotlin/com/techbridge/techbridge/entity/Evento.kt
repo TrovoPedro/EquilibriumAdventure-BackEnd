@@ -17,6 +17,9 @@ data class Evento(
     var descricao: String? = null,
     var nivel_dificuldade: String? = null,
     var distancia_km: Double? = null,
+
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     var caminho_arquivo_evento: String? = null,
 
     @Lob
