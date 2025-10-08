@@ -83,6 +83,10 @@ class InformacoesPessoaisService {
         return informacaoRepository.buscarInformacoesPerfil(usuarioId)
     }
 
+    fun getNivelPerfilPorUsuarioId(usuarioId: Long): InformacoesPessoaisNivelDTO? {
+        return informacaoRepository.buscarInformacoesNível(usuarioId)
+    }
+
     @Transactional
     fun putInformacoes(id: Long, informacao: InformacoesPessoaisRequestDTO): InformacoesPessoaisResponseDTO {
         val informacaoEncontrada = informacaoRepository.findById(id).orElseThrow {
