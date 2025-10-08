@@ -11,4 +11,6 @@ interface UsuarioRepository : JpaRepository<Usuario, Long> {
 
     @Query("SELECT u FROM Usuario u WHERE u.tipo_usuario IN ('GUIA', 'ADMINISTRADOR')")
     fun findGuiaOuAdministrador(): List<Usuario>
+
+    fun existsByEmail(email: String): Boolean
 }

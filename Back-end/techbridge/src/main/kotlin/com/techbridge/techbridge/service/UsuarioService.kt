@@ -37,23 +37,29 @@ class UsuarioService {
             throw RuntimeException("Valores obrigatórios estão nulos ou vazios")
         }
 
+        // ✅ Verifica se o email já está cadastrado
+        if (usuarioRepository.existsByEmail(novoUsuario.email!!)) {
+            throw RuntimeException("E-mail já cadastrado")
+        }
+
         val usuarioSalvo = usuarioRepository.save(novoUsuario.toEntity())
 
-        if(usuarioSalvo.tipo_usuario == TipoUsuario.AVENTUREIRO){
-            return AventureiroResponseDTO(
+        return if (usuarioSalvo.tipo_usuario == TipoUsuario.AVENTUREIRO) {
+            AventureiroResponseDTO(
                 nome = usuarioSalvo.nome,
                 telefone_contato = usuarioSalvo.telefoneContato,
                 email = usuarioSalvo.email,
             )
+        } else {
+            UsuarioResponseDTO(
+                nome = usuarioSalvo.nome,
+                telefone_contato = usuarioSalvo.telefoneContato,
+                email = usuarioSalvo.email,
+                descricao_guia = usuarioSalvo.descricao_guia
+            )
         }
-
-        return UsuarioResponseDTO(
-            nome = usuarioSalvo.nome,
-            telefone_contato = usuarioSalvo.telefoneContato,
-            email = usuarioSalvo.email,
-            descricao_guia = usuarioSalvo.descricao_guia
-        )
     }
+
 
     fun putUsuario(id: Long, informacoesNova: EditarInformacoesDTO): Usuario{
         val usuarioEncontrado = usuarioRepository.findById(id)
