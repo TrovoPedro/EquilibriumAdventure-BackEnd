@@ -22,21 +22,24 @@ class AgendamentoAnamneseService(
         return agendamentoRepository.listarHistorico()
     }
 
-    fun listarDatasDisponiveis(): List<Map<String, Any>> {
-        return agendamentoRepository.listarDatasDisponiveis()
+    fun listarDatasDisponiveisPorResponsavel(fkResponsavel: Int): List<Map<String, Any>> {
+        return agendamentoRepository.listarDatasDisponiveisPorResponsavel(fkResponsavel)
     }
 
-    @Transactional
-    fun atualizarRelatorio(usuario: Long, descricao: String): Int {
-        // Atualiza o relatório na tabela informacoes_pessoais
-        val linhasAfetadas = informacoesPessoaisRepository.atualizarRelatorioPorFkAventureiro(usuario, descricao)
-        if (linhasAfetadas == 0) {
-            throw RuntimeException("CPF não encontrado em Informações Pessoais.")
+    fun listarPorResponsavel(fkResponsavel: Int): List<AnamneseResponseDTO> {
+        return agendamentoRepository.findByAgendaResponsavelFkresponsavelIdUsuario(fkResponsavel).map { agendamento ->
+            AnamneseResponseDTO(
+                id = agendamento.id,
+                dataDisponivel = agendamento.agendaResponsavel?.dataDisponivel
+                    ?: throw IllegalStateException("Data indisponível"),
+                nomeAventureiro = agendamento.aventureiro?.nome
+                    ?: throw IllegalStateException("Aventureiro não encontrado"),
+                fkResponsavel = agendamento.agendaResponsavel?.fkresponsavel?.idUsuario?.toLong()
+                    ?: throw IllegalStateException("Responsável não encontrado")
+            )
         }
-        return linhasAfetadas
     }
 
-    @Transactional
     fun salvarAgendamento(dto: AnamneseRequestDTO): AnamneseResponseDTO {
         val agendaResponsavel = agendaResponsavelRepository.findById(dto.fkData)
             .orElseThrow { IllegalArgumentException("Agenda com ID ${dto.fkData} não encontrada.") }
@@ -56,7 +59,9 @@ class AgendamentoAnamneseService(
             dataDisponivel = agendamentoSalvo.agendaResponsavel?.dataDisponivel
                 ?: throw IllegalStateException("Data indisponível"),
             nomeAventureiro = agendamentoSalvo.aventureiro?.nome
-                ?: throw IllegalStateException("Aventureiro não encontrado")
+                ?: throw IllegalStateException("Aventureiro não encontrado"),
+            fkResponsavel = agendamentoSalvo.agendaResponsavel?.fkresponsavel?.idUsuario?.toLong()
+                ?: throw IllegalStateException("Responsável não encontrado")
         )
     }
 
@@ -67,7 +72,9 @@ class AgendamentoAnamneseService(
                 dataDisponivel = agendamento.agendaResponsavel?.dataDisponivel
                     ?: throw IllegalStateException("Data indisponível"),
                 nomeAventureiro = agendamento.aventureiro?.nome
-                    ?: throw IllegalStateException("Aventureiro não encontrado")
+                    ?: throw IllegalStateException("Aventureiro não encontrado"),
+                fkResponsavel = agendamento.agendaResponsavel?.fkresponsavel?.idUsuario?.toLong()
+                    ?: throw IllegalStateException("Responsável não encontrado")
             )
         }
     }

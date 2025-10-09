@@ -5,8 +5,6 @@ import com.techbridge.techbridge.dto.AnamneseResponseDTO
 import com.techbridge.techbridge.service.AgendamentoAnamneseService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.web.server.ResponseStatusException
-import org.springframework.http.HttpStatus
 
 @RestController
 @RequestMapping("/agendamentos")
@@ -38,29 +36,10 @@ class AgendamentoAnamneseControllerJpa(private val agendamentoService: Agendamen
         }
     }
 
-    @PatchMapping("/gerar-relatorio")
-    fun gerarRelatorio(
-        @RequestParam fkAventureiro: Long ,
-        @RequestParam descricao: String
-    ): ResponseEntity<String> {
-        return try {
-            val linhasAfetadas = agendamentoService.atualizarRelatorio(fkAventureiro, descricao)
-            if (linhasAfetadas > 0) {
-                ResponseEntity.status(200).body("Relatório atualizado com sucesso.")
-            } else {
-                ResponseEntity.status(404).body("CPF não encontrado.")
-            }
-        } catch (e: IllegalArgumentException) {
-            ResponseEntity.status(400).body("Parâmetros inválidos.")
-        } catch (e: Exception) {
-            ResponseEntity.status(500).body("Erro interno no servidor.")
-        }
-    }
-
     @GetMapping("/datas-disponiveis")
-    fun listarDatasDisponiveis(): ResponseEntity<List<Map<String, Any>>> {
+    fun listarDatasDisponiveis(@RequestParam fkResponsavel: Int): ResponseEntity<List<Map<String, Any>>> {
         return try {
-            val resultados = agendamentoService.listarDatasDisponiveis()
+            val resultados = agendamentoService.listarDatasDisponiveisPorResponsavel(fkResponsavel)
             if (resultados.isNotEmpty()) {
                 ResponseEntity.status(200).body(resultados)
             } else {
@@ -75,6 +54,22 @@ class AgendamentoAnamneseControllerJpa(private val agendamentoService: Agendamen
     fun listarPorAventureiro(@PathVariable fkAventureiro: Int): ResponseEntity<List<AnamneseResponseDTO>> {
         return try {
             val agendamentos = agendamentoService.listarPorAventureiro(fkAventureiro)
+            if (agendamentos.isNotEmpty()) {
+                ResponseEntity.status(200).body(agendamentos)
+            } else {
+                ResponseEntity.status(204).build()
+            }
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(400).body(null)
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(null)
+        }
+    }
+
+    @GetMapping("/por-responsavel/{fkResponsavel}")
+    fun listarPorResponsavel(@PathVariable fkResponsavel: Int): ResponseEntity<List<AnamneseResponseDTO>> {
+        return try {
+            val agendamentos = agendamentoService.listarPorResponsavel(fkResponsavel)
             if (agendamentos.isNotEmpty()) {
                 ResponseEntity.status(200).body(agendamentos)
             } else {
