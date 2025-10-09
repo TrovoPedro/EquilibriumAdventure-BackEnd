@@ -1,5 +1,7 @@
 package com.techbridge.techbridge.controller
 
+import com.techbridge.techbridge.dto.AtivacaoEventoRequestDTO
+import com.techbridge.techbridge.dto.AtivacaoEventoResponseDTO
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.enums.TipoUsuario
 import org.springframework.web.bind.annotation.RequestMapping
@@ -37,9 +39,29 @@ class AdministradorControllerJpa(
     }
 
     @PostMapping("/cadastrar-evento-ativo")
-    fun postEventoAtivo(@RequestBody novoEvento: AtivacaoEvento): ResponseEntity<AtivacaoEvento> {
-        val eventoSalvo = repositorioEventoAtivo.save(novoEvento)
-        return ResponseEntity.status(201).body(eventoSalvo)
+    fun postEventoAtivo(@RequestBody novoEvento: AtivacaoEventoRequestDTO): ResponseEntity<AtivacaoEvento> {
+        println(novoEvento.eventoId)
+
+        val eventoId = novoEvento.eventoId
+            ?: return ResponseEntity.badRequest().build()
+
+        val eventoExistente = repositorioEvento.findById(eventoId)
+            .orElseThrow { RuntimeException("Evento não encontrado") }
+
+        val novoEvento = AtivacaoEvento().apply {
+            this.horaInicio = novoEvento.horaInicio?.let { java.sql.Time.valueOf(it) }
+            this.horaFinal = novoEvento.horaFinal?.let { java.sql.Time.valueOf(it) }
+            this.limiteInscritos = novoEvento.limiteInscritos
+            this.tempoEstimado = novoEvento.tempoEstimado
+            this.tipo = novoEvento.tipo
+            this.dataAtivacao = novoEvento.dataAtivacao
+            this.preco = novoEvento.preco
+            this.estado = novoEvento.estado?.let { com.techbridge.techbridge.enums.EstadoEvento.valueOf(it) }
+            this.evento = eventoExistente
+        }
+
+        val eventoAtivoSalvo = repositorioEventoAtivo.save(novoEvento)
+        return ResponseEntity.status(201).body(eventoAtivoSalvo)
     }
 
     @GetMapping("/buscar-todos-eventos-base")
