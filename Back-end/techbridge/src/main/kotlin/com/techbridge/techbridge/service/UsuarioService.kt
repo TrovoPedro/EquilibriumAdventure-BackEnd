@@ -82,7 +82,8 @@ class UsuarioService {
                 email = it.email,
                 imagemBase64 = it.img_usuario?.let { img ->
                     Base64.getEncoder().encodeToString(img)
-                }
+                },
+                descricao = it.descricao_guia
             )
         }
     }
