@@ -29,12 +29,25 @@ class AtivacaoEventoService {
         ativacao.horaFinal = dto.horaFinal?.let { Time.valueOf(it) }
         ativacao.tempoEstimado = dto.tempoEstimado
         ativacao.limiteInscritos = dto.limiteInscritos
-        ativacao.dataAtivacao = dto.dataAtivacao?.let { it}
+        ativacao.dataAtivacao = dto.dataAtivacao
         ativacao.tipo = dto.tipo
         ativacao.preco = dto.preco
         ativacao.estado = dto.estado?.let { EstadoEvento.valueOf(it.uppercase()) }
+
         ativacao.evento = dto.eventoId?.let {
             eventoRepository.findById(it).orElseThrow { RuntimeException("Evento não encontrado") }
+        }
+
+        val eventoId = dto.eventoId
+            ?: throw IllegalArgumentException("EventoId é obrigatório para criar uma ativação")
+
+        val ativacaoAtiva = repository.findByEventoIdAndEstadoIn(
+            eventoId,
+            listOf(EstadoEvento.NAO_INICIADO, EstadoEvento.EM_ANDAMENTO)
+        )
+
+        if (ativacaoAtiva != null) {
+            throw RuntimeException("O evento já possui uma ativação ativa")
         }
 
         return repository.save(ativacao)

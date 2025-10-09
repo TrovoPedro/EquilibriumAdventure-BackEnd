@@ -10,7 +10,7 @@ import jakarta.persistence.Inheritance
 import jakarta.persistence.InheritanceType
 
 @Entity
-@DiscriminatorValue(value = "3") // assumindo que ADMINISTRADOR é 0 no enum
+@DiscriminatorValue(value = "3")
 class Administrador : Usuario(
     tipo_usuario = TipoUsuario.ADMINISTRADOR
 )
