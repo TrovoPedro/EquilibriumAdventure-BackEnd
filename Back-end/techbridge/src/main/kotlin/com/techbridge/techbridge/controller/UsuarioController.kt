@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.techbridge.techbridge.enums.TipoUsuario
+import org.springframework.http.MediaType
 
 @RestController
 @RequestMapping("usuarios")
@@ -125,6 +126,19 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
             ResponseEntity.noContent().build()
         } else {
             ResponseEntity.ok(guias)
+        }
+    }
+
+    @GetMapping("/imagem/{id}")
+    fun getImagem(@PathVariable id: Long): ResponseEntity<ByteArray> {
+        val imagem = usuarioService.getImagemUsuario(id)
+
+        return if (imagem != null) {
+            ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imagem)
+        } else {
+            ResponseEntity.notFound().build()
         }
     }
 }

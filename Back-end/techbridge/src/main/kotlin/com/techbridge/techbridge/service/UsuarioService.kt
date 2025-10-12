@@ -107,4 +107,10 @@ class UsuarioService {
         return usuarioRepository.save(usuarioEncontrado)
     }
 
+    fun getImagemUsuario(id: Long): ByteArray? {
+        val informacao = usuarioRepository.findById(id)
+            .orElseThrow { RuntimeException("Informações do usuário não encontradas") }
+
+        return informacao.img_usuario
+    }
 }
