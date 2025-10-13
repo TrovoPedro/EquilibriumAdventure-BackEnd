@@ -4,8 +4,10 @@ import com.techbridge.techbridge.dto.*
 import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.enums.TipoUsuario
 import com.techbridge.techbridge.repository.UsuarioRepository
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.util.*
 
 @Service
@@ -70,6 +72,15 @@ class UsuarioService {
         usuarioEncontrado.telefoneContato = informacoesNova.telefone_contato;
 
         return usuarioRepository.save(usuarioEncontrado);
+    }
+
+    @Transactional
+    fun atualizarImagemUsuario(usuarioId: Long, img_usuario: MultipartFile) {
+        val usuario = usuarioRepository.findById(usuarioId)
+            .orElseThrow { RuntimeException("Usuário não encontrado") }
+
+        usuario.img_usuario = img_usuario.bytes
+        usuarioRepository.save(usuario)
     }
 
     fun getGuiasComImagens(): List<GuiaImagemDto> {

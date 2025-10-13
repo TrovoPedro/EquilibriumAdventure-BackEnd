@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import com.techbridge.techbridge.enums.TipoUsuario
 import org.springframework.http.MediaType
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("usuarios")
@@ -116,6 +117,19 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
         return ResponseEntity.noContent().build() // Retorna erro 401 se as credenciais estiverem incorretas
 
 
+    }
+
+    @PatchMapping("/{usuarioId}/imagem", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
+    fun atualizarImagemUsuario(
+        @PathVariable usuarioId: Long,
+        @RequestPart("imagem") img_usuario: MultipartFile
+    ): ResponseEntity<Any> {
+        return try {
+            usuarioService.atualizarImagemUsuario(usuarioId, img_usuario)
+            ResponseEntity.ok(mapOf("mensagem" to "Imagem atualizada com sucesso"))
+        } catch (e: RuntimeException) {
+            ResponseEntity.status(400).body(mapOf("erro" to e.message))
+        }
     }
 
     @GetMapping("/guias")
