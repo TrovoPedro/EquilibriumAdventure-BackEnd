@@ -1,11 +1,13 @@
 package com.techbridge.techbridge.service
 
+import AtivacaoEventoDTO
 import com.techbridge.techbridge.dto.EventoGuiaEnderecoDTO
 import com.techbridge.techbridge.dto.EventoRequestDTO
 import com.techbridge.techbridge.dto.EventoResponseDTO
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.repository.EnderecoRepository
 import com.techbridge.techbridge.repository.EventoRepository
+import com.techbridge.techbridge.repository.GuiaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -15,9 +17,13 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.multipart.MultipartFile
 import java.awt.PageAttributes
 import java.util.Optional
+import  com.techbridge.techbridge.dto.toDTO
 
 @Service
 class GuiaService {
+
+    @Autowired
+    private lateinit var guiaRepository: GuiaRepository
 
     @Autowired
     lateinit var eventoRepository: EventoRepository
@@ -52,6 +58,11 @@ class GuiaService {
         val eventoEncontrado = eventoRepository.findById(id)
 
         return eventoEncontrado;
+    }
+
+    fun getEventoPorId(id: Long): Evento {
+        return eventoRepository.findById(id)
+            .orElseThrow { RuntimeException("Evento com ID $id não encontrado.") }
     }
 
     fun getImagemEvento(id: Long): ResponseEntity<ByteArray> {
@@ -95,6 +106,14 @@ class GuiaService {
         }
 
         return eventos
-    }
+        }
+
+        fun getAtivacoesPorEvento(idEvento: Long): List<AtivacaoEventoDTO> {
+            val ativacoes = guiaRepository.findByEventoId(idEvento)
+            if (ativacoes.isEmpty()) {
+                throw RuntimeException("Evento não encontrado")
+            }
+            return ativacoes.map { it.toDTO(enderecoRepository) } // passa o repo
+        }
 
 }

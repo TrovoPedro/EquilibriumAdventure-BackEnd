@@ -35,4 +35,31 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
     fun findByAtivacaoEventoAndAventureiro(ativacaoEvento: AtivacaoEvento, aventureiro: Usuario): Inscricao?
 
     fun countByAtivacaoEvento(ativacaoEvento: AtivacaoEvento): Int
+
+    fun deleteByAventureiro_IdUsuarioAndAtivacaoEvento_IdAtivacao(usuarioId: Long, ativacaoId: Long): Int
+
+    @Query("""
+        SELECT CASE WHEN COUNT(i) > 0 THEN true ELSE false END 
+        FROM Inscricao i 
+        WHERE i.aventureiro.id = :idAventureiro 
+        AND i.ativacaoEvento.evento.id = :idEvento
+    """)
+    fun existsByAventureiroAndEvento(
+        @Param("idAventureiro") idAventureiro: Long,
+        @Param("idEvento") idEvento: Long
+    ): Boolean
+
+
+    @Modifying
+    @Transactional
+    @Query("""
+        DELETE FROM Inscricao i 
+        WHERE i.aventureiro.id = :idAventureiro 
+        AND i.ativacaoEvento.evento.id = :idEvento
+    """)
+    fun deleteByAventureiroAndEvento(
+        @Param("idAventureiro") idAventureiro: Long,
+        @Param("idEvento") idEvento: Long
+    )
+
 }

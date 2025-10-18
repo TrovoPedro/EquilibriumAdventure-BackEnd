@@ -11,4 +11,8 @@ interface AtivacaoEventoRepository : JpaRepository<AtivacaoEvento, Long>{
     fun findByEventoIdAndEstadoIn(
         @Param("eventoId") eventoId: Long,
         @Param("estados") estados: List<EstadoEvento>
-    ): AtivacaoEvento?}
+    ): AtivacaoEvento?
+
+    @Query("SELECT a FROM AtivacaoEvento a WHERE a.evento.id_evento = :eventoId")
+    fun findByEventoId(@Param("eventoId") eventoId: Long): AtivacaoEvento?
+}

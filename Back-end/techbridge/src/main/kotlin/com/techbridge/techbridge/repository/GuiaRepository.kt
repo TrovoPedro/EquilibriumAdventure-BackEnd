@@ -1,5 +1,7 @@
 package com.techbridge.techbridge.repository
 
+import AtivacaoEventoDTO
+import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Guia
 import com.techbridge.techbridge.entity.Usuario
@@ -25,6 +27,14 @@ interface GuiaRepository: JpaRepository<Guia, Int> {
         ORDER BY data_ativacao
     """, nativeQuery = true)
     fun findEventoByFkAventureiro(fkAventureiro: Int): List<Evento>
+
+    @Query("""
+    SELECT ae 
+    FROM AtivacaoEvento ae
+    JOIN FETCH ae.evento e
+    WHERE e.id_evento = :idEvento
+""")
+    fun findByEventoId(@Param("idEvento") idEvento: Long): List<AtivacaoEvento>
 
 
     fun save(guia: Usuario): Usuario
