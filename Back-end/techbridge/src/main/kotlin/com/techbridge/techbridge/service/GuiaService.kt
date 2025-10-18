@@ -89,11 +89,6 @@ class GuiaService {
 
     fun buscarEventoAtivoPorGuia(idGuia: Long): List<Map<String, Any>> {
         val eventos = eventoRepository.buscarEventoAtivoPorGuia(idGuia)
-
-        if (eventos.isEmpty()) {
-            throw NoSuchElementException("Nenhum evento ativo encontrado para o guia com ID $idGuia.")
-        }
-
         return eventos
     }
 
