@@ -74,4 +74,7 @@ interface EventoRepository: JpaRepository<Evento, Long> {
     )
     fun buscarEventoAtivoPorGuia(@Param("id") id: Long): List<Map<String, Any>>
 
+
+
+
 }
