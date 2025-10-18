@@ -48,25 +48,27 @@ interface EventoRepository: JpaRepository<Evento, Long> {
 
     @Query(
         value = """
-        SELECT 
-            e.id_evento,
-            e.nome AS nome_evento,
-            e.descricao,
-            e.nivel_dificuldade,
-            e.distancia_km,
-            u.nome AS nome_responsavel,
-            end.rua,
-            a.data_ativacao,
-            a.hora_inicio,
-            a.hora_final,
-            a.tipo,
-            a.preco,
-            a.log
-        FROM evento e
-        JOIN usuario u ON e.fk_responsavel = u.id_usuario
-        JOIN endereco end ON e.fk_endereco = end.id_endereco
-        JOIN ativacao_evento a ON e.id_evento = a.fk_evento
-        WHERE e.fk_responsavel = :id
+    SELECT
+        e.id_evento,
+        e.nome AS nome_evento,
+        e.descricao,
+        e.nivel_dificuldade,
+        e.distancia_km,
+        u.nome AS nome_responsavel,
+        end.rua,
+        a.data_ativacao,
+        a.hora_inicio,
+        a.hora_final,
+        a.tipo,
+        a.preco,
+        a.log
+    FROM evento e
+    JOIN usuario u ON e.fk_responsavel = u.id_usuario
+    JOIN endereco end ON e.fk_endereco = end.id_endereco
+    JOIN ativacao_evento a ON e.id_evento = a.fk_evento
+    WHERE e.fk_responsavel = :id
+    AND CONCAT(a.data_ativacao, ' ', a.hora_inicio) > NOW()
+    ORDER BY a.data_ativacao, a.hora_inicio
     """,
         nativeQuery = true
     )

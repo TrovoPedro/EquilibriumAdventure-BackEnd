@@ -54,7 +54,7 @@ class GuiaService {
         return eventosEncontrados
     }
 
-    fun getEventoId(id: Long): Optional<Evento>{
+    fun getEventoId(id: Long): Optional<Evento> {
         val eventoEncontrado = eventoRepository.findById(id)
 
         return eventoEncontrado;
@@ -78,20 +78,20 @@ class GuiaService {
         }
     }
 
-    fun getEventoPorGuia(id:Long): List<Map<String, Any>>{
+    fun getEventoPorGuia(id: Long): List<Map<String, Any>> {
         val eventosEncotrados = eventoRepository.buscarEventoPorGuia(id)
 
-        if(eventosEncotrados.isEmpty()){
+        if (eventosEncotrados.isEmpty()) {
             throw RuntimeException("Nenhum evento encontrado")
         }
 
         return eventosEncotrados
     }
 
-    fun getEventoAtivoPorGuia(id:Long): List<Map<String, Any>>{
+    fun getEventoAtivoPorGuia(id: Long): List<Map<String, Any>> {
         val eventosEncotrados = eventoRepository.buscarEventoPorGuia(id)
 
-        if(eventosEncotrados.isEmpty()){
+        if (eventosEncotrados.isEmpty()) {
             throw RuntimeException("Nenhum evento encontrado")
         }
 
@@ -100,13 +100,9 @@ class GuiaService {
 
     fun buscarEventoAtivoPorGuia(idGuia: Long): List<Map<String, Any>> {
         val eventos = eventoRepository.buscarEventoAtivoPorGuia(idGuia)
-
-        if (eventos.isEmpty()) {
-            throw NoSuchElementException("Nenhum evento ativo encontrado para o guia com ID $idGuia.")
-        }
-
         return eventos
-        }
+    }
+
 
         fun getAtivacoesPorEvento(idEvento: Long): List<AtivacaoEventoDTO> {
             val ativacoes = guiaRepository.findByEventoId(idEvento)
