@@ -6,5 +6,6 @@ data class AnamneseResponseDTO(
     val id: Long,
     val dataDisponivel: LocalDateTime,
     val nomeAventureiro: String,
-    val fkResponsavel: Long
+    val fkResponsavel: Long,
+    val fkAventureiro: Long
 )
