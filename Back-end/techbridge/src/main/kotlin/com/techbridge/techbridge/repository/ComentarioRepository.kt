@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 
 interface ComentarioRepository : JpaRepository<Comentario, Int> {
-    fun findByAtivacaoEvento_IdAtivacao(idAtivacao: Int): List<Comentario>
+    fun findByAtivacaoEvento_IdAtivacao(idAtivacao: Long): List<Comentario>
 }
 

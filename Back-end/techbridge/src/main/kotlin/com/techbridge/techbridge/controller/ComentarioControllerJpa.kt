@@ -23,6 +23,7 @@ class ComentarioControllerJpa(private val comentarioService: ComentarioService) 
         }
     }
 
+
     @DeleteMapping("/excluir/{id}")
     fun excluirComentario(@PathVariable id: Int): ResponseEntity<Void> {
         return try {
@@ -46,14 +47,15 @@ class ComentarioControllerJpa(private val comentarioService: ComentarioService) 
         }
     }
 
-    @GetMapping("/listar-por-evento/{idEvento}")
-    fun listarComentariosPorEvento(@PathVariable idEvento: Int): ResponseEntity<List<ComentarioResponseDTO>> {
+    @GetMapping("/listar-por-ativacao/{idAtivacaoEvento}")
+    fun listarComentariosPorAtivacao(@PathVariable idAtivacaoEvento: Long): ResponseEntity<List<ComentarioResponseDTO>> {
         return try {
-            val comentarios = comentarioService.listarComentariosPorEvento(idEvento)
+                val comentarios = comentarioService.listarComentariosPorAtivacao(idAtivacaoEvento)
             ResponseEntity.status(200).body(comentarios)
         } catch (e: Exception) {
             ResponseEntity.status(500).build()
         }
     }
+
 
 }
