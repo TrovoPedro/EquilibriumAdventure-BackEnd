@@ -24,7 +24,7 @@ class AdministradorControllerJpaTest {
     private val repositorioEventoAtivo = Mockito.mock(AtivacaoEventoRepository::class.java)
     private val repositorioEvento = Mockito.mock(EventoRepository::class.java)
 
-    private val controller = AdministradorControllerJpa(
+    private val controller = AdministradorControllerJpa<Any>(
         repositorio,
         repositorioGuia,
         repositorioEventoAtivo,

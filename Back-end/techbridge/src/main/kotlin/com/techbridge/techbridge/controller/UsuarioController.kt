@@ -111,12 +111,8 @@ class UsuarioController(val repositorioUsuario: UsuarioRepository) {
             usuarioLogado.autenticado = false
 
             return ResponseEntity.status(200).body(usuarioLogado)
-
-
         }
-        return ResponseEntity.noContent().build() // Retorna erro 401 se as credenciais estiverem incorretas
-
-
+        return ResponseEntity.noContent().build()
     }
 
     @PatchMapping("/{usuarioId}/imagem", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
