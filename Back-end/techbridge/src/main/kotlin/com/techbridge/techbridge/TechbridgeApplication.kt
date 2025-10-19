@@ -6,18 +6,15 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @SpringBootApplication
-class Application : WebMvcConfigurer {
+class TechbridgeApplication : WebMvcConfigurer {
 	override fun addCorsMappings(registry: CorsRegistry) {
 		registry.addMapping("/**")
 			.allowedOrigins("http://localhost:5173")
-			.allowedMethods("GET", "POST", "PUT", "DELETE","PATCH","OPTIONS")
-			.allowedHeaders("	*")
+			.allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
+			.allowedHeaders("*")
+			.allowCredentials(true)
 	}
 }
-
-
-@SpringBootApplication
-class TechbridgeApplication
 
 fun main(args: Array<String>) {
 	runApplication<TechbridgeApplication>(*args)
