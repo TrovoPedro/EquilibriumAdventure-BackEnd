@@ -57,6 +57,7 @@ interface EventoRepository: JpaRepository<Evento, Long> {
         e.distancia_km,
         u.nome AS nome_responsavel,
         end.rua,
+        a.id_ativacao,
         a.data_ativacao,
         a.hora_inicio,
         a.hora_final,
