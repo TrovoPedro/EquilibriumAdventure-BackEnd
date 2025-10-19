@@ -1,5 +1,6 @@
 package com.techbridge.techbridge.service
 
+import com.techbridge.techbridge.dto.InscricaoAgendaDTO
 import com.techbridge.techbridge.dto.InscricaoDTO
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.entity.Inscricao
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.util.*
 
 @Service
 class InscricaoService {
@@ -181,5 +183,31 @@ class InscricaoService {
 
         // Agora funciona dentro da transação
         inscricaoRepository.deleteByAventureiroAndAtivacaoEvento(usuario, ativacao)
+    }
+
+    fun listarEventosDoAventureiro(idAventureiro: Long): List<InscricaoAgendaDTO> {
+        return inscricaoRepository.listarEventosSimples(idAventureiro).map { arr ->
+            InscricaoAgendaDTO(
+                idInscricao = null,
+                idAtivacaoEvento = (arr[0] as Number).toLong(),
+                idUsuario = idAventureiro,
+                dataInscricao = null,
+                nomeEvento = arr[1] as String,
+                dataAtivacao = arr[2] as Date
+            )
+        }
+    }
+
+    fun listarEventosHistoricoDoAventureiro(idAventureiro: Long): List<InscricaoAgendaDTO> {
+        return inscricaoRepository.listarHistoricoSimples(idAventureiro).map { arr ->
+            InscricaoAgendaDTO(
+                idInscricao = (arr[0] as Number).toLong(),
+                idUsuario = (arr[1] as Number).toLong(),
+                dataInscricao = arr[2] as? Date,
+                idAtivacaoEvento = (arr[3] as Number).toLong(),
+                nomeEvento = arr[4] as String,
+                dataAtivacao = arr[5] as? Date
+            )
+        }
     }
 }
