@@ -1,9 +1,8 @@
 package com.techbridge.techbridge.service
 
+import com.techbridge.techbridge.dto.InscricaoAgendaDTO
 import com.techbridge.techbridge.dto.InscricaoDTO
-import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.entity.Inscricao
-import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.enums.Nivel
 import com.techbridge.techbridge.repository.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -94,7 +93,7 @@ class InscricaoService {
             idInscricao = inscricaoSalva.idInscricao,
             idAtivacaoEvento = evento.idAtivacao,
             idUsuario = usuario.idUsuario,
-            dataInscricao = inscricaoSalva.dataInscricao
+            dataInscricao = inscricaoSalva.dataInscricao,
         )
     }
 
@@ -123,7 +122,7 @@ class InscricaoService {
                 idInscricao = it.idInscricao,
                 idAtivacaoEvento = it.ativacaoEvento.idAtivacao,
                 idUsuario = it.aventureiro.idUsuario,
-                dataInscricao = it.dataInscricao
+                dataInscricao = it.dataInscricao,
             )
         }
     }
@@ -173,4 +172,9 @@ class InscricaoService {
         }
         inscricaoRepository.deleteByAventureiroAndEvento(idAventureiro, idEvento)
     }
+
+    fun listarEventosDoAventureiro(idAventureiro: Long): List<Array<Any>> {
+        return inscricaoRepository.listarEventosSimples(idAventureiro)
+    }
+
 }

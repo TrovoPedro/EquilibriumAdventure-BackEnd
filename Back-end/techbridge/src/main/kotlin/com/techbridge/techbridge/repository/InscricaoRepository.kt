@@ -1,5 +1,6 @@
 package com.techbridge.techbridge.repository
 
+import com.techbridge.techbridge.dto.InscricaoAgendaDTO
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.entity.Inscricao
 import com.techbridge.techbridge.entity.Usuario
@@ -62,4 +63,18 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
         @Param("idEvento") idEvento: Long
     )
 
+    @Query(
+        value = """
+        SELECT 
+            e.nome AS nomeEvento,
+            ae.data_ativacao AS dataAtivacao
+        FROM inscricao i
+        JOIN ativacao_evento ae ON i.fk_ativacao_evento = ae.id_ativacao
+        JOIN evento e ON ae.fk_evento = e.id_evento
+        WHERE i.fk_aventureiro = :idAventureiro
+        ORDER BY ae.data_ativacao ASC
+    """,
+        nativeQuery = true
+    )
+    fun listarEventosSimples(@Param("idAventureiro") idAventureiro: Long): List<Array<Any>>
 }
