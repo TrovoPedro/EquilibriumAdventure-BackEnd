@@ -56,6 +56,7 @@ interface EventoRepository: JpaRepository<Evento, Long> {
         e.distancia_km,
         u.nome AS nome_responsavel,
         end.rua,
+        a.id_ativacao,
         a.data_ativacao,
         a.hora_inicio,
         a.hora_final,
@@ -73,7 +74,6 @@ interface EventoRepository: JpaRepository<Evento, Long> {
         nativeQuery = true
     )
     fun buscarEventoAtivoPorGuia(@Param("id") id: Long): List<Map<String, Any>>
-
 
 
 
