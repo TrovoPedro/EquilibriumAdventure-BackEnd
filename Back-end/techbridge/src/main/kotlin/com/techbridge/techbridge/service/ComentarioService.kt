@@ -19,14 +19,14 @@ class ComentarioService(
         val usuario = usuarioRepository.findById(dto.idUsuario)
             .orElseThrow { IllegalArgumentException("Usuário com ID ${dto.idUsuario} não encontrado.") }
 
-        val ativacaoEvento = ativacaoEventoRepository.findByEventoId(dto.idEvento)
-            ?: throw IllegalArgumentException("Ativação de evento com ID ${dto.idEvento} não encontrada.")
+        val ativacao = ativacaoEventoRepository.findById(dto.idAtivacaoEvento)
+            .orElseThrow { RuntimeException("Ativação não encontrada") }
 
         val novoComentario = Comentario(
             texto = dto.texto,
             dataComentario = LocalDateTime.now(),
             usuario = usuario,
-            ativacaoEvento = ativacaoEvento
+            ativacaoEvento = ativacao
         )
 
         val comentarioSalvo = comentarioRepository.save(novoComentario)
@@ -60,14 +60,15 @@ class ComentarioService(
         }
     }
 
-    fun listarComentariosPorEvento(idAtivacaoEvento: Int): List<ComentarioResponseDTO> {
-        return comentarioRepository.findByAtivacaoEvento_IdAtivacao(idAtivacaoEvento).map {
+    fun listarComentariosPorAtivacao(idAtivacaoEvento: Long): List<ComentarioResponseDTO> {
+        val comentarios = comentarioRepository.findByAtivacaoEvento_IdAtivacao(idAtivacaoEvento)
+        return comentarios.map { c ->
             ComentarioResponseDTO(
-                id = it.id,
-                texto = it.texto,
-                dataComentario = it.dataComentario,
-                nomeUsuario = it.usuario?.nome ?: "Desconhecido",
-                idAtivacaoEvento = it.ativacaoEvento?.idAtivacao ?: 0L
+                id = c.id,
+                nomeUsuario = c.usuario?.nome ?: "Desconhecido",
+                texto = c.texto,
+                dataComentario = c.dataComentario,
+                idAtivacaoEvento = c.ativacaoEvento?.idAtivacao ?: 0L
             )
         }
     }

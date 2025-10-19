@@ -106,16 +106,28 @@ class GuiaControllerJpa(
                 ResponseEntity.status(404).body(mapOf("erro" to e.message))
             }
         }
-    @GetMapping("/{id}/gpx")
-    fun getGpxEvento(@PathVariable id: Long): ResponseEntity<ByteArray> {
-        val evento = eventoService.getEventoPorId(id)
-        val gpx = evento.caminho_arquivo_evento ?: return ResponseEntity.notFound().build()
-        return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType("application/gpx+xml"))
-            .body(gpx.toByteArray(Charsets.UTF_8))
+
+    @GetMapping("/buscar-evento-ativo-especifico/{id}")
+    fun getEventoAtivoEspecifico(@PathVariable id: Long): ResponseEntity<Any> {
+        return try {
+            val response = guiaService.getDetalheEventoAtivoPorGuia(id)
+            ResponseEntity.ok(response)
+        } catch (e: RuntimeException) {
+            ResponseEntity.status(404).body(mapOf("erro" to e.message))
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(mapOf("erro" to "Erro interno: ${e.message}"))
+        }
     }
 
+    @GetMapping("/ativacao/{ativacaoId}/gpx")
+    fun getGpxPorAtivacao(@PathVariable ativacaoId: Long): ResponseEntity<ByteArray> {
+        val gpx = eventoService.getGpxPorAtivacao(ativacaoId)
+            ?: return ResponseEntity.notFound().build()
 
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType("application/gpx+xml"))
+            .body(gpx)
+    }
 
 
 

@@ -27,12 +27,12 @@ class InscricaoController {
     @Autowired
     lateinit var inscricaoService: InscricaoService
 
-    @PostMapping("/ativacaoEvento/{eventoId}/usuario/{usuarioId}")
+    @PostMapping("/ativacaoEvento/{ativacaoId}/usuario/{usuarioId}")
     fun criarInscricao(
-        @PathVariable eventoId: Long,
+        @PathVariable ativacaoId: Long,
         @PathVariable usuarioId: Long
     ): ResponseEntity<InscricaoDTO> {
-        val inscricao = inscricaoService.criarInscricao(eventoId, usuarioId)
+        val inscricao = inscricaoService.criarInscricao(ativacaoId, usuarioId)
         return ResponseEntity.ok(inscricao)
     }
 
@@ -66,25 +66,23 @@ class InscricaoController {
     @PostMapping("/verificar")
     fun verificarInscricao(@RequestBody request: VerificaInscricaoDTO): ResponseEntity<Any> {
         return try {
-            val jaInscrito = inscricaoService.verificarInscricao(request.idAventureiro, request.idEvento)
+            val jaInscrito = inscricaoService.verificarInscricao(request.idAventureiro, request.idAtivacao)
             ResponseEntity.ok(mapOf("jaInscrito" to jaInscrito))
         } catch (e: IllegalArgumentException) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
 
-    @DeleteMapping("/cancelar-inscricao/{idAventureiro}/{idEvento}")
+    @DeleteMapping("/cancelar-inscricao/{idAventureiro}/{idAtivacao}")
     fun cancelarInscricao(
         @PathVariable idAventureiro: Long,
-        @PathVariable idEvento: Long
+        @PathVariable idAtivacao: Long
     ): ResponseEntity<String> {
         return try {
-            inscricaoService.cancelarInscricao(idAventureiro, idEvento)
+            inscricaoService.cancelarInscricao(idAventureiro, idAtivacao)
             ResponseEntity.ok("Inscrição cancelada com sucesso.")
         } catch (e: Exception) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
-
-
 }

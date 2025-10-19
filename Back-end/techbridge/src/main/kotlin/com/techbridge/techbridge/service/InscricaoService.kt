@@ -30,20 +30,19 @@ class InscricaoService {
     lateinit var informacoesPessoaisRepository: InformacoesPessoaisRepository
 
     @Transactional
-    fun criarInscricao(eventoId: Long, usuarioId: Long): InscricaoDTO {
-        val evento = ativacaoEventoRepository.findByEventoId(eventoId)
-            ?: throw RuntimeException("Nenhuma ativação encontrada para o evento com ID $eventoId")
-
+    fun criarInscricao(ativacaoId: Long, usuarioId: Long): InscricaoDTO {
+        val ativacao = ativacaoEventoRepository.findById(ativacaoId)
+            .orElseThrow { RuntimeException("Ativação de evento não encontrada para ID $ativacaoId") }
 
         val usuario = usuarioRepository.findById(usuarioId)
             .orElseThrow { RuntimeException("Usuário com ID $usuarioId não encontrado.") }
 
-        inscricaoRepository.findByAtivacaoEventoAndAventureiro(evento, usuario)?.let {
+        inscricaoRepository.findByAtivacaoEventoAndAventureiro(ativacao, usuario)?.let {
             throw RuntimeException("Usuário já está inscrito neste evento.")
         }
 
-        val totalInscritos = inscricaoRepository.countByAtivacaoEvento(evento)
-        evento.limiteInscritos?.let { limite ->
+        val totalInscritos = inscricaoRepository.countByAtivacaoEvento(ativacao)
+        ativacao.limiteInscritos?.let { limite ->
             if (totalInscritos >= limite) {
                 throw RuntimeException("Limite de inscritos alcançado para este evento.")
             }
@@ -86,13 +85,13 @@ class InscricaoService {
         }
         val novaInscricao = Inscricao(
             aventureiro = usuario,
-            ativacaoEvento = evento,
+            ativacaoEvento = ativacao,
             dataInscricao = LocalDateTime.now()
         )
         val inscricaoSalva = inscricaoRepository.save(novaInscricao)
         return InscricaoDTO(
             idInscricao = inscricaoSalva.idInscricao,
-            idAtivacaoEvento = evento.idAtivacao,
+            idAtivacaoEvento = ativacao.idAtivacao,
             idUsuario = usuario.idUsuario,
             dataInscricao = inscricaoSalva.dataInscricao
         )
@@ -156,21 +155,31 @@ class InscricaoService {
         inscricaoRepository.save(inscricaoAtualizada)
     }
 
-    fun verificarInscricao(idAventureiro: Long, idEvento: Long): Boolean {
-        // Verifica se os dois existem antes de consultar
-        usuarioRepository.findById(idAventureiro)
+    fun verificarInscricao(idAventureiro: Long, idAtivacao: Long): Boolean {
+        // Verifica se aventureiro existe
+        val usuario = usuarioRepository.findById(idAventureiro)
             .orElseThrow { IllegalArgumentException("Aventureiro não encontrado") }
 
-        eventoRepository.findById(idEvento)
-            .orElseThrow { IllegalArgumentException("Evento não encontrado") }
+        // Verifica se ativação existe
+        val ativacao = ativacaoEventoRepository.findById(idAtivacao)
+            .orElseThrow { IllegalArgumentException("Ativação de evento não encontrada") }
 
-        return inscricaoRepository.existsByAventureiroAndEvento(idAventureiro, idEvento)
+        return inscricaoRepository.existsByAventureiroAndAtivacaoEvento(usuario, ativacao)
     }
 
-    fun cancelarInscricao(idAventureiro: Long, idEvento: Long) {
-        if (!inscricaoRepository.existsByAventureiroAndEvento(idAventureiro, idEvento)) {
-            throw IllegalArgumentException("Inscrição não encontrada para este evento e aventureiro.")
+    @Transactional
+    fun cancelarInscricao(idAventureiro: Long, idAtivacao: Long) {
+        val usuario = usuarioRepository.findById(idAventureiro)
+            .orElseThrow { IllegalArgumentException("Aventureiro não encontrado") }
+
+        val ativacao = ativacaoEventoRepository.findById(idAtivacao)
+            .orElseThrow { IllegalArgumentException("Ativação de evento não encontrada") }
+
+        if (!inscricaoRepository.existsByAventureiroAndAtivacaoEvento(usuario, ativacao)) {
+            throw IllegalArgumentException("Inscrição não encontrada para esta ativação e aventureiro.")
         }
-        inscricaoRepository.deleteByAventureiroAndEvento(idAventureiro, idEvento)
+
+        // Agora funciona dentro da transação
+        inscricaoRepository.deleteByAventureiroAndAtivacaoEvento(usuario, ativacao)
     }
 }

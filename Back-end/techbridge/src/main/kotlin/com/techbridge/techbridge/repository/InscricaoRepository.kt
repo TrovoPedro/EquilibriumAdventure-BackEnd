@@ -39,27 +39,30 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
     fun deleteByAventureiro_IdUsuarioAndAtivacaoEvento_IdAtivacao(usuarioId: Long, ativacaoId: Long): Int
 
     @Query("""
-        SELECT CASE WHEN COUNT(i) > 0 THEN true ELSE false END 
-        FROM Inscricao i 
-        WHERE i.aventureiro.id = :idAventureiro 
-        AND i.ativacaoEvento.evento.id = :idEvento
-    """)
-    fun existsByAventureiroAndEvento(
+    SELECT CASE WHEN COUNT(i) > 0 THEN true ELSE false END
+    FROM Inscricao i
+    WHERE i.aventureiro.idUsuario = :idAventureiro
+    AND i.ativacaoEvento.idAtivacao = :idAtivacao
+""")
+    fun existsByAventureiroAndAtivacao(
         @Param("idAventureiro") idAventureiro: Long,
-        @Param("idEvento") idEvento: Long
+        @Param("idAtivacao") idAtivacao: Long
     ): Boolean
 
+
+    fun existsByAventureiroAndAtivacaoEvento(aventureiro: Usuario, ativacaoEvento: AtivacaoEvento): Boolean
+    fun deleteByAventureiroAndAtivacaoEvento(aventureiro: Usuario, ativacaoEvento: AtivacaoEvento)
 
     @Modifying
     @Transactional
     @Query("""
         DELETE FROM Inscricao i 
-        WHERE i.aventureiro.id = :idAventureiro 
-        AND i.ativacaoEvento.evento.id = :idEvento
+        WHERE i.aventureiro.idUsuario = :idAventureiro 
+        AND i.ativacaoEvento.idAtivacao = :idAtivacao
     """)
     fun deleteByAventureiroAndEvento(
         @Param("idAventureiro") idAventureiro: Long,
-        @Param("idEvento") idEvento: Long
+        @Param("idAtivacao") idAtivacao: Long
     )
 
 }

@@ -5,10 +5,7 @@
 
     data class ComentarioRequestDTO(
         val texto: String,
-
-        @JsonProperty("fk_usuario")
         val idUsuario: Long,
-
-        @JsonProperty("fk_evento") // muda para passar o id do evento
-        val idEvento: Long
+        val idAtivacaoEvento: Long  // antes estava idEvento
     )
+

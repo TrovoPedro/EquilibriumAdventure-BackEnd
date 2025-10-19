@@ -18,9 +18,14 @@ import org.springframework.web.multipart.MultipartFile
 import java.awt.PageAttributes
 import java.util.Optional
 import  com.techbridge.techbridge.dto.toDTO
+import com.techbridge.techbridge.entity.AtivacaoEvento
+import com.techbridge.techbridge.repository.AtivacaoEventoRepository
 
 @Service
 class GuiaService {
+
+    @Autowired
+    private lateinit var ativacaoEventoRepository: AtivacaoEventoRepository
 
     @Autowired
     private lateinit var guiaRepository: GuiaRepository
@@ -88,15 +93,17 @@ class GuiaService {
         return eventosEncotrados
     }
 
-    fun getEventoAtivoPorGuia(id: Long): List<Map<String, Any>> {
-        val eventosEncotrados = eventoRepository.buscarEventoPorGuia(id)
+    fun getDetalheEventoAtivoPorGuia(id: Long): List<AtivacaoEventoDTO> {
+        val ativacoes = eventoRepository.findByAtivacaoId(id)
 
-        if (eventosEncotrados.isEmpty()) {
+        if (ativacoes.isEmpty()) {
             throw RuntimeException("Nenhum evento encontrado")
         }
 
-        return eventosEncotrados
+        // Converte todos para DTO
+        return ativacoes.map { it.toDTO(enderecoRepository) }
     }
+
 
     fun buscarEventoAtivoPorGuia(idGuia: Long): List<Map<String, Any>> {
         val eventos = eventoRepository.buscarEventoAtivoPorGuia(idGuia)
@@ -104,12 +111,20 @@ class GuiaService {
     }
 
 
-        fun getAtivacoesPorEvento(idEvento: Long): List<AtivacaoEventoDTO> {
-            val ativacoes = guiaRepository.findByEventoId(idEvento)
+        fun getAtivacoesPorEvento(idAtivacao: Long): List<AtivacaoEventoDTO> {
+            val ativacoes = guiaRepository.findByEventoId(idAtivacao)
             if (ativacoes.isEmpty()) {
                 throw RuntimeException("Evento não encontrado")
             }
             return ativacoes.map { it.toDTO(enderecoRepository) } // passa o repo
         }
+
+    fun getGpxPorAtivacao(ativacaoId: Long): ByteArray? {
+        val ativacao = ativacaoEventoRepository.findById(ativacaoId)
+            .orElseThrow { RuntimeException("Ativação não encontrada") }
+
+        val gpx = ativacao.evento?.caminho_arquivo_evento
+        return gpx?.toByteArray(Charsets.UTF_8)
+    }
 
 }

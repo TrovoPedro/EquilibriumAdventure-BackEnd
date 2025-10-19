@@ -1,6 +1,7 @@
 package com.techbridge.techbridge.repository
 
 import com.techbridge.techbridge.dto.EventoGuiaEnderecoDTO
+import com.techbridge.techbridge.entity.AtivacaoEvento
 
 import com.techbridge.techbridge.entity.Evento
 import org.springframework.data.jpa.repository.JpaRepository
@@ -74,7 +75,12 @@ interface EventoRepository: JpaRepository<Evento, Long> {
     )
     fun buscarEventoAtivoPorGuia(@Param("id") id: Long): List<Map<String, Any>>
 
-
-
+    @Query("""
+    SELECT ae 
+    FROM AtivacaoEvento ae
+    JOIN FETCH ae.evento e
+    WHERE ae.idAtivacao = :id
+""")
+    fun findByAtivacaoId(@Param("id") id: Long): List<AtivacaoEvento>
 
 }
