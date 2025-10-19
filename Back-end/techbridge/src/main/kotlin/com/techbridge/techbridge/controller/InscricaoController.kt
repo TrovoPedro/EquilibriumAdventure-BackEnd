@@ -44,8 +44,14 @@ class InscricaoController {
     }
 
     @GetMapping("/agenda/{idAventureiro}")
-    fun listarEventosDoUsuario(@PathVariable idAventureiro: Long): ResponseEntity<List<Array<Any>>> {
-        val eventos: List<Array<Any>> = inscricaoService.listarEventosDoAventureiro(idAventureiro)
+    fun listarEventosDoUsuario(@PathVariable idAventureiro: Long): ResponseEntity<List<InscricaoAgendaDTO>> {
+        val eventos: List<InscricaoAgendaDTO> = inscricaoService.listarEventosDoAventureiro(idAventureiro)
+        return ResponseEntity.ok(eventos)
+    }
+
+    @GetMapping("/agenda/historico/{idAventureiro}")
+    fun listarHistoricoDoUsuario(@PathVariable idAventureiro: Long): ResponseEntity<List<InscricaoAgendaDTO>> {
+        val eventos = inscricaoService.listarEventosHistoricoDoAventureiro(idAventureiro)
         return ResponseEntity.ok(eventos)
     }
 

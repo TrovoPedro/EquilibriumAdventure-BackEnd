@@ -11,7 +11,6 @@ data class InscricaoAgendaDTO(
     val nomeEvento: String?,
     val dataAtivacao: LocalDate?
 ) {
-    // Construtor para Hibernate/JPQL
     constructor(
         idInscricao: Long?,
         idAtivacaoEvento: Long?,
@@ -23,8 +22,8 @@ data class InscricaoAgendaDTO(
         idInscricao,
         idAtivacaoEvento,
         idUsuario,
-        dataInscricao?.toInstant()?.atZone(java.time.ZoneId.systemDefault())?.toLocalDate(),
+        (dataInscricao as? java.sql.Date)?.toLocalDate(),
         nomeEvento,
-        dataAtivacao?.toInstant()?.atZone(java.time.ZoneId.systemDefault())?.toLocalDate()
+        (dataAtivacao as? java.sql.Date)?.toLocalDate()
     )
 }

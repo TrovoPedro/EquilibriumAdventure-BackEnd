@@ -65,16 +65,38 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
 
     @Query(
         value = """
-        SELECT 
-            e.nome AS nomeEvento,
-            ae.data_ativacao AS dataAtivacao
-        FROM inscricao i
-        JOIN ativacao_evento ae ON i.fk_ativacao_evento = ae.id_ativacao
-        JOIN evento e ON ae.fk_evento = e.id_evento
-        WHERE i.fk_aventureiro = :idAventureiro
-        ORDER BY ae.data_ativacao ASC
+    SELECT 
+        ae.id_ativacao AS idAtivacaoEvento,
+        e.nome AS nomeEvento,
+        ae.data_ativacao AS dataAtivacao
+    FROM inscricao i
+    JOIN ativacao_evento ae ON i.fk_ativacao_evento = ae.id_ativacao
+    JOIN evento e ON ae.fk_evento = e.id_evento
+    WHERE i.fk_aventureiro = :idAventureiro
+    ORDER BY ae.data_ativacao ASC
     """,
         nativeQuery = true
     )
     fun listarEventosSimples(@Param("idAventureiro") idAventureiro: Long): List<Array<Any>>
+
+    @Query(
+        value = """
+        SELECT 
+            i.id_inscricao,
+            i.fk_aventureiro,
+            i.data_inscricao,
+            ae.id_ativacao AS idAtivacaoEvento,
+            e.nome AS nomeEvento,
+            ae.data_ativacao
+        FROM inscricao i
+        JOIN ativacao_evento ae ON i.fk_ativacao_evento = ae.id_ativacao
+        JOIN evento e ON ae.fk_evento = e.id_evento
+        WHERE i.fk_aventureiro = :idAventureiro
+          AND ae.log = 'FINALIZADO'
+        ORDER BY ae.data_ativacao ASC
+        """,
+        nativeQuery = true
+    )
+    fun listarHistoricoSimples(@Param("idAventureiro") idAventureiro: Long): List<Array<Any>>
+
 }
