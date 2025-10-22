@@ -1,11 +1,20 @@
 package com.techbridge.techbridge.service
 
+import com.techbridge.techbridge.dto.EventoBaseRequestDTO
 import com.techbridge.techbridge.dto.EventoGuiaEnderecoDTO
 import com.techbridge.techbridge.dto.EventoRequestDTO
 import com.techbridge.techbridge.dto.EventoResponseDTO
+import com.techbridge.techbridge.dto.GuiaRequestDTO
+import  com.techbridge.techbridge.repository.InformacoesPessoaisRepository
+import com.techbridge.techbridge.dto.UsuarioRequestDTO
 import com.techbridge.techbridge.entity.Evento
+import com.techbridge.techbridge.entity.Guia
+import com.techbridge.techbridge.entity.InformacoesPessoais
+import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.repository.EnderecoRepository
 import com.techbridge.techbridge.repository.EventoRepository
+import com.techbridge.techbridge.repository.GuiaRepository
+import com.techbridge.techbridge.repository.UsuarioRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -20,10 +29,20 @@ import java.util.Optional
 class GuiaService {
 
     @Autowired
+    private lateinit var usuarioRepository: UsuarioRepository
+
+    @Autowired
+    private lateinit var informacoesPessoaisRepository: InformacoesPessoaisRepository
+
+    @Autowired
+    private lateinit var guiaRepository: GuiaRepository
+
+    @Autowired
     lateinit var eventoRepository: EventoRepository
 
     @Autowired
     lateinit var enderecoRepository: EnderecoRepository
+
 
     fun postEvento(novoEvento: EventoRequestDTO, img_evento: MultipartFile?): Evento {
         val enderecoDto = novoEvento.endereco ?: throw IllegalArgumentException("Endereço é obrigatório")
@@ -37,6 +56,47 @@ class GuiaService {
         return eventoRepository.save(evento)
     }
 
+    fun postGuia (novoGuia: GuiaRequestDTO , img_guia: MultipartFile?): Usuario {
+
+        val guia = Usuario().apply {
+            nome = novoGuia.nome
+            email = novoGuia.email
+            senha = novoGuia.senha
+            descricao_guia = novoGuia.descricao_guia
+            tipo_usuario = novoGuia.tipo_usuario
+        }
+
+        guia.img_usuario = img_guia?.bytes
+
+        val guiaSalvo = usuarioRepository.save(guia)
+
+        return guiaSalvo
+    }
+
+    fun putEvento(idEvento: Long,idEndereco: Long ,novoEvento: EventoRequestDTO, img_evento: MultipartFile?): Evento {
+        val enderecoDto = novoEvento.endereco ?: throw IllegalArgumentException("Endereço é obrigatório")
+
+        val enderecoExistente = enderecoRepository.findById(idEndereco)
+            .orElseThrow { RuntimeException("Endereço não encontrado") }
+
+        val enderecoAtualizado = enderecoExistente.copy(
+            rua = enderecoDto.rua,
+            numero = enderecoDto.numero,
+            cidade = enderecoDto.cidade,
+            complemento = enderecoDto.complemento,
+            estado = enderecoDto.estado,
+            cep = enderecoDto.cep
+        )
+        enderecoRepository.save(enderecoAtualizado)
+
+        val evento = novoEvento.toEntity(enderecoAtualizado.id_endereco)
+
+        evento.id_evento = idEvento
+        println(img_evento)
+        evento.img_evento = img_evento?.bytes
+
+        return eventoRepository.save(evento)
+    }
 
     fun getEventos(): List<Map<String, Any>> {
         val eventosEncontrados = eventoRepository.listarEventosComResponsavelERua()

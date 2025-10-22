@@ -8,13 +8,10 @@ import com.techbridge.techbridge.repository.AtivacaoEventoRepository
 import com.techbridge.techbridge.repository.EventoRepository
 import com.techbridge.techbridge.repository.GuiaRepository
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.*
 import org.mockito.Mockito
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import java.util.*
 
 class AdministradorControllerJpaTest {

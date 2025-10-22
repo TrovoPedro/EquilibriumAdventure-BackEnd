@@ -128,14 +128,24 @@ class GuiaControllerJpa(
         return ResponseEntity.status(404).build()
     }
 
-    @PutMapping("/editar-evento/{id}")
-    fun putEvento(@PathVariable id: Long, @RequestBody eventoAtualizado: Evento): ResponseEntity<Evento> {
-        if (!repositorioEvento.existsById(id)) {
-            return ResponseEntity.status(404).build()
+    @PutMapping("/editar-evento/{idEvento}/{idEndereco}")
+    fun putEvento(@PathVariable idEvento: Long, @PathVariable idEndereco: Long,
+          @RequestPart("evento") eventoJson: String,
+          @RequestPart("imagem", required = false) img_evento: MultipartFile?
+            ): ResponseEntity<Any> {
+        return try {
+            val objectMapper = ObjectMapper()
+            val novoEvento = objectMapper.readValue(eventoJson, EventoRequestDTO::class.java)
+
+            val eventoSalvo = eventoService.putEvento(idEvento,idEndereco,novoEvento, img_evento)
+
+
+            ResponseEntity.ok(mapOf("success" to true, "data" to eventoSalvo))
+        } catch (e: Exception) {
+            ResponseEntity.status(400).body(
+                mapOf("success" to false, "message" to "Erro ao processar requisição: ${e.message}")
+            )
         }
-        eventoAtualizado.id_evento = id
-        val evento = repositorioEvento.save(eventoAtualizado)
-        return ResponseEntity.status(200).body(evento)
     }
 
     @DeleteMapping("/deletar-evento/{id}")
