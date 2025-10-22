@@ -9,9 +9,6 @@ import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.enums.TipoUsuario
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-
-
-import com.techbridge.techbridge.dto.UsuarioRequestDTO
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.repository.AdministradorRepository
@@ -22,21 +19,24 @@ import com.techbridge.techbridge.repository.GuiaRepository
 import com.techbridge.techbridge.service.AdministradorService
 import com.techbridge.techbridge.service.GuiaService
 import org.springframework.beans.factory.annotation.Autowired
+import com.techbridge.techbridge.repository.*
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.http.MediaType
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-@RequestMapping("/adiministrador")
+@RequestMapping("/administrador")
 class AdministradorControllerJpa(
     val repositorio: AdministradorRepository,
     val repositorioGuia: GuiaRepository,
     val repositorioEventoAtivo: AtivacaoEventoRepository,
     val repositorioEvento: EventoRepository,
     val repositorioEndereco: EnderecoRepository,
-    val guiaService: GuiaService
+    val guiaService: GuiaService,
+    val repositorioUsuario: UsuarioRepository
+
 ) {
 
     @PostMapping("/cadastrar-evento")
@@ -124,8 +124,6 @@ class AdministradorControllerJpa(
         }
     }
 
-
-
     @PutMapping("/editar-evento/{id}")
     fun putEvento(@PathVariable id: Long, @RequestBody eventoAtualizado: Evento): ResponseEntity<Evento> {
         if (!repositorioEvento.existsById(id)) {
@@ -143,8 +141,6 @@ class AdministradorControllerJpa(
         return ResponseEntity.status(HttpStatus.OK).body(evento)
     }
 
-
-
     @DeleteMapping("/deletar-evento/{id}")
     fun deleteEvento(@PathVariable id: Int): ResponseEntity<Void> {
         if (repositorio.existsById(id)) {
@@ -153,8 +149,6 @@ class AdministradorControllerJpa(
         }
         return ResponseEntity.status(404).build()
     }
-
-    // GUIAS
 
     @PostMapping("/cadastrar-guia")
     fun postGuia(@RequestPart("guia") guiaJson: String,
@@ -203,25 +197,28 @@ class AdministradorControllerJpa(
         }
     }
 
-    @PutMapping("/editar-guia/{id}")
-    fun putGuia(@PathVariable id: Long, @RequestBody guiaAtualizado: Usuario): ResponseEntity<Usuario> {
-        val guiaOptional = repositorioGuia.findByIdAndTipo(id.toInt(), TipoUsuario.GUIA)
+    @PutMapping("/atualizar-guia/{id}")
+    fun atualizarGuia(
+        @PathVariable id: Long,
+        @RequestParam(required = false) descricao_guia: String?,
+        @RequestParam(required = false) img_usuario: MultipartFile?  // <--- MultipartFile
+    ): ResponseEntity<Usuario> {
+        val usuario = repositorioUsuario.findById(id)
+            .orElseThrow { RuntimeException("Usuário não encontrado") }
 
-        return if (guiaOptional !== null) {
-            val guiaExistente = guiaOptional
-            if (guiaExistente.tipo_usuario == TipoUsuario.GUIA) {
-                guiaAtualizado.idUsuario = id
-                guiaAtualizado.tipo_usuario = TipoUsuario.GUIA
-                val guiaSalvo = repositorioGuia.save(guiaAtualizado)
-                ResponseEntity.ok(guiaSalvo)
-            } else {
-                ResponseEntity.status(403).build()
-            }
-        } else {
-            ResponseEntity.notFound().build()
+        descricao_guia?.let { usuario.descricao_guia = it }
+
+        img_usuario?.let {
+            usuario.img_usuario = it.bytes
+        }
+
+        return try {
+            repositorioUsuario.save(usuario)
+            ResponseEntity.ok(usuario)
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(null)
         }
     }
-
 
     @DeleteMapping("/deletar-guia/{id}")
     fun deleteGuia(@PathVariable id: Int): ResponseEntity<Void> {
@@ -239,8 +236,6 @@ class AdministradorControllerJpa(
             ResponseEntity.notFound().build()
         }
     }
-
-
 }
 
 

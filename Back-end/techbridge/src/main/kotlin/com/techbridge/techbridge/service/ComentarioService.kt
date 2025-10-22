@@ -19,14 +19,14 @@ class ComentarioService(
         val usuario = usuarioRepository.findById(dto.idUsuario)
             .orElseThrow { IllegalArgumentException("Usuário com ID ${dto.idUsuario} não encontrado.") }
 
-        val ativacaoEvento = ativacaoEventoRepository.findById(dto.idAtivacaoEvento)
-            .orElseThrow { IllegalArgumentException("Ativação de evento com ID ${dto.idAtivacaoEvento} não encontrada.") }
+        val ativacao = ativacaoEventoRepository.findById(dto.idAtivacaoEvento)
+            .orElseThrow { RuntimeException("Ativação não encontrada") }
 
         val novoComentario = Comentario(
             texto = dto.texto,
             dataComentario = LocalDateTime.now(),
             usuario = usuario,
-            ativacaoEvento = ativacaoEvento
+            ativacaoEvento = ativacao
         )
 
         val comentarioSalvo = comentarioRepository.save(novoComentario)
@@ -40,33 +40,6 @@ class ComentarioService(
         )
     }
 
-    fun responderComentario(id: Int, dto: ComentarioRequestDTO): ComentarioResponseDTO {
-        val comentarioOriginal = comentarioRepository.findById(id)
-            .orElseThrow { IllegalArgumentException("Comentário com ID $id não encontrado.") }
-
-        val usuario = usuarioRepository.findById(dto.idUsuario)
-            .orElseThrow { IllegalArgumentException("Usuário com ID ${dto.idUsuario} não encontrado.") }
-
-        val ativacaoEvento = ativacaoEventoRepository.findById(dto.idAtivacaoEvento)
-            .orElseThrow { IllegalArgumentException("Ativação de evento com ID ${dto.idAtivacaoEvento} não encontrada.") }
-
-        val novaResposta = Comentario(
-            texto = dto.texto,
-            dataComentario = LocalDateTime.now(),
-            usuario = usuario,
-            ativacaoEvento = ativacaoEvento
-        )
-
-        val respostaSalva = comentarioRepository.save(novaResposta)
-
-        return ComentarioResponseDTO(
-            id = respostaSalva.id,
-            texto = respostaSalva.texto,
-            dataComentario = respostaSalva.dataComentario,
-            nomeUsuario = respostaSalva.usuario?.nome ?: "Desconhecido",
-            idAtivacaoEvento = respostaSalva.ativacaoEvento?.idAtivacao ?: 0L
-        )
-    }
     fun excluirComentario(id: Int): Boolean {
         val comentario = comentarioRepository.findById(id)
             .orElseThrow { IllegalArgumentException("Comentário com ID $id não encontrado.") }
@@ -86,4 +59,18 @@ class ComentarioService(
             )
         }
     }
+
+    fun listarComentariosPorAtivacao(idAtivacaoEvento: Long): List<ComentarioResponseDTO> {
+        val comentarios = comentarioRepository.findByAtivacaoEvento_IdAtivacao(idAtivacaoEvento)
+        return comentarios.map { c ->
+            ComentarioResponseDTO(
+                id = c.id,
+                nomeUsuario = c.usuario?.nome ?: "Desconhecido",
+                texto = c.texto,
+                dataComentario = c.dataComentario,
+                idAtivacaoEvento = c.ativacaoEvento?.idAtivacao ?: 0L
+            )
+        }
+    }
+
 }

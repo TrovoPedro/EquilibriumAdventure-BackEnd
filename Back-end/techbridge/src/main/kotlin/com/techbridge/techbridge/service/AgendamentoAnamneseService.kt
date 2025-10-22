@@ -35,7 +35,9 @@ class AgendamentoAnamneseService(
                 nomeAventureiro = agendamento.aventureiro?.nome
                     ?: throw IllegalStateException("Aventureiro não encontrado"),
                 fkResponsavel = agendamento.agendaResponsavel?.fkresponsavel?.idUsuario?.toLong()
-                    ?: throw IllegalStateException("Responsável não encontrado")
+                    ?: throw IllegalStateException("Responsável não encontrado"),
+                fkAventureiro = agendamento.aventureiro?.idUsuario?.toLong()
+                    ?: throw IllegalStateException("Aventureiro não encontrado")
             )
         }
     }
@@ -61,7 +63,9 @@ class AgendamentoAnamneseService(
             nomeAventureiro = agendamentoSalvo.aventureiro?.nome
                 ?: throw IllegalStateException("Aventureiro não encontrado"),
             fkResponsavel = agendamentoSalvo.agendaResponsavel?.fkresponsavel?.idUsuario?.toLong()
-                ?: throw IllegalStateException("Responsável não encontrado")
+                ?: throw IllegalStateException("Responsável não encontrado"),
+            fkAventureiro = agendamentoSalvo.aventureiro?.idUsuario?.toLong()
+                ?: throw IllegalStateException("Aventureiro não encontrado")
         )
     }
 
@@ -74,7 +78,9 @@ class AgendamentoAnamneseService(
                 nomeAventureiro = agendamento.aventureiro?.nome
                     ?: throw IllegalStateException("Aventureiro não encontrado"),
                 fkResponsavel = agendamento.agendaResponsavel?.fkresponsavel?.idUsuario?.toLong()
-                    ?: throw IllegalStateException("Responsável não encontrado")
+                    ?: throw IllegalStateException("Responsável não encontrado"),
+                fkAventureiro = agendamento.aventureiro?.idUsuario?.toLong()
+                    ?: throw IllegalStateException("Aventureiro não encontrado")
             )
         }
     }

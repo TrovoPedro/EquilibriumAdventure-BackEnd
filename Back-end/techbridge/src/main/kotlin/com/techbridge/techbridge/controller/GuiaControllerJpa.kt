@@ -6,24 +6,18 @@ import com.techbridge.techbridge.entity.AgendaResponsavel
 import com.techbridge.techbridge.entity.Comentario
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.enums.TipoUsuario
-import com.techbridge.techbridge.repository.AgendaResponsavelRepository
-import com.techbridge.techbridge.repository.AgendamentoAnamneseRepository
-import com.techbridge.techbridge.repository.AtivacaoEventoRepository
-import com.techbridge.techbridge.repository.AventureiroRepository
-import com.techbridge.techbridge.repository.ComentarioRepository
-import com.techbridge.techbridge.repository.ConviteRepository
-import com.techbridge.techbridge.repository.EventoRepository
-import com.techbridge.techbridge.repository.InformacoesPessoaisRepository
-import com.techbridge.techbridge.repository.InscricaoRepository
-import com.techbridge.techbridge.repository.UsuarioRepository
+import com.techbridge.techbridge.repository.*
 import com.techbridge.techbridge.service.GuiaService
 import jakarta.validation.Valid
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.util.*
+import kotlin.NoSuchElementException
 
 @RestController
 @RequestMapping("/guia")
@@ -38,6 +32,12 @@ class GuiaControllerJpa(
     val repositorioAgendaResponsavel: AgendaResponsavelRepository,
     val repositorioAgendaAnamnese: AgendamentoAnamneseRepository
 ) {
+
+    @Autowired
+    private lateinit var guiaService: GuiaService
+
+    @Autowired
+    private lateinit var guiaRepository: GuiaRepository
 
     @Autowired
     lateinit var eventoService: GuiaService
@@ -94,6 +94,42 @@ class GuiaControllerJpa(
             }
             return ResponseEntity.status(200).body(eventosEncontrados)
         }
+
+
+
+        @GetMapping("/buscar-evento-especifico/{id}")
+        fun getEventoEspecifico(@PathVariable id: Long): ResponseEntity<Any> {
+            return try {
+                val response = guiaService.getAtivacoesPorEvento(id)
+                ResponseEntity.ok(response)
+            } catch (e: Exception) {
+                ResponseEntity.status(404).body(mapOf("erro" to e.message))
+            }
+        }
+
+    @GetMapping("/buscar-evento-ativo-especifico/{id}")
+    fun getEventoAtivoEspecifico(@PathVariable id: Long): ResponseEntity<Any> {
+        return try {
+            val response = guiaService.getDetalheEventoAtivoPorGuia(id)
+            ResponseEntity.ok(response)
+        } catch (e: RuntimeException) {
+            ResponseEntity.status(404).body(mapOf("erro" to e.message))
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(mapOf("erro" to "Erro interno: ${e.message}"))
+        }
+    }
+
+    @GetMapping("/ativacao/{ativacaoId}/gpx")
+    fun getGpxPorAtivacao(@PathVariable ativacaoId: Long): ResponseEntity<ByteArray> {
+        val gpx = eventoService.getGpxPorAtivacao(ativacaoId)
+            ?: return ResponseEntity.notFound().build()
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType("application/gpx+xml"))
+            .body(gpx)
+    }
+
+
 
     @GetMapping("Adicionar-comentario/{idEvento}/{idAventureiro}")
     fun postComentario(

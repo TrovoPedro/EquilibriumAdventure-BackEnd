@@ -1,6 +1,7 @@
 package com.techbridge.techbridge.service
 
 import com.techbridge.techbridge.dto.EventoBaseRequestDTO
+import AtivacaoEventoDTO
 import com.techbridge.techbridge.dto.EventoGuiaEnderecoDTO
 import com.techbridge.techbridge.dto.EventoRequestDTO
 import com.techbridge.techbridge.dto.EventoResponseDTO
@@ -24,6 +25,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.multipart.MultipartFile
 import java.awt.PageAttributes
 import java.util.Optional
+import  com.techbridge.techbridge.dto.toDTO
+import com.techbridge.techbridge.entity.AtivacaoEvento
+import com.techbridge.techbridge.repository.AtivacaoEventoRepository
 
 @Service
 class GuiaService {
@@ -33,6 +37,8 @@ class GuiaService {
 
     @Autowired
     private lateinit var informacoesPessoaisRepository: InformacoesPessoaisRepository
+
+    private lateinit var ativacaoEventoRepository: AtivacaoEventoRepository
 
     @Autowired
     private lateinit var guiaRepository: GuiaRepository
@@ -108,10 +114,15 @@ class GuiaService {
         return eventosEncontrados
     }
 
-    fun getEventoId(id: Long): Optional<Evento>{
+    fun getEventoId(id: Long): Optional<Evento> {
         val eventoEncontrado = eventoRepository.findById(id)
 
         return eventoEncontrado;
+    }
+
+    fun getEventoPorId(id: Long): Evento {
+        return eventoRepository.findById(id)
+            .orElseThrow { RuntimeException("Evento com ID $id não encontrado.") }
     }
 
     fun getImagemEvento(id: Long): ResponseEntity<ByteArray> {
@@ -127,34 +138,48 @@ class GuiaService {
         }
     }
 
-    fun getEventoPorGuia(id:Long): List<Map<String, Any>>{
+    fun getEventoPorGuia(id: Long): List<Map<String, Any>> {
         val eventosEncotrados = eventoRepository.buscarEventoPorGuia(id)
 
-        if(eventosEncotrados.isEmpty()){
+        if (eventosEncotrados.isEmpty()) {
             throw RuntimeException("Nenhum evento encontrado")
         }
 
         return eventosEncotrados
     }
 
-    fun getEventoAtivoPorGuia(id:Long): List<Map<String, Any>>{
-        val eventosEncotrados = eventoRepository.buscarEventoPorGuia(id)
+    fun getDetalheEventoAtivoPorGuia(id: Long): List<AtivacaoEventoDTO> {
+        val ativacoes = eventoRepository.findByAtivacaoId(id)
 
-        if(eventosEncotrados.isEmpty()){
+        if (ativacoes.isEmpty()) {
             throw RuntimeException("Nenhum evento encontrado")
         }
 
-        return eventosEncotrados
+        // Converte todos para DTO
+        return ativacoes.map { it.toDTO(enderecoRepository) }
     }
+
 
     fun buscarEventoAtivoPorGuia(idGuia: Long): List<Map<String, Any>> {
         val eventos = eventoRepository.buscarEventoAtivoPorGuia(idGuia)
+        return eventos
+    }
 
-        if (eventos.isEmpty()) {
-            throw NoSuchElementException("Nenhum evento ativo encontrado para o guia com ID $idGuia.")
+
+        fun getAtivacoesPorEvento(idAtivacao: Long): List<AtivacaoEventoDTO> {
+            val ativacoes = guiaRepository.findByEventoId(idAtivacao)
+            if (ativacoes.isEmpty()) {
+                throw RuntimeException("Evento não encontrado")
+            }
+            return ativacoes.map { it.toDTO(enderecoRepository) } // passa o repo
         }
 
-        return eventos
+    fun getGpxPorAtivacao(ativacaoId: Long): ByteArray? {
+        val ativacao = ativacaoEventoRepository.findById(ativacaoId)
+            .orElseThrow { RuntimeException("Ativação não encontrada") }
+
+        val gpx = ativacao.evento?.caminho_arquivo_evento
+        return gpx?.toByteArray(Charsets.UTF_8)
     }
 
 }

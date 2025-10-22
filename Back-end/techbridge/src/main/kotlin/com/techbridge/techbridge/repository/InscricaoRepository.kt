@@ -1,5 +1,6 @@
 package com.techbridge.techbridge.repository
 
+import com.techbridge.techbridge.dto.InscricaoAgendaDTO
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.entity.Inscricao
 import com.techbridge.techbridge.entity.Usuario
@@ -35,4 +36,70 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
     fun findByAtivacaoEventoAndAventureiro(ativacaoEvento: AtivacaoEvento, aventureiro: Usuario): Inscricao?
 
     fun countByAtivacaoEvento(ativacaoEvento: AtivacaoEvento): Int
+
+    fun deleteByAventureiro_IdUsuarioAndAtivacaoEvento_IdAtivacao(usuarioId: Long, ativacaoId: Long): Int
+
+    @Query("""
+    SELECT CASE WHEN COUNT(i) > 0 THEN true ELSE false END
+    FROM Inscricao i
+    WHERE i.aventureiro.idUsuario = :idAventureiro
+    AND i.ativacaoEvento.idAtivacao = :idAtivacao
+""")
+    fun existsByAventureiroAndAtivacao(
+        @Param("idAventureiro") idAventureiro: Long,
+        @Param("idAtivacao") idAtivacao: Long
+    ): Boolean
+
+
+    fun existsByAventureiroAndAtivacaoEvento(aventureiro: Usuario, ativacaoEvento: AtivacaoEvento): Boolean
+    fun deleteByAventureiroAndAtivacaoEvento(aventureiro: Usuario, ativacaoEvento: AtivacaoEvento)
+
+    @Modifying
+    @Transactional
+    @Query("""
+        DELETE FROM Inscricao i 
+        WHERE i.aventureiro.idUsuario = :idAventureiro 
+        AND i.ativacaoEvento.idAtivacao = :idAtivacao
+    """)
+    fun deleteByAventureiroAndEvento(
+        @Param("idAventureiro") idAventureiro: Long,
+        @Param("idAtivacao") idAtivacao: Long
+    )
+
+    @Query(
+        value = """
+    SELECT 
+        ae.id_ativacao AS idAtivacaoEvento,
+        e.nome AS nomeEvento,
+        ae.data_ativacao AS dataAtivacao
+    FROM inscricao i
+    JOIN ativacao_evento ae ON i.fk_ativacao_evento = ae.id_ativacao
+    JOIN evento e ON ae.fk_evento = e.id_evento
+    WHERE i.fk_aventureiro = :idAventureiro
+    ORDER BY ae.data_ativacao ASC
+    """,
+        nativeQuery = true
+    )
+    fun listarEventosSimples(@Param("idAventureiro") idAventureiro: Long): List<Array<Any>>
+
+    @Query(
+        value = """
+        SELECT 
+            i.id_inscricao,
+            i.fk_aventureiro,
+            i.data_inscricao,
+            ae.id_ativacao AS idAtivacaoEvento,
+            e.nome AS nomeEvento,
+            ae.data_ativacao
+        FROM inscricao i
+        JOIN ativacao_evento ae ON i.fk_ativacao_evento = ae.id_ativacao
+        JOIN evento e ON ae.fk_evento = e.id_evento
+        WHERE i.fk_aventureiro = :idAventureiro
+          AND ae.log = 'FINALIZADO'
+        ORDER BY ae.data_ativacao ASC
+        """,
+        nativeQuery = true
+    )
+    fun listarHistoricoSimples(@Param("idAventureiro") idAventureiro: Long): List<Array<Any>>
+
 }
