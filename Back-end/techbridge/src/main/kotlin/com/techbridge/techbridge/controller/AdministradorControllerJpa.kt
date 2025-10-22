@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.http.MediaType
 
 @RestController
-@RequestMapping("/adiministrador")
+@RequestMapping("/administrador")
 class AdministradorControllerJpa(
     val repositorio: AdministradorRepository,
     val repositorioGuia: GuiaRepository,

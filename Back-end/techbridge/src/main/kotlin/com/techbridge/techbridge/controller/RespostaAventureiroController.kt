@@ -50,14 +50,30 @@ class RespostaAventureiroController(private val respostaService: RespostaAventur
     }
 
     @PostMapping("/calcular-nivel/{idUsuario}")
-    fun calcularNivel(@PathVariable idUsuario: Long): ResponseEntity<Nivel> {
+    fun calcularNivel(@PathVariable idUsuario: Long): ResponseEntity<Any> {
         return try {
-            val nivel = respostaService.calcularEAtualizarNivelUsuario(idUsuario)
-            ResponseEntity.ok(nivel)
+            val resultado = respostaService.calcularEAtualizarNivelUsuario(idUsuario)
+
+            val responseBody = mapOf(
+                "nivel" to resultado["nivel"],
+                "pontuacaoTotal" to resultado["pontuacaoTotal"],
+                "encaminharParaAnamnese" to resultado["encaminharParaAnamnese"],
+                "mensagem" to if (resultado["encaminharParaAnamnese"] == true)
+                    "Usuário deve ser encaminhado para anamnese."
+                else
+                    "Nível calculado com sucesso."
+            )
+
+            ResponseEntity.ok(responseBody)
         } catch (e: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(null)
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+                mapOf("erro" to "Usuário não encontrado.", "detalhes" to e.message)
+            )
         } catch (e: Exception) {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null)
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                mapOf("erro" to "Erro ao calcular nível.", "detalhes" to e.message)
+            )
         }
     }
+
 }
