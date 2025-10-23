@@ -56,7 +56,7 @@ class RespostaAventureiroService(
     }
 
     @Transactional
-    fun calcularEAtualizarNivelUsuario(idUsuario: Long): Nivel {
+    fun calcularEAtualizarNivelUsuario(idUsuario: Long): Map<String, Any> {
         val respostas = respostaRepository.findByUsuarioIdUsuario(idUsuario)
         val pontuacaoTotal = respostas.sumOf { resposta ->
             when (resposta.alternativaEscolhida) {
@@ -68,7 +68,7 @@ class RespostaAventureiroService(
             }
         }
 
-        val respostaSaude = respostas.find { it.pergunta.textoPergunta.contains("condição de saúde") }
+        val respostaSaude = respostas.find { it.pergunta.textoPergunta.contains("condição de saúde", ignoreCase = true) }
         val valorSaude = respostaSaude?.alternativaEscolhida ?: 0
 
         val nivel = when {
@@ -89,11 +89,16 @@ class RespostaAventureiroService(
             informacoesPessoaisRepository.save(novasInformacoes)
         }
 
-        // Atualiza o nível nas informações pessoais
         informacoesPessoaisRepository.atualizarNivelPorUsuario(idUsuario, nivel)
 
-        return nivel
+        // Retorno diferenciado
+        return mapOf(
+            "nivel" to nivel.name,
+            "pontuacaoTotal" to pontuacaoTotal,
+            "encaminharParaAnamnese" to (nivel == Nivel.EXPLORADOR && pontuacaoTotal < 7)
+        )
     }
+
 
     fun listarPerguntasComRespostas(idUsuario: Long): List<PerguntaComRespostaDTO> {
         val perguntas = perguntaRepository.findAll()
