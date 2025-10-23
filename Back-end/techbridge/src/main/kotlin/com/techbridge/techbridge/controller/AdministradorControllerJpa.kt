@@ -1,26 +1,30 @@
 package com.techbridge.techbridge.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.techbridge.techbridge.dto.AtivacaoEventoRequestDTO
 import com.techbridge.techbridge.dto.AtivacaoEventoResponseDTO
+import com.techbridge.techbridge.dto.EventoRequestDTO
+import com.techbridge.techbridge.dto.GuiaRequestDTO
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.enums.TipoUsuario
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-
-
-import com.techbridge.techbridge.dto.UsuarioRequestDTO
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.repository.AdministradorRepository
 import com.techbridge.techbridge.repository.AtivacaoEventoRepository
+import com.techbridge.techbridge.repository.EnderecoRepository
 import com.techbridge.techbridge.repository.EventoRepository
 import com.techbridge.techbridge.repository.GuiaRepository
 import com.techbridge.techbridge.service.AdministradorService
+import com.techbridge.techbridge.service.GuiaService
 import org.springframework.beans.factory.annotation.Autowired
+import com.techbridge.techbridge.repository.*
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import org.springframework.http.MediaType
+import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/administrador")
@@ -28,7 +32,10 @@ class AdministradorControllerJpa(
     val repositorio: AdministradorRepository,
     val repositorioGuia: GuiaRepository,
     val repositorioEventoAtivo: AtivacaoEventoRepository,
-    val repositorioEvento: EventoRepository
+    val repositorioEvento: EventoRepository,
+    val repositorioEndereco: EnderecoRepository,
+    val guiaService: GuiaService,
+    val repositorioUsuario: UsuarioRepository
 
 ) {
 
@@ -86,6 +93,16 @@ class AdministradorControllerJpa(
         }
     }
 
+    @GetMapping("/buscar-endereco-evento-especifico/{id}")
+    fun getEnderecoEventoEspecifico(@PathVariable id: Long): ResponseEntity<Any> {
+        val endereco = repositorioEndereco.findById(id)
+        return if (endereco.isPresent) {
+            ResponseEntity.ok(endereco.get())
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
     @GetMapping("/buscar-todos-eventos-ativo")
     fun getAllEventosAtivo(): ResponseEntity<MutableList<AtivacaoEvento>> {
         val eventos = repositorioEventoAtivo.findAll()
@@ -107,8 +124,6 @@ class AdministradorControllerJpa(
         }
     }
 
-
-
     @PutMapping("/editar-evento/{id}")
     fun putEvento(@PathVariable id: Long, @RequestBody eventoAtualizado: Evento): ResponseEntity<Evento> {
         if (!repositorioEvento.existsById(id)) {
@@ -126,8 +141,6 @@ class AdministradorControllerJpa(
         return ResponseEntity.status(HttpStatus.OK).body(evento)
     }
 
-
-
     @DeleteMapping("/deletar-evento/{id}")
     fun deleteEvento(@PathVariable id: Int): ResponseEntity<Void> {
         if (repositorio.existsById(id)) {
@@ -137,14 +150,25 @@ class AdministradorControllerJpa(
         return ResponseEntity.status(404).build()
     }
 
-    // GUIAS
-
     @PostMapping("/cadastrar-guia")
-    fun postGuia(@RequestBody novoGuia: Usuario): ResponseEntity<Usuario> {
-        novoGuia.tipo_usuario = TipoUsuario.GUIA
-        val guiaSalvo = repositorioGuia.save(novoGuia)
-        return ResponseEntity.status(201).body(guiaSalvo)
+    fun postGuia(@RequestPart("guia") guiaJson: String,
+                 @RequestPart("imagem", required = false) img_guia: MultipartFile?
+    ): ResponseEntity<Any>  {
+        return try {
+            val objectMapper = ObjectMapper()
+            val novoGuia = objectMapper.readValue(guiaJson, GuiaRequestDTO::class.java)
+
+            novoGuia.tipo_usuario = TipoUsuario.GUIA
+            println(img_guia)
+            val guiaSalvo = guiaService.postGuia(novoGuia, img_guia)
+
+            ResponseEntity.status(201).body(guiaSalvo)
     }
+    catch (e: Exception) {
+            ResponseEntity.status(400).body("Erro ao processar a requisição: ${e.message}")
+        }
+    }
+
 
     @GetMapping("/buscar-guias")
     fun getAllGuias(): ResponseEntity<List<Usuario>> {
@@ -173,25 +197,28 @@ class AdministradorControllerJpa(
         }
     }
 
-    @PutMapping("/editar-guia/{id}")
-    fun putGuia(@PathVariable id: Long, @RequestBody guiaAtualizado: Usuario): ResponseEntity<Usuario> {
-        val guiaOptional = repositorioGuia.findByIdAndTipo(id.toInt(), TipoUsuario.GUIA)
+    @PutMapping("/atualizar-guia/{id}")
+    fun atualizarGuia(
+        @PathVariable id: Long,
+        @RequestParam(required = false) descricao_guia: String?,
+        @RequestParam(required = false) img_usuario: MultipartFile?  // <--- MultipartFile
+    ): ResponseEntity<Usuario> {
+        val usuario = repositorioUsuario.findById(id)
+            .orElseThrow { RuntimeException("Usuário não encontrado") }
 
-        return if (guiaOptional !== null) {
-            val guiaExistente = guiaOptional
-            if (guiaExistente.tipo_usuario == TipoUsuario.GUIA) {
-                guiaAtualizado.idUsuario = id
-                guiaAtualizado.tipo_usuario = TipoUsuario.GUIA
-                val guiaSalvo = repositorioGuia.save(guiaAtualizado)
-                ResponseEntity.ok(guiaSalvo)
-            } else {
-                ResponseEntity.status(403).build()
-            }
-        } else {
-            ResponseEntity.notFound().build()
+        descricao_guia?.let { usuario.descricao_guia = it }
+
+        img_usuario?.let {
+            usuario.img_usuario = it.bytes
+        }
+
+        return try {
+            repositorioUsuario.save(usuario)
+            ResponseEntity.ok(usuario)
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(null)
         }
     }
-
 
     @DeleteMapping("/deletar-guia/{id}")
     fun deleteGuia(@PathVariable id: Int): ResponseEntity<Void> {
@@ -209,8 +236,6 @@ class AdministradorControllerJpa(
             ResponseEntity.notFound().build()
         }
     }
-
-
 }
 
 

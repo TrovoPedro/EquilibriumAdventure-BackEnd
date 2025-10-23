@@ -30,7 +30,6 @@ open class Usuario(
     @field:Size(min = 2, max = 100)
     open var nome: String? = null,
 
-    @field:NotBlank
     @field:Size(min = 11, max = 15)
     open var telefoneContato: String? = null,
 
