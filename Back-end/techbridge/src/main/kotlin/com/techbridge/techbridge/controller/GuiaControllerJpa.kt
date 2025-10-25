@@ -119,14 +119,13 @@ class GuiaControllerJpa(
         }
     }
 
-    @GetMapping("/ativacao/{ativacaoId}/gpx")
-    fun getGpxPorAtivacao(@PathVariable ativacaoId: Long): ResponseEntity<ByteArray> {
-        val gpx = eventoService.getGpxPorAtivacao(ativacaoId)
-            ?: return ResponseEntity.notFound().build()
-
+    @GetMapping("/{id}/gpx")
+    fun getGpxEvento(@PathVariable id: Long): ResponseEntity<ByteArray> {
+        val evento = eventoService.getEventoPorId(id)
+        val gpx = evento.caminho_arquivo_evento ?: return ResponseEntity.notFound().build()
         return ResponseEntity.ok()
             .contentType(MediaType.parseMediaType("application/gpx+xml"))
-            .body(gpx)
+            .body(gpx.toByteArray(Charsets.UTF_8))
     }
 
 
