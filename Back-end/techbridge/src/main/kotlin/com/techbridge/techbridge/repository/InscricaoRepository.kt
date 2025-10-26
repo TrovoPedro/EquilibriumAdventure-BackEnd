@@ -76,6 +76,7 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
     JOIN ativacao_evento ae ON i.fk_ativacao_evento = ae.id_ativacao
     JOIN evento e ON ae.fk_evento = e.id_evento
     WHERE i.fk_aventureiro = :idAventureiro
+    AND ae.data_ativacao >= CURRENT_TIMESTAMP
     ORDER BY ae.data_ativacao ASC
     """,
         nativeQuery = true
@@ -95,7 +96,7 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
         JOIN ativacao_evento ae ON i.fk_ativacao_evento = ae.id_ativacao
         JOIN evento e ON ae.fk_evento = e.id_evento
         WHERE i.fk_aventureiro = :idAventureiro
-          AND ae.log = 'FINALIZADO'
+          AND (ae.log = 'FINALIZADO' OR ae.data_ativacao < CURRENT_TIMESTAMP)
         ORDER BY ae.data_ativacao ASC
         """,
         nativeQuery = true
