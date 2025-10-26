@@ -1,7 +1,6 @@
-package com.techbridge.techbridge.dto
-
 import java.time.LocalDate
-import java.util.Date
+import java.util.*
+import java.util.Base64
 
 data class InscricaoAgendaDTO(
     val idInscricao: Long?,
@@ -9,7 +8,8 @@ data class InscricaoAgendaDTO(
     val idUsuario: Long?,
     val dataInscricao: LocalDate?,
     val nomeEvento: String?,
-    val dataAtivacao: LocalDate?
+    val dataAtivacao: LocalDate?,
+    val imagemEvento: String?
 ) {
     constructor(
         idInscricao: Long?,
@@ -17,13 +17,15 @@ data class InscricaoAgendaDTO(
         idUsuario: Long?,
         dataInscricao: Date?,
         nomeEvento: String?,
-        dataAtivacao: Date?
+        dataAtivacao: Date?,
+        imagemEventoBytes: ByteArray?
     ) : this(
         idInscricao,
         idAtivacaoEvento,
         idUsuario,
         (dataInscricao as? java.sql.Date)?.toLocalDate(),
         nomeEvento,
-        (dataAtivacao as? java.sql.Date)?.toLocalDate()
+        (dataAtivacao as? java.sql.Date)?.toLocalDate(),
+        imagemEventoBytes?.let { Base64.getEncoder().encodeToString(it) }
     )
 }

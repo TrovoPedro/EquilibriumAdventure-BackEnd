@@ -1,11 +1,8 @@
 package com.techbridge.techbridge.controller
 
-import com.techbridge.techbridge.dto.InscricaoAgendaDTO
+import InscricaoAgendaDTO
 import com.techbridge.techbridge.dto.InscricaoDTO
 import com.techbridge.techbridge.dto.VerificaInscricaoDTO
-import com.techbridge.techbridge.repository.AtivacaoEventoRepository
-import com.techbridge.techbridge.repository.InscricaoRepository
-import com.techbridge.techbridge.repository.UsuarioRepository
 import com.techbridge.techbridge.service.InscricaoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -15,15 +12,6 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/inscricoes")
 @CrossOrigin(origins = ["*"])
 class InscricaoController {
-
-    @Autowired
-    private lateinit var inscricaoRepository: InscricaoRepository
-
-    @Autowired
-    private lateinit var ativacaoEventoRepository: AtivacaoEventoRepository
-
-    @Autowired
-    private lateinit var usuarioRepository: UsuarioRepository
 
     @Autowired
     lateinit var inscricaoService: InscricaoService
