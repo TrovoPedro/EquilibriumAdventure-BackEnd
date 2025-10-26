@@ -1,6 +1,5 @@
 package com.techbridge.techbridge.repository
 
-import com.techbridge.techbridge.dto.InscricaoAgendaDTO
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.entity.Inscricao
 import com.techbridge.techbridge.entity.Usuario
@@ -71,7 +70,8 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
     SELECT 
         ae.id_ativacao AS idAtivacaoEvento,
         e.nome AS nomeEvento,
-        ae.data_ativacao AS dataAtivacao
+        ae.data_ativacao AS dataAtivacao,
+        e.img_evento AS imagemEvento
     FROM inscricao i
     JOIN ativacao_evento ae ON i.fk_ativacao_evento = ae.id_ativacao
     JOIN evento e ON ae.fk_evento = e.id_evento
