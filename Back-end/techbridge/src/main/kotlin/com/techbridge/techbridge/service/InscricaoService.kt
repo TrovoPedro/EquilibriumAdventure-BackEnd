@@ -1,11 +1,10 @@
 package com.techbridge.techbridge.service
 
-import com.techbridge.techbridge.dto.InscricaoAgendaDTO
+import InscricaoAgendaDTO
 import com.techbridge.techbridge.dto.InscricaoDTO
 import com.techbridge.techbridge.dto.InscricaoListagemDTO
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.entity.Inscricao
-import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.enums.Nivel
 import com.techbridge.techbridge.repository.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -55,7 +54,6 @@ class InscricaoService {
         val informacoesPessoais = informacoesPessoaisRepository.buscarPorUsuario(usuarioId)
             ?: throw RuntimeException("Informações pessoais não encontradas para o usuário com ID $usuarioId.")
 
-        // 🔹 Adicione esta validação AQUI:
         if (
             informacoesPessoais.cpf.isNullOrBlank() ||
             informacoesPessoais.contatoEmergencia.isNullOrBlank() ||
@@ -64,7 +62,6 @@ class InscricaoService {
         ) {
             throw RuntimeException("Preencha todas as informações pessoais antes de se inscrever em um evento.")
         }
-        // 🔹 Lógica de progressão de nível
         when (informacoesPessoais.nivel) {
             Nivel.EXPLORADOR -> {
                 if (totalInscricoesUsuario + 1 >= 5) {
@@ -79,7 +76,6 @@ class InscricaoService {
             }
 
             Nivel.DESBRAVADOR -> {
-                // Nível máximo, nenhuma ação necessária
             }
 
             else -> {
@@ -158,11 +154,8 @@ class InscricaoService {
     }
 
     fun verificarInscricao(idAventureiro: Long, idAtivacao: Long): Boolean {
-        // Verifica se aventureiro existe
         val usuario = usuarioRepository.findById(idAventureiro)
             .orElseThrow { IllegalArgumentException("Aventureiro não encontrado") }
-
-        // Verifica se ativação existe
         val ativacao = ativacaoEventoRepository.findById(idAtivacao)
             .orElseThrow { IllegalArgumentException("Ativação de evento não encontrada") }
 
@@ -181,7 +174,6 @@ class InscricaoService {
             throw IllegalArgumentException("Inscrição não encontrada para esta ativação e aventureiro.")
         }
 
-        // Agora funciona dentro da transação
         inscricaoRepository.deleteByAventureiroAndAtivacaoEvento(usuario, ativacao)
     }
 
@@ -193,7 +185,8 @@ class InscricaoService {
                 idUsuario = idAventureiro,
                 dataInscricao = null,
                 nomeEvento = arr[1] as String,
-                dataAtivacao = arr[2] as Date
+                dataAtivacao = arr[2] as Date,
+                imagemEventoBytes = arr[3] as? ByteArray
             )
         }
     }
@@ -206,7 +199,8 @@ class InscricaoService {
                 dataInscricao = arr[2] as? Date,
                 idAtivacaoEvento = (arr[3] as Number).toLong(),
                 nomeEvento = arr[4] as String,
-                dataAtivacao = arr[5] as? Date
+                dataAtivacao = arr[5] as? Date,
+                imagemEventoBytes = null
             )
         }
     }

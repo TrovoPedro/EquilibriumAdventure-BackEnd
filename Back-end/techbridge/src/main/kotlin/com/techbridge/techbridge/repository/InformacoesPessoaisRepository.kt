@@ -92,5 +92,8 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
     """)
     fun atualizarNivelPorUsuario(@Param("usuarioId") usuarioId: Long, @Param("nivel") nivel: Nivel): Int
 
+
+
+
     fun save(informacoesPessoais: InformacoesPessoais): InformacoesPessoais
 }
