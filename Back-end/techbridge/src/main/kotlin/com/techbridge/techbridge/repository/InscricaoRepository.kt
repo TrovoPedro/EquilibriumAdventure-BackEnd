@@ -102,4 +102,5 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
     )
     fun listarHistoricoSimples(@Param("idAventureiro") idAventureiro: Long): List<Array<Any>>
 
+    fun findByAtivacaoEvento_IdAtivacao(ativacaoId: Long): List<Inscricao>
 }

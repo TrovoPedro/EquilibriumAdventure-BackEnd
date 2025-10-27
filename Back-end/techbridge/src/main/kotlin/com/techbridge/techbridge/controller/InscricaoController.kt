@@ -2,6 +2,7 @@ package com.techbridge.techbridge.controller
 
 import com.techbridge.techbridge.dto.InscricaoAgendaDTO
 import com.techbridge.techbridge.dto.InscricaoDTO
+import com.techbridge.techbridge.dto.InscricaoListagemDTO
 import com.techbridge.techbridge.dto.VerificaInscricaoDTO
 import com.techbridge.techbridge.repository.AtivacaoEventoRepository
 import com.techbridge.techbridge.repository.InscricaoRepository
@@ -37,9 +38,9 @@ class InscricaoController {
         return ResponseEntity.ok(inscricao)
     }
 
-    @GetMapping("/ativacaoEvento/{eventoId}")
-    fun listarInscritos(@PathVariable eventoId: Long): ResponseEntity<List<InscricaoDTO>> {
-        val inscritos = inscricaoService.listarInscritos(eventoId)
+    @GetMapping("/ativacao/{ativacaoId}/inscritos")
+    fun listarInscritosPorAtivacao(@PathVariable ativacaoId: Long): ResponseEntity<List<InscricaoListagemDTO>> {
+        val inscritos = inscricaoService.listarInscritosPorAtivacao(ativacaoId)
         return ResponseEntity.ok(inscritos)
     }
 

@@ -2,6 +2,7 @@ package com.techbridge.techbridge.service
 
 import com.techbridge.techbridge.dto.InscricaoAgendaDTO
 import com.techbridge.techbridge.dto.InscricaoDTO
+import com.techbridge.techbridge.dto.InscricaoListagemDTO
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.entity.Inscricao
 import com.techbridge.techbridge.entity.Usuario
@@ -112,22 +113,21 @@ class InscricaoService {
         inscricaoRepository.deleteById(idInscricao)
     }
 
-    fun listarInscritos(eventoId: Long): List<InscricaoDTO> {
-        val evento = ativacaoEventoRepository.findById(eventoId)
-            .orElseThrow { RuntimeException("Evento com ID $eventoId não encontrado.") }
+    fun listarInscritosPorAtivacao(ativacaoId: Long): List<InscricaoListagemDTO> {
+        val inscricoes = inscricaoRepository.findByAtivacaoEvento_IdAtivacao(ativacaoId)
+        return inscricoes.map { inscricao ->
 
-        val inscritos = inscricaoRepository.findAll()
-            .filter { it.ativacaoEvento.idAtivacao == evento.idAtivacao }
-
-        return inscritos.map {
-            InscricaoDTO(
-                idInscricao = it.idInscricao,
-                idAtivacaoEvento = it.ativacaoEvento.idAtivacao,
-                idUsuario = it.aventureiro.idUsuario,
-                dataInscricao = it.dataInscricao
+            InscricaoListagemDTO(
+                idInscricao = inscricao.idInscricao,
+                idAtivacaoEvento = inscricao.ativacaoEvento.idAtivacao,
+                dataInscricao = inscricao.dataInscricao,
+                idUsuario = inscricao.aventureiro.idUsuario,
+                nomeUsuario = inscricao.aventureiro.nome,
+                emailUsuario = inscricao.aventureiro.email
             )
         }
     }
+
 
     @Transactional
     fun removerInscrito(idInscricao: Long) {
