@@ -44,26 +44,13 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
     fun buscarInformacoesPerfil(@Param("usuarioId") usuarioId: Long): InformacoesPessoaisGetPerfilDTO?
 
     @Query("""
-        SELECT new com.techbridge.techbridge.dto.InformacoesPessoaisGetPerfilDTO(
-            u.nome,
-            u.email,
-            u.telefoneContato,
-            ip.dataNascimento,
-            ip.cpf,
-            ip.rg,
-            ip.idioma,
-            ip.contatoEmergencia,
-            new com.techbridge.techbridge.dto.EnderecoDTO(
-                e.rua, e.numero, e.complemento, e.bairro, e.cidade, e.estado, e.cep
-            ),
-            ip.nivel,
-            ip.relatorioAnamnese
-        )
-        FROM InformacoesPessoais ip
-        JOIN ip.usuario u
-        LEFT JOIN ip.endereco e
-        WHERE u.idUsuario = :usuarioId
-    """)
+    SELECT new com.techbridge.techbridge.dto.InformacoesPessoaisNivelDTO(
+        ip.nivel
+    )
+    FROM InformacoesPessoais ip
+    JOIN ip.usuario u
+    WHERE u.idUsuario = :usuarioId
+""")
     fun buscarInformacoesNível(@Param("usuarioId") usuarioId: Long): InformacoesPessoaisNivelDTO?
 
     @Modifying

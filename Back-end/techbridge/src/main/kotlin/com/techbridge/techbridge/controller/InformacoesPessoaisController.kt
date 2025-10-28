@@ -57,7 +57,7 @@ class InformacoesPessoaisController {
     @GetMapping("/perfil-nivel/{usuarioId}")
     fun getNivelPerfilPorUsuarioId(@PathVariable usuarioId: Long): ResponseEntity<Any> {
         return try {
-            val informacaoEncontrada = informacaoService.getInformacoesPerfilPorUsuarioId(usuarioId)
+            val informacaoEncontrada = informacaoService.getNivelPerfilPorUsuarioId(usuarioId)
             ResponseEntity.ok(informacaoEncontrada)
         } catch (e: RuntimeException) {
             ResponseEntity.status(404).body(e.message)
