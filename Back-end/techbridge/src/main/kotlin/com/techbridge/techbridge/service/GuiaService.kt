@@ -64,6 +64,11 @@ class GuiaService {
 
     fun postGuia (novoGuia: GuiaRequestDTO , img_guia: MultipartFile?): Usuario {
 
+        val usuarioDuplicado = usuarioRepository.findByEmail(novoGuia.email.toString())
+        if (usuarioDuplicado != null) {
+            throw RuntimeException("Já existe um usuário cadastrado com este email.")
+        }
+
         val guia = Usuario().apply {
             nome = novoGuia.nome
             email = novoGuia.email
