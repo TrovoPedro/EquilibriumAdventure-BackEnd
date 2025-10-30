@@ -36,6 +36,25 @@ class AgendamentoAnamneseControllerJpa(private val agendamentoService: Agendamen
         }
     }
 
+    @PatchMapping("/gerar-relatorio")
+    fun gerarRelatorio(
+        @RequestParam fkAventureiro: Long ,
+        @RequestParam descricao: String
+    ): ResponseEntity<String> {
+        return try {
+            val linhasAfetadas = agendamentoService.atualizarRelatorio(fkAventureiro, descricao)
+            if (linhasAfetadas > 0) {
+                ResponseEntity.status(200).body("Relatório atualizado com sucesso.")
+            } else {
+                ResponseEntity.status(404).body("CPF não encontrado.")
+            }
+        } catch (e: IllegalArgumentException) {
+            ResponseEntity.status(400).body("Parâmetros inválidos.")
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body("Erro interno no servidor.")
+        }
+    }
+
     @GetMapping("/datas-disponiveis")
     fun listarDatasDisponiveis(@RequestParam fkResponsavel: Int): ResponseEntity<List<Map<String, Any>>> {
         return try {

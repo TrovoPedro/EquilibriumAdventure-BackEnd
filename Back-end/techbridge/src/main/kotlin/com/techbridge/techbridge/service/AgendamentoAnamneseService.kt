@@ -42,6 +42,16 @@ class AgendamentoAnamneseService(
         }
     }
 
+    @Transactional
+    fun atualizarRelatorio(usuario: Long, descricao: String): Int {
+        // Atualiza o relatório na tabela informacoes_pessoais
+        val linhasAfetadas = informacoesPessoaisRepository.atualizarRelatorioPorFkAventureiro(usuario, descricao)
+        if (linhasAfetadas == 0) {
+            throw RuntimeException("CPF não encontrado em Informações Pessoais.")
+        }
+        return linhasAfetadas
+    }
+
     fun salvarAgendamento(dto: AnamneseRequestDTO): AnamneseResponseDTO {
         val agendaResponsavel = agendaResponsavelRepository.findById(dto.fkData)
             .orElseThrow { IllegalArgumentException("Agenda com ID ${dto.fkData} não encontrada.") }
