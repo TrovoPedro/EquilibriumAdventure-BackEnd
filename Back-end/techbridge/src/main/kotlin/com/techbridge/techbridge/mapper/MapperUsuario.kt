@@ -6,6 +6,7 @@ import com.techbridge.techbridge.entity.Usuario
 
 fun UsuarioRequestDTO.toResponseDTO(): UsuarioResponseDTO {
     return UsuarioResponseDTO(
+        idUsuario = this.idUsuario,
         nome = this.nome,
         telefone_contato = this.telefone_contato,
         email = this.email,
@@ -15,6 +16,7 @@ fun UsuarioRequestDTO.toResponseDTO(): UsuarioResponseDTO {
 
 fun UsuarioResponseDTO.toEntity(): Usuario {
     return Usuario(
+        idUsuario = this.idUsuario,
         nome = this.nome,
         telefoneContato = this.telefone_contato,
         email = this.email,

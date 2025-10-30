@@ -21,6 +21,7 @@ class UsuarioService {
             .orElseThrow { RuntimeException("Usuário não encontrado") }
 
         return UsuarioResponseDTO(
+            idUsuario = usuario.idUsuario,
             nome = usuario.nome,
             telefone_contato = usuario.telefoneContato,
             email = usuario.email,
@@ -39,7 +40,6 @@ class UsuarioService {
             throw RuntimeException("Valores obrigatórios estão nulos ou vazios")
         }
 
-        // ✅ Verifica se o email já está cadastrado
         if (usuarioRepository.existsByEmail(novoUsuario.email!!)) {
             throw RuntimeException("E-mail já cadastrado")
         }
@@ -54,6 +54,7 @@ class UsuarioService {
             )
         } else {
             UsuarioResponseDTO(
+                idUsuario = usuarioSalvo.idUsuario,
                 nome = usuarioSalvo.nome,
                 telefone_contato = usuarioSalvo.telefoneContato,
                 email = usuarioSalvo.email,

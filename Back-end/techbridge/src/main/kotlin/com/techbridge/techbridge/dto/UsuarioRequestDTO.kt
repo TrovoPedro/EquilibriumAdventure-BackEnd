@@ -4,6 +4,7 @@ import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.enums.TipoUsuario
 
 data class UsuarioRequestDTO(
+    var idUsuario: Long?,
     var nome: String?,
     var telefone_contato: String?,
     var email: String?,
@@ -12,7 +13,7 @@ data class UsuarioRequestDTO(
     var tipo_usuario: TipoUsuario?,
     var primeira_vez: Boolean = true,
 ){
-    fun toEntity() = Usuario(nome = nome, telefoneContato = telefone_contato, email = email, senha = senha, descricao_guia = descricao_guia,
+    fun toEntity() = Usuario(idUsuario = idUsuario, nome = nome, telefoneContato = telefone_contato, email = email, senha = senha, descricao_guia = descricao_guia,
         tipo_usuario = tipo_usuario
     )
 }

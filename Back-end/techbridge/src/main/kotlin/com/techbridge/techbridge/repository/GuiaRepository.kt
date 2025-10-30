@@ -14,7 +14,8 @@ import org.springframework.data.repository.query.Param
 interface GuiaRepository: JpaRepository<Guia, Int> {
 
     @Query("SELECT u FROM Usuario  u WHERE u.tipo_usuario = :tipo_usuario")
-    fun findByTipoUsuario(@Param("tipo_usuario") tipo_usuario: TipoUsuario): List<Usuario>
+    fun
+            findByTipoUsuario(@Param("tipo_usuario") tipo_usuario: TipoUsuario): List<Usuario>
 
     @Query("SELECT u FROM Usuario u WHERE u.idUsuario = :idUsuario and u.tipo_usuario = :tipo_usuario")
     fun findByIdAndTipo(@Param("idUsuario") idUsuario: Int, @Param("tipo_usuario") tipo_usuario: TipoUsuario): Usuario?

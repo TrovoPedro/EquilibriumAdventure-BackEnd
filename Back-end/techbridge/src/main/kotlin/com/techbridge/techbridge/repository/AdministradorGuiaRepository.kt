@@ -2,6 +2,7 @@ package com.techbridge.techbridge.repository
 
 import com.techbridge.techbridge.entity.Evento
 import com.techbridge.techbridge.entity.Usuario
+import com.techbridge.techbridge.enums.TipoUsuario
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -9,6 +10,6 @@ import org.springframework.data.repository.query.Param
 interface AdministradorGuiaRepository: JpaRepository<Usuario, Int> {
 
     @Query("SELECT u FROM Usuario u WHERE u.tipo_usuario = :tipo")
-    fun findByTipoUsuario(@Param("tipo") tipo: Int): List<Usuario>
+    fun findByTipoUsuario(@Param("tipo") tipo: TipoUsuario): List<Usuario>
 
 }

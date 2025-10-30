@@ -1,10 +1,7 @@
 package com.techbridge.techbridge.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.techbridge.techbridge.dto.AtivacaoEventoRequestDTO
-import com.techbridge.techbridge.dto.AtivacaoEventoResponseDTO
-import com.techbridge.techbridge.dto.EventoRequestDTO
-import com.techbridge.techbridge.dto.GuiaRequestDTO
+import com.techbridge.techbridge.dto.*
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.enums.TipoUsuario
 import org.springframework.web.bind.annotation.RequestMapping
@@ -171,24 +168,40 @@ class AdministradorControllerJpa(
 
 
     @GetMapping("/buscar-guias")
-    fun getAllGuias(): ResponseEntity<List<Usuario>> {
+    fun getAllGuias(): ResponseEntity<List<UsuarioResponseDTO>> {  // ← Retorna DTO
         val guias = repositorioGuia.findByTipoUsuario(TipoUsuario.GUIA)
 
         return if (guias.isEmpty()) {
             ResponseEntity.status(204).build()
         } else {
-            ResponseEntity.status(200).body(guias)
+            val guiasDTO = guias.map { usuario ->
+                UsuarioResponseDTO(
+                    idUsuario = usuario.idUsuario,        // ← INCLUI O ID
+                    nome = usuario.nome,
+                    telefone_contato = usuario.telefoneContato,
+                    email = usuario.email,
+                    descricao_guia = usuario.descricao_guia
+                )
+            }
+            ResponseEntity.status(200).body(guiasDTO)
         }
     }
 
     @GetMapping("/buscar-guia-especifico/{id}")
-    fun getGuiaEspecifico(@PathVariable id: Int): ResponseEntity<Usuario> {
+    fun getGuiaEspecifico(@PathVariable id: Int): ResponseEntity<UsuarioResponseDTO> {
         val guiaOptional = repositorioGuia.findByIdAndTipo(id, TipoUsuario.GUIA)
 
-        return if (guiaOptional !== null) {
+        return if (guiaOptional != null) {
             val guia = guiaOptional
             if (guia.tipo_usuario == TipoUsuario.GUIA) {
-                ResponseEntity.ok(guia)
+                val guiaDTO = UsuarioResponseDTO(
+                    idUsuario = guia.idUsuario,
+                    nome = guia.nome,
+                    telefone_contato = guia.telefoneContato,
+                    email = guia.email,
+                    descricao_guia = guia.descricao_guia
+                )
+                ResponseEntity.ok(guiaDTO)
             } else {
                 ResponseEntity.status(404).build()
             }
@@ -201,20 +214,27 @@ class AdministradorControllerJpa(
     fun atualizarGuia(
         @PathVariable id: Long,
         @RequestParam(required = false) descricao_guia: String?,
-        @RequestParam(required = false) img_usuario: MultipartFile?  // <--- MultipartFile
-    ): ResponseEntity<Usuario> {
+        @RequestParam(required = false) img_usuario: MultipartFile?
+    ): ResponseEntity<UsuarioResponseDTO> {  // ← Mude aqui
         val usuario = repositorioUsuario.findById(id)
             .orElseThrow { RuntimeException("Usuário não encontrado") }
 
         descricao_guia?.let { usuario.descricao_guia = it }
-
-        img_usuario?.let {
-            usuario.img_usuario = it.bytes
-        }
+        img_usuario?.let { usuario.img_usuario = it.bytes }
 
         return try {
-            repositorioUsuario.save(usuario)
-            ResponseEntity.ok(usuario)
+            val usuarioSalvo = repositorioUsuario.save(usuario)
+
+            // Mapear para DTO
+            val usuarioDTO = UsuarioResponseDTO(
+                idUsuario = usuarioSalvo.idUsuario,
+                nome = usuarioSalvo.nome,
+                telefone_contato = usuarioSalvo.telefoneContato,
+                email = usuarioSalvo.email,
+                descricao_guia = usuarioSalvo.descricao_guia
+            )
+
+            ResponseEntity.ok(usuarioDTO)  // ← Retorna DTO
         } catch (e: Exception) {
             ResponseEntity.status(500).body(null)
         }
@@ -224,10 +244,10 @@ class AdministradorControllerJpa(
     fun deleteGuia(@PathVariable id: Int): ResponseEntity<Void> {
         val guiaOptional = repositorioGuia.findByIdAndTipo(id, TipoUsuario.GUIA)
 
-        return if (guiaOptional !== null ) {
+        return if (guiaOptional != null) {  // ← Remova o !== null
             val guiaExistente = guiaOptional
             if (guiaExistente.tipo_usuario == TipoUsuario.GUIA) {
-                repositorioGuia.deleteById(id)
+                repositorioUsuario.deleteById(guiaExistente.idUsuario!!)
                 ResponseEntity.noContent().build()
             } else {
                 ResponseEntity.status(403).build()
