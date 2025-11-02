@@ -204,4 +204,9 @@ class InscricaoService {
             )
         }
     }
+
+    fun ativacaoJaAvaliadaPorAventureiro(idAventureiro: Long, idAtivacao: Long): Boolean {
+        val inscricao = inscricaoRepository.findByAventureiroAndEvento(idAventureiro, idAtivacao)
+        return inscricao?.avaliacao != null
+    }
 }

@@ -87,4 +87,13 @@ class InscricaoController {
             ResponseEntity.badRequest().body(e.message)
         }
     }
+
+    @GetMapping("/ativacao-avaliada/{idAventureiro}/{idAtivacao}")
+    fun ativacaoJaAvaliadaPorAventureiro(
+        @PathVariable idAventureiro: Long,
+        @PathVariable idAtivacao: Long
+    ): ResponseEntity<Map<String, Boolean>> {
+        val avaliada = inscricaoService.ativacaoJaAvaliadaPorAventureiro(idAventureiro, idAtivacao)
+        return ResponseEntity.ok(mapOf("avaliada" to avaliada))
+    }
 }
