@@ -79,4 +79,8 @@ class AtivacaoEventoService {
         ativacaoExistente.estado = novoEstado
         return repository.save(ativacaoExistente)
     }
+
+    fun obterMediaAvaliacoes(idAtivacao: Long): Double {
+        return repository.calcularMediaAvaliacoes(idAtivacao) ?: 0.0
+    }
 }

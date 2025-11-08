@@ -50,5 +50,18 @@ class AtivacaoEventoController {
         }
     }
 
-}
+    @GetMapping("/media-avaliacoes/{idAtivacao}")
+    fun obterMediaAvaliacoes(@PathVariable idAtivacao: Long): ResponseEntity<Any> {
+        return try {
+            val media = service.obterMediaAvaliacoes(idAtivacao)
+            if (media > 0) {
+                ResponseEntity.ok(mapOf("mediaAvaliacoes" to media))
+            } else {
+                ResponseEntity.ok(mapOf("mensagem" to "Esse evento ainda não tem avaliações."))
+            }
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(mapOf("erro" to e.message))
+        }
+    }
 
+}

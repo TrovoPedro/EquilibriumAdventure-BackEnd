@@ -15,4 +15,7 @@ interface AtivacaoEventoRepository : JpaRepository<AtivacaoEvento, Long>{
 
     @Query("SELECT a FROM AtivacaoEvento a WHERE a.evento.id_evento = :eventoId")
     fun findByEventoId(@Param("eventoId") eventoId: Long): AtivacaoEvento?
+
+    @Query("SELECT AVG(i.avaliacao) FROM Inscricao i WHERE i.ativacaoEvento.id = :idAtivacao")
+    fun calcularMediaAvaliacoes(@Param("idAtivacao") idAtivacao: Long): Double?
 }
