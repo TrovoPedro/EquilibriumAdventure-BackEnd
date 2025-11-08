@@ -61,6 +61,9 @@ class InformacoesPessoais {
     @Column(columnDefinition = "LONGBLOB")
     var img_usuario: ByteArray? = null
 
+    @Column(name = "pontuacao_total")
+    var pontuacaoTotal: Int = 0
+
     constructor()
 
     constructor(usuario: Usuario, nivel: Nivel, questionarioRespondido: Boolean) {

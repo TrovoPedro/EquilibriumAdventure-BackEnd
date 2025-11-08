@@ -90,6 +90,9 @@ class RespostaAventureiroService(
         }
 
         informacoesPessoaisRepository.atualizarNivelPorUsuario(idUsuario, nivel)
+        // Atualiza também a pontuação total
+        informacoesPessoais.pontuacaoTotal = pontuacaoTotal
+        informacoesPessoaisRepository.save(informacoesPessoais)
 
         // Retorno diferenciado
         return mapOf(
@@ -118,5 +121,30 @@ class RespostaAventureiroService(
                 alternativaEscolhida = respostasMap[pergunta.id]?.alternativaEscolhida
             )
         }
+    }
+
+    fun garantirPontuacaoMinimaParaAnamnese(idUsuario: Long): Map<String, Any> {
+        val respostas = respostaRepository.findByUsuarioIdUsuario(idUsuario)
+        val pontuacaoTotal = respostas.sumOf { resposta ->
+            when (resposta.alternativaEscolhida) {
+                1 -> resposta.pergunta.valor1
+                2 -> resposta.pergunta.valor2
+                3 -> resposta.pergunta.valor3
+                4 -> resposta.pergunta.valor4
+                else -> 0
+            }
+        }
+        val novaPontuacao = if (pontuacaoTotal < 7) 8 else pontuacaoTotal
+
+        val informacoesPessoais = informacoesPessoaisRepository.buscarInformacoes(idUsuario)
+            ?: throw IllegalArgumentException("Usuário não encontrado")
+
+        informacoesPessoais.pontuacaoTotal = novaPontuacao
+        informacoesPessoaisRepository.save(informacoesPessoais)
+
+        return mapOf(
+            "pontuacaoAnterior" to pontuacaoTotal,
+            "pontuacaoAtual" to novaPontuacao
+        )
     }
 }

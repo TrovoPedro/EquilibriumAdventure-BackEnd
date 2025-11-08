@@ -76,4 +76,14 @@ class RespostaAventureiroController(private val respostaService: RespostaAventur
         }
     }
 
+    @GetMapping("/garantir-pontuacao-minima")
+    fun garantirPontuacaoMinimaParaAnamnese(@RequestParam idUsuario: Long): ResponseEntity<Map<String, Any>> {
+        return try {
+            val resultado = respostaService.garantirPontuacaoMinimaParaAnamnese(idUsuario)
+            ResponseEntity.ok(resultado)
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mapOf("erro" to (e.message ?: "Erro interno")))
+        }
+    }
+
 }
