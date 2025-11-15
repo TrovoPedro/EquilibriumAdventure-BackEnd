@@ -39,16 +39,17 @@ interface AgendamentoAnamneseRepository : JpaRepository<AgendamentoAnamnese, Int
 
     @Query(
         value = """
-    SELECT 
-        ar.id_agenda AS idAgenda, 
-        ar.data_disponivel AS dataDisponivel, 
-        ar.fk_responsavel AS fkResponsavel
-    FROM agenda_responsavel ar
-    WHERE ar.fk_responsavel = :fkResponsavel
-      AND ar.id_agenda NOT IN (
-          SELECT aa.fk_data 
-          FROM agendamento_anamnese aa
-      )
+   SELECT 
+    ar.id_agenda AS idAgenda, 
+    ar.data_disponivel AS dataDisponivel, 
+    ar.fk_responsavel AS fkResponsavel
+FROM agenda_responsavel ar
+WHERE ar.fk_responsavel = :fkResponsavel
+  AND ar.id_agenda NOT IN (
+      SELECT aa.fk_data 
+      FROM agendamento_anamnese aa
+  )
+  AND ar.data_disponivel >= CURRENT_DATE;
     """,
         nativeQuery = true
     )
