@@ -4,6 +4,7 @@ import com.techbridge.techbridge.dto.*
 import com.techbridge.techbridge.entity.Endereco
 import com.techbridge.techbridge.entity.InformacoesPessoais
 import com.techbridge.techbridge.entity.Usuario
+import com.techbridge.techbridge.enums.Nivel
 import com.techbridge.techbridge.repository.EnderecoRepository
 import com.techbridge.techbridge.repository.InformacoesPessoaisRepository
 import com.techbridge.techbridge.repository.UsuarioRepository
@@ -84,7 +85,12 @@ class InformacoesPessoaisService {
     }
 
     fun getNivelPerfilPorUsuarioId(usuarioId: Long): InformacoesPessoaisNivelDTO? {
-        return informacaoRepository.buscarInformacoesNível(usuarioId)
+        val nivelDto = informacaoRepository.buscarInformacoesNível(usuarioId)
+        return if (nivelDto == null) null
+        else InformacoesPessoaisNivelDTO(
+            nivel = nivelDto?.nivel,
+            pontuacaoTotal = nivelDto?.pontuacaoTotal
+        )
     }
 
     @Transactional

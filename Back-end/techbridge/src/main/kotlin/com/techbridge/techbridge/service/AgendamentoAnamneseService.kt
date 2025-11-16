@@ -87,6 +87,7 @@ class AgendamentoAnamneseService(
                     ?: throw IllegalStateException("Data indisponível"),
                 nomeAventureiro = agendamento.aventureiro?.nome
                     ?: throw IllegalStateException("Aventureiro não encontrado"),
+                nomeGuia = agendamento.agendaResponsavel?.fkresponsavel?.nome, // preenche o nome do guia
                 fkResponsavel = agendamento.agendaResponsavel?.fkresponsavel?.idUsuario?.toLong()
                     ?: throw IllegalStateException("Responsável não encontrado"),
                 fkAventureiro = agendamento.aventureiro?.idUsuario?.toLong()

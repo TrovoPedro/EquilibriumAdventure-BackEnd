@@ -45,7 +45,8 @@ interface InformacoesPessoaisRepository : JpaRepository<InformacoesPessoais, Lon
 
     @Query("""
     SELECT new com.techbridge.techbridge.dto.InformacoesPessoaisNivelDTO(
-        ip.nivel
+        ip.nivel,
+        ip.pontuacaoTotal
     )
     FROM InformacoesPessoais ip
     JOIN ip.usuario u
