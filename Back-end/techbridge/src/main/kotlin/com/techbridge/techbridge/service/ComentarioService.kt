@@ -36,7 +36,9 @@ class ComentarioService(
             texto = comentarioSalvo.texto,
             dataComentario = comentarioSalvo.dataComentario,
             nomeUsuario = comentarioSalvo.usuario?.nome ?: "Desconhecido",
-            idAtivacaoEvento = comentarioSalvo.ativacaoEvento?.idAtivacao ?: 0L
+            idAtivacaoEvento = comentarioSalvo.ativacaoEvento?.idAtivacao ?: 0L,
+            idUsuario = comentarioSalvo.usuario?.idUsuario,
+            tipoUsuario = comentarioSalvo.usuario?.tipo_usuario?.name
         )
     }
 
@@ -55,7 +57,9 @@ class ComentarioService(
                 texto = it.texto,
                 dataComentario = it.dataComentario,
                 nomeUsuario = it.usuario?.nome ?: "Desconhecido",
-                idAtivacaoEvento = it.ativacaoEvento?.idAtivacao ?: 0L
+                idAtivacaoEvento = it.ativacaoEvento?.idAtivacao ?: 0L,
+                idUsuario = it.usuario?.idUsuario,
+                tipoUsuario = it.usuario?.tipo_usuario?.name
             )
         }
     }
@@ -68,7 +72,9 @@ class ComentarioService(
                 nomeUsuario = c.usuario?.nome ?: "Desconhecido",
                 texto = c.texto,
                 dataComentario = c.dataComentario,
-                idAtivacaoEvento = c.ativacaoEvento?.idAtivacao ?: 0L
+                idAtivacaoEvento = c.ativacaoEvento?.idAtivacao ?: 0L,
+                idUsuario = c.usuario?.idUsuario,
+                tipoUsuario = c.usuario?.tipo_usuario?.name
             )
         }
     }

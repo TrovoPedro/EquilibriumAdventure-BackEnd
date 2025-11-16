@@ -7,5 +7,7 @@ data class ComentarioResponseDTO(
     val texto: String,
     val dataComentario: LocalDateTime,
     val nomeUsuario: String,
-    val idAtivacaoEvento: Long
+    val idAtivacaoEvento: Long,
+    val idUsuario: Long?,
+    val tipoUsuario: String?
 )
