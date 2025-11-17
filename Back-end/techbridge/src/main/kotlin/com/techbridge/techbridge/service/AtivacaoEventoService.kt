@@ -83,4 +83,12 @@ class AtivacaoEventoService {
     fun obterMediaAvaliacoes(idAtivacao: Long): Double {
         return repository.calcularMediaAvaliacoes(idAtivacao) ?: 0.0
     }
+
+    fun obterMediaAvaliacoesPorEventoBase(idEventoBase: Long): Double {
+        return repository.calcularMediaAvaliacoesPorEventoBase(idEventoBase) ?: 0.0
+    }
+
+    fun obterMediaDasMediasPorEventoBase(idEventoBase: Long): Double {
+        return repository.calcularMediaDasMediasPorEventoBase(idEventoBase) ?: 0.0
+    }
 }

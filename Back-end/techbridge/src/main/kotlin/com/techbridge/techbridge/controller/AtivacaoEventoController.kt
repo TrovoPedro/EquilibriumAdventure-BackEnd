@@ -64,4 +64,32 @@ class AtivacaoEventoController {
         }
     }
 
+    @GetMapping("/media-avaliacoes/evento-base/{idEventoBase}")
+    fun obterMediaAvaliacoesPorEventoBase(@PathVariable idEventoBase: Long): ResponseEntity<Any> {
+        return try {
+            val media = service.obterMediaAvaliacoesPorEventoBase(idEventoBase)
+            if (media > 0) {
+                ResponseEntity.ok(mapOf("mediaAvaliacoes" to media))
+            } else {
+                ResponseEntity.ok(mapOf("mensagem" to "Esse evento base ainda não tem avaliações."))
+            }
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(mapOf("erro" to e.message))
+        }
+    }
+
+    @GetMapping("/media-avaliacoes/media-das-medias/evento-base/{idEventoBase}")
+    fun obterMediaDasMediasPorEventoBase(@PathVariable idEventoBase: Long): ResponseEntity<Any> {
+        return try {
+            val media = service.obterMediaDasMediasPorEventoBase(idEventoBase)
+            if (media > 0) {
+                ResponseEntity.ok(mapOf("mediaAvaliacoes" to media))
+            } else {
+                ResponseEntity.ok(mapOf("mensagem" to "Esse evento base ainda não tem avaliações."))
+            }
+        } catch (e: Exception) {
+            ResponseEntity.status(500).body(mapOf("erro" to e.message))
+        }
+    }
+
 }

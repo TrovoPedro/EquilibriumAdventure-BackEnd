@@ -18,4 +18,17 @@ interface AtivacaoEventoRepository : JpaRepository<AtivacaoEvento, Long>{
 
     @Query("SELECT AVG(i.avaliacao) FROM Inscricao i WHERE i.ativacaoEvento.id = :idAtivacao")
     fun calcularMediaAvaliacoes(@Param("idAtivacao") idAtivacao: Long): Double?
+
+    @Query("""
+        SELECT AVG(i.avaliacao) 
+        FROM Inscricao i 
+        JOIN i.ativacaoEvento a 
+        JOIN a.evento e 
+        WHERE e.id_evento = :idEventoBase 
+          AND i.avaliacao IS NOT NULL
+    """)
+    fun calcularMediaAvaliacoesPorEventoBase(@Param("idEventoBase") idEventoBase: Long): Double?
+
+    @Query("SELECT AVG(media) FROM (SELECT AVG(i.avaliacao) as media FROM Inscricao i JOIN i.ativacaoEvento ae WHERE ae.evento.id_evento = :idEventoBase AND ae.estado = 'ATIVO' GROUP BY ae.idAtivacao) subquery")
+    fun calcularMediaDasMediasPorEventoBase(@Param("idEventoBase") idEventoBase: Long): Double?
 }
