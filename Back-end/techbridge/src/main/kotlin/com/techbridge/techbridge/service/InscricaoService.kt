@@ -50,9 +50,9 @@ class InscricaoService {
             }
         }
 
-        val totalInscricoesUsuario = inscricaoRepository.findByAventureiro_IdUsuario(usuarioId).size
         val informacoesPessoais = informacoesPessoaisRepository.buscarPorUsuario(usuarioId)
             ?: throw RuntimeException("Informações pessoais não encontradas para o usuário com ID $usuarioId.")
+        val totalInscricoesUsuario = inscricaoRepository.listarEventoPorNivelAventureiro(usuarioId, informacoesPessoais.nivel.toString()).size
 
         if (
             informacoesPessoais.cpf.isNullOrBlank() ||
@@ -70,7 +70,7 @@ class InscricaoService {
             }
 
             Nivel.AVENTUREIRO -> {
-                if (totalInscricoesUsuario + 1 >= 10) {
+                if (totalInscricoesUsuario + 1 >= 5) {
                     informacoesPessoaisRepository.atualizarNivelPorUsuario(usuarioId, Nivel.DESBRAVADOR)
                 }
             }

@@ -29,6 +29,18 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
 
     fun findByAventureiro_IdUsuario(aventureiro: Long): List<Inscricao>
 
+    @Query("""
+    SELECT DISTINCT i.ativacaoEvento.dataAtivacao
+    FROM Inscricao i
+    WHERE i.aventureiro.idUsuario = :aventureiroId
+      AND i.ativacaoEvento.evento.nivel_dificuldade = :nivel
+      AND i.ativacaoEvento.estado = 'FINALIZADO'
+""")
+    fun listarEventoPorNivelAventureiro(
+        aventureiroId: Long,
+        nivel: String
+    ): List<java.time.LocalDate>
+
     @Query("SELECT i FROM Inscricao i WHERE i.ativacaoEvento.idAtivacao = :eventoId and i.aventureiro.idUsuario = :aventureiroId")
     fun findByAventureiroAndEvento(aventureiroId: Long, eventoId: Long): Inscricao?
 
