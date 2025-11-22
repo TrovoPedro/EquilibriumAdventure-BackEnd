@@ -6,6 +6,7 @@ import com.techbridge.techbridge.enums.EstadoEvento
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/ativacoes")
@@ -37,14 +38,27 @@ class AtivacaoEventoController {
     @PutMapping("/{id}/estado")
     fun alterarEstado(
         @PathVariable id: Long,
-        @RequestParam estado: String
+        @RequestParam estado: String,
+        @RequestParam forcar: Boolean
     ): ResponseEntity<Any> {
         return try {
             val estadoEnum = EstadoEvento.valueOf(estado.uppercase())
-            val atualizada = service.alterarEstado(id, estadoEnum)
+            val atualizada = service.alterarEstado(id, estadoEnum, forcar)
             ResponseEntity.ok(atualizada)
         } catch (e: IllegalArgumentException) {
             ResponseEntity.status(400).body(mapOf("erro" to "Estado inválido: $estado"))
+        } catch (e: RuntimeException) {
+            ResponseEntity.status(409).body(mapOf("erro" to e.message))
+        }
+    }
+
+    @DeleteMapping("/evento-base/{id}")
+    fun excluirEventoBase(@PathVariable id: Long): ResponseEntity<Any> {
+        return try {
+            service.excluirEventoBase(id)
+            ResponseEntity.ok(mapOf("mensagem" to "Evento base excluído com sucesso"))
+        } catch (e: ResponseStatusException) {
+            ResponseEntity.status(e.statusCode).body(mapOf("erro" to e.reason))
         } catch (e: RuntimeException) {
             ResponseEntity.status(404).body(mapOf("erro" to e.message))
         }
@@ -93,3 +107,4 @@ class AtivacaoEventoController {
     }
 
 }
+

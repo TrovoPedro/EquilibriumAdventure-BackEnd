@@ -5,8 +5,12 @@ import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.enums.EstadoEvento
 import com.techbridge.techbridge.repository.AtivacaoEventoRepository
 import com.techbridge.techbridge.repository.EventoRepository
+import com.techbridge.techbridge.repository.InscricaoRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.server.ResponseStatusException
 import java.sql.Time
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -16,6 +20,9 @@ class AtivacaoEventoService {
 
     @Autowired
     lateinit var repository: AtivacaoEventoRepository
+
+    @Autowired
+    lateinit var inscricaoRepository: InscricaoRepository
 
     @Autowired
     lateinit var eventoRepository: EventoRepository
@@ -72,13 +79,55 @@ class AtivacaoEventoService {
         return repository.save(ativacaoExistente)
     }
 
-    fun alterarEstado(id: Long, novoEstado: EstadoEvento): AtivacaoEvento {
-        val ativacaoExistente = repository.findById(id)
-            .orElseThrow { RuntimeException("Ativação não encontrada") }
+    @Transactional
+    fun alterarEstado(idAtivacao: Long, novoEstado: EstadoEvento, forcar: Boolean): AtivacaoEvento {
+        val ativacao = repository.findById(idAtivacao)
+            .orElseThrow { RuntimeException("Ativação não encontrada: $idAtivacao") }
+        val inscricoes = inscricaoRepository.findByAtivacaoEvento_IdAtivacao(idAtivacao)
 
-        ativacaoExistente.estado = novoEstado
-        return repository.save(ativacaoExistente)
+        if (inscricoes.isNotEmpty() && !forcar) {
+            throw ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "Existem ${inscricoes.size} inscrições nesta ativação"
+            )
+        }
+
+        if (forcar && inscricoes.isNotEmpty()) {
+            inscricaoRepository.deleteAll(inscricoes)
+        }
+        // Atualiza o estado da ativação e salva
+        ativacao.estado = novoEstado
+        return repository.save(ativacao)
     }
+
+    @Transactional
+    fun excluirEventoBase(idEventoBase: Long) {
+        val evento = eventoRepository.findById(idEventoBase)
+            .orElseThrow {
+                RuntimeException("Evento base não encontrado: $idEventoBase")
+            }
+
+        // Verifica se há ativações NÃO finalizadas
+        val qtdNaoFinalizadas = repository.countAtivacoesPorEvento(idEventoBase)
+
+        if (qtdNaoFinalizadas > 0) {
+            throw ResponseStatusException(
+                HttpStatus.CONFLICT,
+                "Não é possível excluir o evento base. Existem $qtdNaoFinalizadas ativações não finalizadas vinculadas a ele."
+            )
+        }
+
+        val ativacoesFinalizadas = repository.findFinalizadasPorEvento(idEventoBase)
+
+        // Deletar ativações finalizadas
+        if (ativacoesFinalizadas.isNotEmpty()) {
+            repository.deleteAll(ativacoesFinalizadas)
+        }
+
+        // Agora pode excluir o evento base
+        eventoRepository.delete(evento)
+    }
+
 
     fun obterMediaAvaliacoes(idAtivacao: Long): Double {
         return repository.calcularMediaAvaliacoes(idAtivacao) ?: 0.0

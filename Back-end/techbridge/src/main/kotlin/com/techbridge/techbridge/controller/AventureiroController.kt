@@ -40,13 +40,11 @@ package com.techbridge.techbridge.controller
 
 import com.techbridge.techbridge.dto.InscricaoDTO
 import com.techbridge.techbridge.entity.Comentario
-import com.techbridge.techbridge.entity.Convite
 import com.techbridge.techbridge.entity.InformacoesPessoais
 import com.techbridge.techbridge.entity.Inscricao
 import com.techbridge.techbridge.repository.AtivacaoEventoRepository
 
 import com.techbridge.techbridge.repository.AventureiroRepository
-import com.techbridge.techbridge.repository.ConviteRepository
 import com.techbridge.techbridge.repository.EventoRepository
 import com.techbridge.techbridge.repository.InformacoesPessoaisRepository
 import com.techbridge.techbridge.repository.InscricaoRepository
@@ -72,7 +70,6 @@ import java.util.Optional
 class AventureiroController(
     val repositorioAventureiro: AventureiroRepository,
     val repositorioInformacoes: InformacoesPessoaisRepository,
-    val repositorioConvite: ConviteRepository,
     private val repositorioEvento: EventoRepository,
     val repositorioInscricao: InscricaoRepository,
     val repositorioAtivacaoEvento: AtivacaoEventoRepository,
@@ -101,47 +98,6 @@ class AventureiroController(
             return ResponseEntity.status(204).build()
         }
 
-    }
-
-    //mexer nessa função se algum método de convite der errado
-    @PostMapping("/enviar-convite/{id}/{idConvidado}")
-    fun postConvite(
-        @PathVariable id: Int,
-        @PathVariable idConvidado: Long,
-        @RequestBody convite: Convite
-    ): ResponseEntity<Convite?> {
-        var aventureiro = repositorioAventureiro.findByIdAndTipo(id, TipoUsuario.AVENTUREIRO)
-        var convidado = repositorioUsuario.findById(idConvidado).get()
-        if (aventureiro !== null) {
-            convite.aventureiro = aventureiro
-            convite.convidado = convidado
-            repositorioConvite.save(convite)
-            return ResponseEntity.status(200).body(convite)
-        } else {
-            return ResponseEntity.status(404).build()
-        }
-    }
-
-    @PatchMapping("responder-convite/{id}/{resposta}")
-    fun patchConvite(@PathVariable id: Long, @PathVariable resposta: Int): ResponseEntity<Boolean> {
-        val convite = repositorioConvite.findById(id)
-
-        var respostaValida: Boolean
-
-        if (resposta == 1) {
-            respostaValida = true
-        } else {
-            respostaValida = false
-        }
-
-        if (convite.isPresent) {
-            val conviteAtualizado = convite.get()
-            conviteAtualizado.conviteAceito = respostaValida
-            repositorioConvite.save(conviteAtualizado)
-            return ResponseEntity.status(200).body(respostaValida)
-        } else {
-            return ResponseEntity.status(404).build()
-        }
     }
 
     val tipoAventureiro = TipoUsuario.AVENTUREIRO

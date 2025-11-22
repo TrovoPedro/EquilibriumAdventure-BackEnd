@@ -24,7 +24,6 @@ import kotlin.NoSuchElementException
 class GuiaControllerJpa(
     val repositorioAventureiro: AventureiroRepository,
     val repositorioInformacoes: InformacoesPessoaisRepository,
-    val repositorioConvite: ConviteRepository,
     private val repositorioEvento: EventoRepository,
     val repositorioInscricao: InscricaoRepository,
     val repositorioAtivacaoEvento: AtivacaoEventoRepository,
