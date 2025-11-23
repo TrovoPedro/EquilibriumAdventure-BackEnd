@@ -42,7 +42,7 @@ open class Usuario(
     @field:Size(min = 8, max = 100)
     open var senha: String? = null,
 
-    @field:Size(min = 8, max = 100)
+    @field:Size(min = 8, max = 1000)
     open var descricao_guia: String? = null,
 
     @Enumerated(EnumType.STRING)
