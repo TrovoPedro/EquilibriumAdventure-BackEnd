@@ -6,5 +6,8 @@ data class EventoResponseDTO(
     var nivel_dificuldade: String?,
     var distancia_km: Double?,
     var responsavel: Long,
-    var endereco: Long?
+    var endereco: Long?,
+    var pdf_url: String? = null,
+    var caminho_arquivo_evento: String? = null,
+    var pdf_base64: String? = null
 )

@@ -44,13 +44,14 @@ class GuiaControllerJpa(
     @PostMapping("/cadastrar", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun cadastrarEvento(
         @RequestPart("evento") eventoJson: String,
-        @RequestPart("imagem", required = false) img_evento: MultipartFile?
+        @RequestPart("imagem", required = false) img_evento: MultipartFile?,
+        @RequestPart("pdf", required = false) pdf_evento: MultipartFile?
     ): ResponseEntity<Any> {
         return try {
             val objectMapper = ObjectMapper()
             val novoEvento = objectMapper.readValue(eventoJson, EventoRequestDTO::class.java)
 
-            val eventoSalvo = eventoService.postEvento(novoEvento, img_evento)
+            val eventoSalvo = eventoService.postEvento(novoEvento, img_evento, pdf_evento)
 
             ResponseEntity.ok(mapOf("success" to true, "evento" to eventoSalvo))
         } catch (e: Exception) {
@@ -165,13 +166,14 @@ class GuiaControllerJpa(
     @PutMapping("/editar-evento/{idEvento}/{idEndereco}")
     fun putEvento(@PathVariable idEvento: Long, @PathVariable idEndereco: Long,
           @RequestPart("evento") eventoJson: String,
-          @RequestPart("imagem", required = false) img_evento: MultipartFile?
+          @RequestPart("imagem", required = false) img_evento: MultipartFile?,
+          @RequestPart("pdf", required = false) pdf_evento: MultipartFile?
             ): ResponseEntity<Any> {
         return try {
             val objectMapper = ObjectMapper()
             val novoEvento = objectMapper.readValue(eventoJson, EventoRequestDTO::class.java)
 
-            val eventoSalvo = eventoService.putEvento(idEvento,idEndereco,novoEvento, img_evento)
+            val eventoSalvo = eventoService.putEvento(idEvento,idEndereco,novoEvento, img_evento, pdf_evento)
 
 
             ResponseEntity.ok(mapOf("success" to true, "data" to eventoSalvo))

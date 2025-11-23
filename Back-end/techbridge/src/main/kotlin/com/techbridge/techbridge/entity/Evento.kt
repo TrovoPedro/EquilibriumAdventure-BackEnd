@@ -26,6 +26,10 @@ data class Evento(
     @Column(columnDefinition = "LONGBLOB")
     var img_evento: ByteArray? = null,
 
+    @Lob
+    @Column(columnDefinition = "LONGBLOB")
+    var pdf_evento: ByteArray? = null,
+
     @Column(name = "fk_responsavel", nullable = false)
     var responsavel: Long = 1,
 

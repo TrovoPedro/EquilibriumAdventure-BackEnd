@@ -50,7 +50,7 @@ class GuiaService {
     lateinit var enderecoRepository: EnderecoRepository
 
 
-    fun postEvento(novoEvento: EventoRequestDTO, img_evento: MultipartFile?): Evento {
+    fun postEvento(novoEvento: EventoRequestDTO, img_evento: MultipartFile?, pdf_evento: MultipartFile?): Evento {
         val enderecoDto = novoEvento.endereco ?: throw IllegalArgumentException("Endereço é obrigatório")
 
         val enderecoSalvo = enderecoRepository.save(enderecoDto.toEntity())
@@ -58,8 +58,14 @@ class GuiaService {
         val evento = novoEvento.toEntity(enderecoSalvo.id_endereco)
 
         evento.img_evento = img_evento?.bytes
+        evento.pdf_evento = pdf_evento?.bytes
 
         return eventoRepository.save(evento)
+    }
+
+    // Sobrecarga para compatibilidade: manter método sem pdf (não altera tratamento de imagem)
+    fun postEvento(novoEvento: EventoRequestDTO, img_evento: MultipartFile?): Evento {
+        return postEvento(novoEvento, img_evento, null)
     }
 
     fun postGuia (novoGuia: GuiaRequestDTO , img_guia: MultipartFile?): Usuario {
@@ -84,7 +90,7 @@ class GuiaService {
         return guiaSalvo
     }
 
-    fun putEvento(idEvento: Long,idEndereco: Long ,novoEvento: EventoRequestDTO, img_evento: MultipartFile?): Evento {
+    fun putEvento(idEvento: Long,idEndereco: Long ,novoEvento: EventoRequestDTO, img_evento: MultipartFile?, pdf_evento: MultipartFile?): Evento {
         val enderecoDto = novoEvento.endereco ?: throw IllegalArgumentException("Endereço é obrigatório")
 
         val enderecoExistente = enderecoRepository.findById(idEndereco)
@@ -105,8 +111,14 @@ class GuiaService {
         evento.id_evento = idEvento
         println(img_evento)
         evento.img_evento = img_evento?.bytes
+        evento.pdf_evento = pdf_evento?.bytes
 
         return eventoRepository.save(evento)
+    }
+
+    // Sobrecarga para compatibilidade do put sem pdf
+    fun putEvento(idEvento: Long, idEndereco: Long, novoEvento: EventoRequestDTO, img_evento: MultipartFile?): Evento {
+        return putEvento(idEvento, idEndereco, novoEvento, img_evento, null)
     }
 
     fun getEventos(): List<Map<String, Any>> {

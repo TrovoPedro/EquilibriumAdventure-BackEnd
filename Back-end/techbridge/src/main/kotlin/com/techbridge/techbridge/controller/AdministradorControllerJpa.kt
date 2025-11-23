@@ -22,6 +22,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import java.util.Base64
 
 @RestController
 @RequestMapping("/administrador")
@@ -79,12 +80,31 @@ class AdministradorControllerJpa(
     }
 
     @GetMapping("/buscar-evento-base-especifico/{id}")
-    fun getEventoEspecifico(@PathVariable id: Long): ResponseEntity<Evento> {
+    fun getEventoEspecifico(@PathVariable id: Long): ResponseEntity<EventoResponseDTO> {
         val eventoOptional = repositorioEvento.findById(id)
 
-
         return if (eventoOptional.isPresent) {
-            ResponseEntity.ok(eventoOptional.get())
+            val evento = eventoOptional.get()
+            // Evitar smart cast em propriedade mutável: copiar para val local
+            val pdf = evento.pdf_evento
+            val pdfUrl = if (pdf != null && pdf.isNotEmpty()) {
+                "/administrador/buscar-evento-base-especifico/$id/pdf"
+            } else null
+            val pdfBase64 = if (pdf != null && pdf.isNotEmpty()) Base64.getEncoder().encodeToString(pdf) else null
+
+            val dto = EventoResponseDTO(
+                nome = evento.nome,
+                descricao = evento.descricao,
+                nivel_dificuldade = evento.nivel_dificuldade,
+                distancia_km = evento.distancia_km,
+                responsavel = evento.responsavel,
+                endereco = evento.endereco,
+                pdf_url = pdfUrl,
+                caminho_arquivo_evento = evento.caminho_arquivo_evento,
+                pdf_base64 = pdfBase64
+            )
+
+            ResponseEntity.ok(dto)
         } else {
             ResponseEntity.notFound().build()
         }
@@ -257,5 +277,3 @@ class AdministradorControllerJpa(
         }
     }
 }
-
-
