@@ -39,23 +39,35 @@ class DashboardController(
     }
 
     @GetMapping("/top-cidades")
-    fun getTopCidades(@RequestParam usuarioId: Long): ResponseEntity<List<CidadeDTO>> {
+    fun getTopCidades(
+        @RequestParam usuarioId: Long,
+        @RequestParam(required = false) startDate: String?,
+        @RequestParam(required = false) endDate: String?
+    ): ResponseEntity<List<CidadeDTO>> {
         validarUsuario(usuarioId)
-        val result = service.getTopCidades(usuarioId)
+        val result = service.getTopCidades(usuarioId, startDate, endDate)
         return ResponseEntity.ok(result.ifEmpty { emptyList() })
     }
 
     @GetMapping("/ranking-eventos")
-    fun getRankingEventos(@RequestParam usuarioId: Long): ResponseEntity<List<EventoRankingDTO>> {
+    fun getRankingEventos(
+        @RequestParam usuarioId: Long,
+        @RequestParam(required = false) startDate: String?,
+        @RequestParam(required = false) endDate: String?
+    ): ResponseEntity<List<EventoRankingDTO>> {
         validarUsuario(usuarioId)
-        val result = service.getRankingEventos(usuarioId)
+        val result = service.getRankingEventos(usuarioId, startDate, endDate)
         return ResponseEntity.ok(result.ifEmpty { emptyList() })
     }
 
     @GetMapping("/palavras-comentarios")
-    fun getPalavrasComentarios(@RequestParam usuarioId: Long): ResponseEntity<List<PalavraDTO>> {
+    fun getPalavrasComentarios(
+        @RequestParam usuarioId: Long,
+        @RequestParam(required = false) startDate: String?,
+        @RequestParam(required = false) endDate: String?
+    ): ResponseEntity<List<PalavraDTO>> {
         validarUsuario(usuarioId)
-        val result = service.getPalavrasComentarios(usuarioId)
+        val result = service.getPalavrasComentarios(usuarioId, startDate, endDate)
         return ResponseEntity.ok(result.ifEmpty { emptyList() })
     }
 
@@ -77,6 +89,18 @@ class DashboardController(
     fun getTendenciasDia(@RequestParam usuarioId: Long): ResponseEntity<List<TendenciaDiaDTO>> {
         validarUsuario(usuarioId)
         val result = service.getTendenciasDia(usuarioId)
+        return ResponseEntity.ok(result.ifEmpty { emptyList() })
+    }
+
+    // Novo endpoint para buscar tendências em um período (startDate e endDate no formato ISO yyyy-MM-dd)
+    @GetMapping("/tendencias-periodo")
+    fun getTendenciasPeriodo(
+        @RequestParam usuarioId: Long,
+        @RequestParam(required = false) startDate: String?,
+        @RequestParam(required = false) endDate: String?
+    ): ResponseEntity<List<TendenciaPeriodoDTO>> {
+        validarUsuario(usuarioId)
+        val result = service.getTendenciasPeriodo(usuarioId, startDate, endDate)
         return ResponseEntity.ok(result.ifEmpty { emptyList() })
     }
 

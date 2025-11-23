@@ -34,21 +34,11 @@ class DashboardService(private val repository: DashboardRepository) {
     }
 
     fun getTopCidades(usuarioId: Long): List<CidadeDTO> {
-        return repository.getTopCidades(usuarioId).map {
-            CidadeDTO(
-                cidade = it["cidade"] as String,
-                totalParticipantes = (it["total_participantes"] as? Number)?.toInt() ?: 0
-            )
-        }
+        return getTopCidades(usuarioId, null, null)
     }
 
     fun getPalavrasComentarios(usuarioId: Long): List<PalavraDTO> {
-        return repository.getPalavrasComentarios(usuarioId).map {
-            PalavraDTO(
-                palavra = it["palavra"] as String,
-                quantidade = (it["quantidade"] as? Number)?.toInt() ?: 0
-            )
-        }
+        return getPalavrasComentarios(usuarioId, null, null)
     }
 
     fun getInscricaoLimite(usuarioId: Long): List<InscricaoLimiteDTO> {
@@ -71,13 +61,7 @@ class DashboardService(private val repository: DashboardRepository) {
     }
 
     fun getRankingEventos(usuarioId: Long): List<EventoRankingDTO> {
-        return repository.getRankingEventos(usuarioId).map {
-            EventoRankingDTO(
-                it["nome"] as String,
-                (it["total_inscricoes"] as? Number)?.toInt() ?: 0,
-                (it["nota_media"] as? BigDecimal)?.toDouble() ?: 0.0
-            )
-        }
+        return getRankingEventos(usuarioId, null, null)
     }
 
     fun getTendenciasAno(usuarioId: Long): List<TendenciaAnoDTO> {
@@ -104,6 +88,45 @@ class DashboardService(private val repository: DashboardRepository) {
             TendenciaDiaDTO(
                 it["dia"]?.toString() ?: "",
                 (it["total_inscricoes"] as? Number)?.toInt() ?: 0
+            )
+        }
+    }
+
+    // Novo método que consome a view unificada e mapeia para TendenciaPeriodoDTO
+    fun getTendenciasPeriodo(usuarioId: Long, startDate: String?, endDate: String?): List<TendenciaPeriodoDTO> {
+        return repository.getTendenciasPeriodo(usuarioId, startDate, endDate).map {
+            TendenciaPeriodoDTO(
+                it["dia"]?.toString() ?: "",
+                (it["total_inscricoes"] as? Number)?.toInt() ?: 0
+            )
+        }
+    }
+
+    fun getTopCidades(usuarioId: Long, startDate: String?, endDate: String?): List<CidadeDTO> {
+        return repository.getTopCidades(usuarioId, startDate, endDate).map {
+            CidadeDTO(
+                cidade = (it["Cidade"] as? String) ?: (it["cidade"] as? String) ?: "",
+                totalParticipantes = (it["Total_Participantes"] as? Number)?.toInt()
+                    ?: (it["total_participantes"] as? Number)?.toInt() ?: 0
+            )
+        }
+    }
+
+    fun getPalavrasComentarios(usuarioId: Long, startDate: String?, endDate: String?): List<PalavraDTO> {
+        return repository.getPalavrasComentarios(usuarioId, startDate, endDate).map {
+            PalavraDTO(
+                palavra = (it["palavra"] as? String) ?: "",
+                quantidade = (it["quantidade"] as? Number)?.toInt() ?: 0
+            )
+        }
+    }
+
+    fun getRankingEventos(usuarioId: Long, startDate: String?, endDate: String?): List<EventoRankingDTO> {
+        return repository.getRankingEventos(usuarioId, startDate, endDate).map {
+            EventoRankingDTO(
+                (it["nome"] as? String) ?: "",
+                (it["total_inscricoes"] as? Number)?.toInt() ?: 0,
+                (it["nota_media"] as? BigDecimal)?.toDouble() ?: 0.0
             )
         }
     }
