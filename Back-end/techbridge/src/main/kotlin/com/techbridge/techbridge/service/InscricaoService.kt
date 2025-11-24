@@ -3,8 +3,10 @@ package com.techbridge.techbridge.service
 import InscricaoAgendaDTO
 import com.techbridge.techbridge.dto.InscricaoDTO
 import com.techbridge.techbridge.dto.InscricaoListagemDTO
+import com.techbridge.techbridge.dto.UsuarioDisparoEmail
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.entity.Inscricao
+import com.techbridge.techbridge.entity.Usuario
 import com.techbridge.techbridge.enums.Nivel
 import com.techbridge.techbridge.repository.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -30,6 +32,10 @@ class InscricaoService {
 
     @Autowired
     lateinit var informacoesPessoaisRepository: InformacoesPessoaisRepository
+
+
+    @Autowired
+    lateinit var emailService: EmailService;
 
     @Transactional
     fun criarInscricao(ativacaoId: Long, usuarioId: Long): InscricaoDTO {
@@ -163,7 +169,7 @@ class InscricaoService {
     }
 
     @Transactional
-    fun cancelarInscricao(idAventureiro: Long, idAtivacao: Long) {
+    fun cancelarInscricao(idAventureiro: Long, idAtivacao: Long): UsuarioDisparoEmail {
         val usuario = usuarioRepository.findById(idAventureiro)
             .orElseThrow { IllegalArgumentException("Aventureiro não encontrado") }
 
@@ -174,8 +180,21 @@ class InscricaoService {
             throw IllegalArgumentException("Inscrição não encontrada para esta ativação e aventureiro.")
         }
 
+        // Remove inscrição
         inscricaoRepository.deleteByAventureiroAndAtivacaoEvento(usuario, ativacao)
+
+        // Dados dinâmicos reais
+        val nomeTrilha = ativacao.evento?.nome
+        val dataEvento = ativacao.dataAtivacao.toString()
+
+        return UsuarioDisparoEmail(
+            email = usuario.email!!,
+            nomeUsuario = usuario.nome!!,
+            nomeTrilha = nomeTrilha,
+            dataEvento = dataEvento
+        )
     }
+
 
     fun listarEventosDoAventureiro(idAventureiro: Long): List<InscricaoAgendaDTO> {
         return inscricaoRepository.listarEventosSimples(idAventureiro).map { arr ->

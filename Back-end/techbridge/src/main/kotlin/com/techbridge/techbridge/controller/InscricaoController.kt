@@ -4,6 +4,7 @@ import InscricaoAgendaDTO
 import com.techbridge.techbridge.dto.InscricaoDTO
 import com.techbridge.techbridge.dto.InscricaoListagemDTO
 import com.techbridge.techbridge.dto.VerificaInscricaoDTO
+import com.techbridge.techbridge.service.EmailService
 import com.techbridge.techbridge.service.InscricaoService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
@@ -16,6 +17,9 @@ class InscricaoController {
 
     @Autowired
     lateinit var inscricaoService: InscricaoService
+
+    @Autowired
+    lateinit var emailService: EmailService;
 
     @PostMapping("/ativacaoEvento/{ativacaoId}/usuario/{usuarioId}")
     fun criarInscricao(
@@ -81,12 +85,24 @@ class InscricaoController {
         @PathVariable idAtivacao: Long
     ): ResponseEntity<String> {
         return try {
-            inscricaoService.cancelarInscricao(idAventureiro, idAtivacao)
-            ResponseEntity.ok("Inscrição cancelada com sucesso.")
+            val dadosEmail = inscricaoService.cancelarInscricao(idAventureiro, idAtivacao)
+
+            emailService.enviarEmailCancelamento(
+                to = dadosEmail.email,
+                nomeUsuario = dadosEmail.nomeUsuario,
+                nomeTrilha = dadosEmail.nomeTrilha ?: "Trilha não informada",
+                dataEvento = dadosEmail.dataEvento,
+                motivo = "Cancelamento da inscrição"
+            )
+
+            ResponseEntity.ok("Inscrição cancelada e e-mail enviado.")
         } catch (e: Exception) {
             ResponseEntity.badRequest().body(e.message)
         }
     }
+
+
+
 
     @GetMapping("/ativacao-avaliada/{idAventureiro}/{idAtivacao}")
     fun ativacaoJaAvaliadaPorAventureiro(
