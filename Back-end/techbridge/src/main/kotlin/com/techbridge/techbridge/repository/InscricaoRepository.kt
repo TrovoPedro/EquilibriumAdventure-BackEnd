@@ -116,4 +116,11 @@ interface InscricaoRepository : JpaRepository<Inscricao, Long> {
     fun listarHistoricoSimples(@Param("idAventureiro") idAventureiro: Long): List<Array<Any>>
 
     fun findByAtivacaoEvento_IdAtivacao(ativacaoId: Long): List<Inscricao>
+
+    @Query("""
+    SELECT i.aventureiro.email
+    FROM Inscricao i
+    WHERE i.ativacaoEvento.evento.id = :idEvento
+""")
+    fun findEmailsByEvento(idEvento: Long): List<String>
 }

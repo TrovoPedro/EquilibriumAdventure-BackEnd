@@ -3,6 +3,7 @@ package com.techbridge.techbridge.controller
 import com.techbridge.techbridge.service.AtivacaoEventoService
 import com.techbridge.techbridge.dto.AtivacaoEventoRequestDTO
 import com.techbridge.techbridge.enums.EstadoEvento
+import com.techbridge.techbridge.service.EmailService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -14,6 +15,9 @@ class AtivacaoEventoController {
 
     @Autowired
     lateinit var service: AtivacaoEventoService
+
+    @Autowired
+    lateinit var emailService: EmailService
 
     @PostMapping("criar-ativacao")
     fun criar(@RequestBody dto: AtivacaoEventoRequestDTO): ResponseEntity<Any> {
@@ -55,8 +59,18 @@ class AtivacaoEventoController {
     @DeleteMapping("/evento-base/{id}")
     fun excluirEventoBase(@PathVariable id: Long): ResponseEntity<Any> {
         return try {
-            service.excluirEventoBase(id)
-            ResponseEntity.ok(mapOf("mensagem" to "Evento base excluído com sucesso"))
+            val dados = service.excluirEventoBase(id)
+
+            emailService.enviarEmailCancelamentoEvento(
+                emails = dados.emails,
+                nomeTrilha = dados.nomeTrilha,
+                motivo = "Evento cancelado pelo administrador"
+            )
+
+            ResponseEntity.ok(
+                mapOf("mensagem" to "Evento base excluído com sucesso e e-mails enviados.")
+            )
+
         } catch (e: ResponseStatusException) {
             ResponseEntity.status(e.statusCode).body(mapOf("erro" to e.reason))
         } catch (e: RuntimeException) {

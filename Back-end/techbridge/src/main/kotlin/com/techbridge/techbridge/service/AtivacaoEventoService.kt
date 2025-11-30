@@ -1,6 +1,7 @@
 package com.techbridge.techbridge.service
 
 import com.techbridge.techbridge.dto.AtivacaoEventoRequestDTO
+import com.techbridge.techbridge.dto.DadosCancelamentoEvento
 import com.techbridge.techbridge.entity.AtivacaoEvento
 import com.techbridge.techbridge.enums.EstadoEvento
 import com.techbridge.techbridge.repository.AtivacaoEventoRepository
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.sql.Time
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Service
@@ -101,13 +101,17 @@ class AtivacaoEventoService {
     }
 
     @Transactional
-    fun excluirEventoBase(idEventoBase: Long) {
+    fun excluirEventoBase(idEventoBase: Long): DadosCancelamentoEvento {
+
         val evento = eventoRepository.findById(idEventoBase)
             .orElseThrow {
                 RuntimeException("Evento base não encontrado: $idEventoBase")
             }
 
-        // Verifica se há ativações NÃO finalizadas
+        val emailsInscritos = inscricaoRepository.findEmailsByEvento(idEventoBase)
+
+        val nomeTrilha = evento.nome
+
         val qtdNaoFinalizadas = repository.countAtivacoesPorEvento(idEventoBase)
 
         if (qtdNaoFinalizadas > 0) {
@@ -119,15 +123,17 @@ class AtivacaoEventoService {
 
         val ativacoesFinalizadas = repository.findFinalizadasPorEvento(idEventoBase)
 
-        // Deletar ativações finalizadas
         if (ativacoesFinalizadas.isNotEmpty()) {
             repository.deleteAll(ativacoesFinalizadas)
         }
 
-        // Agora pode excluir o evento base
         eventoRepository.delete(evento)
-    }
 
+        return DadosCancelamentoEvento(
+            emails = emailsInscritos,
+            nomeTrilha = nomeTrilha,
+        )
+    }
 
     fun obterMediaAvaliacoes(idAtivacao: Long): Double {
         return repository.calcularMediaAvaliacoes(idAtivacao) ?: 0.0

@@ -101,9 +101,6 @@ class InscricaoController {
         }
     }
 
-
-
-
     @GetMapping("/ativacao-avaliada/{idAventureiro}/{idAtivacao}")
     fun ativacaoJaAvaliadaPorAventureiro(
         @PathVariable idAventureiro: Long,

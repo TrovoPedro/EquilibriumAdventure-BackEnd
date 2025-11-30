@@ -31,4 +31,23 @@ class EmailService(
             String::class.java
         )
     }
+
+    fun enviarEmailCancelamentoEvento(
+        emails: List<String>,
+        nomeTrilha: String?,
+        motivo: String
+    ) {
+        val body = mapOf(
+            "emails" to emails,
+            "nomeTrilha" to nomeTrilha,
+            "motivo" to motivo
+        )
+
+        restTemplate.postForEntity(
+            "http://localhost:8081/emails/evento-cancelado",
+            body,
+            String::class.java
+        )
+    }
+
 }
