@@ -48,6 +48,7 @@ class AtivacaoEventoController {
         return try {
             val estadoEnum = EstadoEvento.valueOf(estado.uppercase())
             val atualizada = service.alterarEstado(id, estadoEnum, forcar)
+
             ResponseEntity.ok(atualizada)
         } catch (e: IllegalArgumentException) {
             ResponseEntity.status(400).body(mapOf("erro" to "Estado inválido: $estado"))
@@ -61,14 +62,8 @@ class AtivacaoEventoController {
         return try {
             val dados = service.excluirEventoBase(id)
 
-            emailService.enviarEmailCancelamentoEvento(
-                emails = dados.emails,
-                nomeTrilha = dados.nomeTrilha,
-                motivo = "Evento cancelado pelo administrador"
-            )
-
             ResponseEntity.ok(
-                mapOf("mensagem" to "Evento base excluído com sucesso e e-mails enviados.")
+                mapOf("mensagem" to "Evento base excluído com sucesso")
             )
 
         } catch (e: ResponseStatusException) {

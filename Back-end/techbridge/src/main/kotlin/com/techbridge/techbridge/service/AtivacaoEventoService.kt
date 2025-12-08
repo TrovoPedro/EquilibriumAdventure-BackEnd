@@ -9,8 +9,12 @@ import com.techbridge.techbridge.repository.EventoRepository
 import com.techbridge.techbridge.repository.InscricaoRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.server.ResponseStatusException
 import java.sql.Time
 import java.time.format.DateTimeFormatter
@@ -26,6 +30,9 @@ class AtivacaoEventoService {
 
     @Autowired
     lateinit var eventoRepository: EventoRepository
+
+    @Autowired
+    lateinit var emailService: EmailService
 
     private val dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy")
 
@@ -81,9 +88,15 @@ class AtivacaoEventoService {
 
     @Transactional
     fun alterarEstado(idAtivacao: Long, novoEstado: EstadoEvento, forcar: Boolean): AtivacaoEvento {
+
         val ativacao = repository.findById(idAtivacao)
             .orElseThrow { RuntimeException("Ativação não encontrada: $idAtivacao") }
+
         val inscricoes = inscricaoRepository.findByAtivacaoEvento_IdAtivacao(idAtivacao)
+
+        val emailsInscritos = inscricoes.mapNotNull { it.aventureiro.email }
+        val nomeTrilha = ativacao.evento?.nome ?: "Trilha"
+        val dataEvento = ativacao.dataAtivacao?.toString() ?: "Data não informada"
 
         if (inscricoes.isNotEmpty() && !forcar) {
             throw ResponseStatusException(
@@ -95,10 +108,22 @@ class AtivacaoEventoService {
         if (forcar && inscricoes.isNotEmpty()) {
             inscricaoRepository.deleteAll(inscricoes)
         }
-        // Atualiza o estado da ativação e salva
+
         ativacao.estado = novoEstado
-        return repository.save(ativacao)
+        val salvo = repository.save(ativacao)
+
+        if (novoEstado == EstadoEvento.FINALIZADO) {
+            emailService.enviarEmailCancelamentoEvento(
+                emails = emailsInscritos,
+                nomeTrilha = nomeTrilha,
+                dataEvento = dataEvento,
+                motivo = "A ativação foi finalizada pelo administrador."
+            )
+        }
+
+        return salvo
     }
+
 
     @Transactional
     fun excluirEventoBase(idEventoBase: Long): DadosCancelamentoEvento {

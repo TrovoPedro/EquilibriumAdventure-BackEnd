@@ -35,19 +35,26 @@ class EmailService(
     fun enviarEmailCancelamentoEvento(
         emails: List<String>,
         nomeTrilha: String?,
-        motivo: String
+        dataEvento: String,
+        motivo: String = "Evento cancelado pelo administrador"
     ) {
-        val body = mapOf(
-            "emails" to emails,
-            "nomeTrilha" to nomeTrilha,
-            "motivo" to motivo
-        )
+        emails.forEach { email ->
 
-        restTemplate.postForEntity(
-            "http://localhost:8081/emails/evento-cancelado",
-            body,
-            String::class.java
-        )
+            val body = mapOf(
+                "to" to email,
+                "tipo" to "EVENTO_CANCELADO",
+                "nomeUsuario" to email.substringBefore("@"), // ajuste se tiver nome real
+                "nomeTrilha" to nomeTrilha,
+                "dataEvento" to dataEvento,
+                "motivo" to motivo
+            )
+
+            restTemplate.postForEntity(
+                "http://localhost:8081/emails/send",
+                body,
+                String::class.java
+            )
+        }
     }
 
 }
